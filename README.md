@@ -5,7 +5,7 @@ Members: Laura South, Isacc Mauro, Duck Keun Yang, Brian Larson, Yan Wang
 
 This project is about implementing Online Jungle Game Software with iterative software development method.
 
-First iteration - Requirements Analysis > ./P1/*.*
+First iteration - Requirements Analysis > ./P1/
 
 Second iteration - TBD
 
