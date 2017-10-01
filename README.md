@@ -7,7 +7,7 @@ This project is about implementing Online Jungle Game Software with iterative so
 
 First iteration - Requirements Analysis > ./P1/
 
-Second iteration - TBD
+Second iteration - Domain Model Analysis > ./P2/
 
 Third iteration - TBD
 
