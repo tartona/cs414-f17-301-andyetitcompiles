@@ -1,0 +1,25 @@
+/*
+ * Gradle build file. This is used to manage our dependencies, so that everyone is on the same
+ * version of every lib we use throughout the project. If you use a lib to do something, you 
+ * can search https://mvnrepository.com to find if it already has a maven repository at mavencentral
+ * If its not there, you have to create a new maven repo locally, google probably knows how
+ */
+
+/*
+// Apply the java plugin to add support for Java
+apply plugin: 'java'
+
+// In this section you declare where to find the dependencies of your project
+repositories {
+	// Using maven central to grab dependencies
+    mavenCentral()
+}
+
+// In this section you declare the dependencies for your production and test code
+dependencies {
+	// Kryonet dependency
+	compile group: 'com.esotericsoftware', name: 'kryonet', version: '2.22.0-RC1'
+	// Junit dependency
+	testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+*/
