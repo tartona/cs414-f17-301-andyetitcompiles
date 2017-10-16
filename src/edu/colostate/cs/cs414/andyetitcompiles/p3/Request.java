@@ -7,5 +7,6 @@ package edu.colostate.cs.cs414.andyetitcompiles.p3;
  * Could be an invitation, game move, or login
  */
 public class Request {
-
+	RequestType type;
+	Object content;
 }

@@ -7,5 +7,6 @@ package edu.colostate.cs.cs414.andyetitcompiles.p3;
  * acceptance/rejection, game state update, user query result, etc.
  */
 public class Response {
-
+	ResponseType type;
+	Object content;
 }

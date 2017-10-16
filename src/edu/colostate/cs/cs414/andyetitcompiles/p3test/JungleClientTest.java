@@ -10,6 +10,7 @@ public class JungleClientTest {
 
 	@Before
 	public void setUp() throws Exception {
+
 	}
 
 	@After
@@ -17,8 +18,32 @@ public class JungleClientTest {
 	}
 
 	@Test
-	public void test() {
+	public void testConstructor() {
 		fail("Not yet implemented");
 	}
+	
+	@Test
+	public void testLogin() {
+		
+	}
+	
+	@Test
+	public void testRegister() {
+		
+	}
 
+	@Test
+	public void testUnregister() {
+		
+	}
+	
+	@Test
+	public void testFindUser() {
+		
+	}
+	
+	@Test
+	public void testInvite() {
+		
+	}
 }
