@@ -1,16 +1,19 @@
-package edu.colostate.cs.cs414.andyetitcompiles.p3;
+package edu.colostate.cs.cs414.andyetitcompiles.p3.server;
 
 import java.util.Set;
+
+import edu.colostate.cs.cs414.andyetitcompiles.p3.common.User;
+
 import java.util.HashSet;
 import java.util.Iterator;
-public class Authenticator {
+public class DatabaseManager {
 	private User RegisteredUsers = new User();
 	private User OnlineUsers = new User();
 	private Set<User> users = new HashSet<User>();
 	
 	public void registerUser(String email, String password, String nickname) 
 	{
-		RegisteredUsers.setemail(email);
+		RegisteredUsers.setEmail(email);
 		RegisteredUsers.setpassword(password);
 		RegisteredUsers.setnickname(nickname);
     }

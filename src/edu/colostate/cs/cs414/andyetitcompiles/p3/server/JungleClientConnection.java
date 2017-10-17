@@ -1,6 +1,8 @@
-package edu.colostate.cs.cs414.andyetitcompiles.p3;
+package edu.colostate.cs.cs414.andyetitcompiles.p3.server;
 
 import com.esotericsoftware.kryonet.Connection;
+
+import edu.colostate.cs.cs414.andyetitcompiles.p3.common.User;
 
 /*
  * This class extends the default Connection class that kryonet provides.

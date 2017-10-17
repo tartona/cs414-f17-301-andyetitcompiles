@@ -1,8 +1,11 @@
-package edu.colostate.cs.cs414.andyetitcompiles.p3;
+package edu.colostate.cs.cs414.andyetitcompiles.p3.server;
 
 import java.io.IOException;
 
 import com.esotericsoftware.kryonet.Server;
+
+import edu.colostate.cs.cs414.andyetitcompiles.p3.protocol.Network;
+
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 
