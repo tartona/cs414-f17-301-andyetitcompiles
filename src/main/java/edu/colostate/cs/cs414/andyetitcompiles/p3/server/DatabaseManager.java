@@ -13,7 +13,7 @@ public class DatabaseManager {
 	
 	public void registerUser(String email, String password, String nickname) 
 	{
-		RegisteredUsers.setEmail(email);
+		RegisteredUsers.setemail(email);
 		RegisteredUsers.setpassword(password);
 		RegisteredUsers.setnickname(nickname);
     }

@@ -10,11 +10,11 @@ public class User {
 		private UserStatus ustatus;
 	    private JunglePiece piece;
 		
-		public String getEmail() {return this.email;}
-		public String getPassword() {return this.password;}
-		public String getNickname() {return this.nickname;}
-		public String setEmail(String email) {return this.email = email;}
-		public String setPassword(String password) {return this.password = password;}
-		public String setNickname(String nickname) {return this.nickname = nickname;}
+		public String getemail() {return this.email;}
+		public String getpassword() {return this.password;}
+		public String getnickname() {return this.nickname;}
+		public String setemail(String email) {return this.email = email;}
+		public String setpassword(String password) {return this.password = password;}
+		public String setnickname(String nickname) {return this.nickname = nickname;}
 
 }
