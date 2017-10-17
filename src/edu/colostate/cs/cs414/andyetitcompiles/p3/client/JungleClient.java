@@ -1,9 +1,12 @@
-package edu.colostate.cs.cs414.andyetitcompiles.p3;
+package edu.colostate.cs.cs414.andyetitcompiles.p3.client;
 import java.io.IOException;
 
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
+
+import edu.colostate.cs.cs414.andyetitcompiles.p3.common.User;
+import edu.colostate.cs.cs414.andyetitcompiles.p3.protocol.Network;
 
 public class JungleClient {
 	Client kryoClient;

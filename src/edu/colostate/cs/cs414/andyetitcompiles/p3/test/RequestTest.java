@@ -1,4 +1,4 @@
-package edu.colostate.cs.cs414.andyetitcompiles.p3test;
+package edu.colostate.cs.cs414.andyetitcompiles.p3.test;
 
 import static org.junit.Assert.*;
 
@@ -6,7 +6,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class UserTest {
+public class RequestTest {
 
 	@Before
 	public void setUp() throws Exception {

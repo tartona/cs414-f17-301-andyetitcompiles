@@ -1,4 +1,4 @@
-package edu.colostate.cs.cs414.andyetitcompiles.p3test;
+package edu.colostate.cs.cs414.andyetitcompiles.p3.test;
 
 import static org.junit.Assert.*;
 
