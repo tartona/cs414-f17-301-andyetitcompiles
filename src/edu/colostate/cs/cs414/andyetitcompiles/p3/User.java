@@ -7,6 +7,7 @@ public class User {
 		private String nickname;
 		private GameRecord GR = new GameRecord();
 		private UserStatus ustatus;
+	        private JunglePiece piece;
 		
 		public String getemail() {return this.email;}
 		public String getpassword() {return this.password;}
