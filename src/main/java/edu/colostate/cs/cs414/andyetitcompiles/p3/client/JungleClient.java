@@ -11,6 +11,7 @@ import edu.colostate.cs.cs414.andyetitcompiles.p3.protocol.Network;
 public class JungleClient {
 	Client kryoClient;
 	boolean loggedIn;
+	boolean connected;
 	User clientUser;
 	String host;
 	
@@ -21,11 +22,11 @@ public class JungleClient {
 		// Register the client with the Network class
 		Network.register(kryoClient);
 		
-		// Add listeners
+		// Define listeners
 		kryoClient.addListener(new Listener() {
 			// Called after client successfully connects to the server
 			public void connected(Connection c) {
-				
+				connected = true;
 			}
 			// Called whenever the client receives a message from the server
 			public void received(Connection c, Object object) {
@@ -33,7 +34,8 @@ public class JungleClient {
 			}
 			// Called whenever the client is disconnected from the server
 			public void disconnected(Connection c) {
-				
+				loggedIn = false;
+				connected = false;
 			}
 		});
 		
@@ -41,9 +43,8 @@ public class JungleClient {
 		new Thread("Connect") {
 			public void run() {
 				try {
-					// Attempt to connect to the server. Host is hardcoded in JungleClient, but maybe later
-					// on it could be user input. The port is defined in the Network class. 5000ms timeout
-					kryoClient.connect(5000, host, Network.port);
+					// Attempt to connect to the server. The port and host is defined in the Network class. 5000ms timeout
+					kryoClient.connect(5000, Network.host, Network.port);
 				} catch(IOException ex) {
 					ex.printStackTrace();
 				}
