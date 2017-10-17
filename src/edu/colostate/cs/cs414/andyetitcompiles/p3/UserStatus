@@ -1,0 +1,6 @@
+
+
+public enum UserStatus {
+	ONLINE,OFFLINE,UNREGISTERED
+
+}
