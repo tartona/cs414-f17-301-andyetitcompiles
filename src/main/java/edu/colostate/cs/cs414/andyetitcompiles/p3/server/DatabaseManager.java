@@ -7,8 +7,8 @@ import edu.colostate.cs.cs414.andyetitcompiles.p3.common.User;
 import java.util.HashSet;
 import java.util.Iterator;
 public class DatabaseManager {
-	private User RegisteredUsers = new User();
-	private User OnlineUsers = new User();
+	private User RegisteredUsers;
+	private User OnlineUsers;
 	private Set<User> users = new HashSet<User>();
 	
 	public void registerUser(String email, String password, String nickname) 

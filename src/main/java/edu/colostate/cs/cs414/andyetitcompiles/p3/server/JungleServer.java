@@ -42,4 +42,8 @@ public class JungleServer {
 		kryoServer.bind(Network.port);
 		kryoServer.start();
 	}
+	
+	public void stopServer() {
+		kryoServer.stop();
+	}
 }

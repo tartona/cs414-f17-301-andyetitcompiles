@@ -4,4 +4,8 @@ package edu.colostate.cs.cs414.andyetitcompiles.p3.protocol;
 // for a registered user
 public class UserRequest {
 
+	public UserRequest(String string) {
+		// TODO Auto-generated constructor stub
+	}
+
 }

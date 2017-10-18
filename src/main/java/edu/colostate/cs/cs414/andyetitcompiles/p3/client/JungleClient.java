@@ -15,10 +15,21 @@ public class JungleClient {
 	User clientUser;
 	String host;
 	
+	// Regular production constructor
 	public JungleClient() {
 		// Initialize the kryo client
 		kryoClient = new Client();
-		
+		initializeKryoClient();
+	}
+	
+	// This constructor is only used by JungleClientTest so a mock kryo client can be used
+	public JungleClient(Client client) {
+		kryoClient = client;
+		initializeKryoClient();
+	}
+	
+	// This contains all the code for setting up the kryo client
+	public void initializeKryoClient() {
 		// Register the client with the Network class
 		Network.register(kryoClient);
 		
@@ -51,7 +62,6 @@ public class JungleClient {
 			}
 		}.start();
 	}
-	
 	// Sends login request to the server
 	public void login(String email, String password) {
 		
@@ -63,7 +73,7 @@ public class JungleClient {
 	}
 	
 	// Sends unregistration request to the server
-	public void unregister() {
+	public void unregister(String email, String password) {
 		
 	}
 	
@@ -75,6 +85,14 @@ public class JungleClient {
 	// Sends an invite request to the server 
 	public void invite(User otherUser) {
 		
+	}
+	
+	public boolean getConnectedStatus() {
+		return connected;
+	}
+	
+	public boolean getLoggedInStatus() {
+		return loggedIn;
 	}
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
