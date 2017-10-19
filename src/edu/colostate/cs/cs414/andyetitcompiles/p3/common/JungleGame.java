@@ -1,6 +1,15 @@
 package edu.colostate.cs.cs414.andyetitcompiles.p3.common;
 
+import java.util.ArrayList;
+
 public class JungleGame implements GameInterface{
+	private JungleBoard board;
+	private ArrayList<JunglePiece> pieces;
+	
+	public JungleGame(){
+		board = new JungleBoard();
+	}
+	
 	@Override
 	public void startGame() {
 		// TODO Auto-generated method stub
@@ -20,8 +29,14 @@ public class JungleGame implements GameInterface{
 	}
 
 	@Override
-	public JungleTile[][] getJungleTiles() {
-		// TODO Auto-generated method stub
+	public TileType[][] getJungleTiles() {
+		return board.getTiles();
+	}
+
+	@Override
+	public JungleTile[] getValidMoves(JunglePiece piece) {
+		if(!pieces.contains(piece))
+			return null;
 		return null;
 	}
 

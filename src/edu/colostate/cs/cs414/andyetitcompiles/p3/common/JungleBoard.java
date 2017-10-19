@@ -4,10 +4,11 @@ public class JungleBoard {
 	private final int ROWS = 9;
 	private final int COLS = 7;
 	
-	protected JungleTile[][] tiles;
+	private TileType[][] tiles;
+	private JunglePiece[] pieces;
 
 	public JungleBoard(){
-		tiles = new JungleTile[ROWS][COLS];
+		tiles = new TileType[ROWS][COLS];
 		TileType type;
 		for(int i = 0; i < ROWS; i++){
 			for(int j = 0; j < COLS; j++){
@@ -20,7 +21,7 @@ public class JungleBoard {
 					type = TileType.TRAP;
 				if((i == 1 && j == 3) || (i == 7 && j == 3))
 					type = TileType.TRAP;
-				tiles[i][j] = new JungleTile(type);
+				tiles[i][j] = type;
 			}
 		}
 	}
@@ -28,10 +29,14 @@ public class JungleBoard {
 	public void printBoard(){
 		for(int i = 0; i < ROWS; i++){
 			for(int j = 0; j < COLS; j++){
-				System.out.print(tiles[i][j].getType() + " ");
+				System.out.print(tiles[i][j] + " ");
 			}
 			System.out.println();
 		}
+	}
+	
+	public TileType[][] getTiles(){
+		return tiles;
 	}
 	
 	public int getRows() {
