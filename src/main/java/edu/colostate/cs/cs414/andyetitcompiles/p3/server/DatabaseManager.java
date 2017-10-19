@@ -27,7 +27,9 @@ public class DatabaseManager {
 			return false;
     
 	}
-    public void findUser() 
+	
+	// take username or email as input for user.
+    public void findUser(String user) 
     {
     	//iteration search
         for(Iterator<User> iterator = users.iterator();iterator.hasNext();)
