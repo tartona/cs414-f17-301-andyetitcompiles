@@ -9,6 +9,8 @@ import org.junit.Test;
 import edu.colostate.cs.cs414.andyetitcompiles.p3.common.JungleGame;
 import edu.colostate.cs.cs414.andyetitcompiles.p3.common.JunglePiece;
 import edu.colostate.cs.cs414.andyetitcompiles.p3.common.Rat;
+import edu.colostate.cs.cs414.andyetitcompiles.p3.common.User;
+
 import java.awt.Color;
 
 public class JungleGameTest {
@@ -16,7 +18,7 @@ public class JungleGameTest {
 
 	@Before
 	public void setUp(){
-		game = new JungleGame();
+		game = new JungleGame(new User(null, null, null), new User(null, null, null));
 	}
 	
 	@Test
@@ -24,6 +26,11 @@ public class JungleGameTest {
 		JunglePiece wrat = game.getPiece(Color.WHITE, "rat");
 		assertEquals(6, wrat.getCurrentTile().getCol());
 		assertEquals(6, wrat.getCurrentTile().getRow());
+	}
+	
+	@Test 
+	public void testMakeMove(){
+		fail("Needs to be implemented");
 	}
 	
 	@Test
