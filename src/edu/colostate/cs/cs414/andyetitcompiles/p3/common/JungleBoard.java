@@ -131,6 +131,10 @@ public class JungleBoard {
 		pieces.remove(piece);
 	}
 	
+	public boolean isWon(){ 
+		return (tiles[0][3].getCurrentPiece().getColor() == Color.WHITE) || (tiles[8][3].getCurrentPiece().getColor() == Color.BLACK);
+	}
+	
 	public JungleTile getTile(int row, int col){
 		if(row >= ROWS)
 			return null;

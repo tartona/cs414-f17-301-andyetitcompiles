@@ -9,23 +9,10 @@ public class JungleGame implements GameInterface{
 	public JungleGame(){
 		board = new JungleBoard();
 	}
-	
-	@Override
-	public void startGame() {
-		// TODO Auto-generated method stub
-		
-	}
 
 	@Override
-	public void addPlayer(User user) {
+	public void makeMove(JunglePiece piece, JungleTile tile) {
 		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void makeMove(User user, JunglePiece piece, JungleTile tile) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -54,6 +41,12 @@ public class JungleGame implements GameInterface{
 			case 0:
 				return moves;
 		}
+		return null;
+	}
+
+	@Override
+	public User getWinner() {
+		// TODO Auto-generated method stub
 		return null;
 	}
 
