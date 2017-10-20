@@ -10,9 +10,14 @@ public class User {
 	private UserStatus ustatus;
 	private JunglePiece piece;
 		
-	public User(String string, String string2, String string3) {
-		// TODO Auto-generated constructor stub
+	public User(String email, String nickname, String password) {
+		this.email = email;
+		this.nickname = nickname;
+		this.password = password;
 	}
+	
+	public User() {}
+	
 	public String getemail() {return this.email;}
 	public String getpassword() {return this.password;}
 	public String getnickname() {return this.nickname;}

@@ -12,5 +12,9 @@ public class InviteRequest {
 		this.recipient = recipient;
 		this.sender = sender;
 	}
-
+	
+	public InviteRequest() {}
+	
+	public User getRecipient() {return recipient;}
+	public User getSender() {return sender;}
 }
