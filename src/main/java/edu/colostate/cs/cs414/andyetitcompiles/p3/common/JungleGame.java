@@ -1,5 +1,6 @@
 package edu.colostate.cs.cs414.andyetitcompiles.p3.common;
 
+import java.awt.Color;
 import java.util.ArrayList;
 
 public class JungleGame implements GameInterface{
@@ -20,11 +21,15 @@ public class JungleGame implements GameInterface{
 		return board.getTiles();
 	}
 
-	public void capturePiece(JunglePiece attacker, JunglePiece victim){
+	public boolean capturePiece(JunglePiece attacker, JunglePiece victim){
 		if((attacker.getPower() > victim.getPower()) || (attacker instanceof Rat && victim instanceof Elephant)){
 			board.movePieceToTile(attacker, victim.getCurrentTile());
 			board.removePiece(victim);
 		}
+	}
+	
+	public JunglePiece getPiece(Color color, String id){
+		return board.getPiece(color, id);
 	}
 	
 	@Override

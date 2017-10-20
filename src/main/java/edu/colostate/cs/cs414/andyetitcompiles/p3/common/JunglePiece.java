@@ -8,12 +8,26 @@ public abstract class JunglePiece {
 	protected int power;
 	protected Color color;
 	protected JungleTile currentTile;
+	protected String id;
 	
-	public JunglePiece(Color color, JungleTile startTile){
+	public JunglePiece(Color color, JungleTile startTile, String id){
 		this.color = color;
 		this.currentTile = startTile;
+		this.id = id;
+	}
+	
+	@Override
+	public boolean equals(Object o){
+		if(o instanceof JunglePiece){
+			return (((JunglePiece) o).getColor() == this.color) && (((JunglePiece) o ).getID().equals(this.id));
+		}
+		return false;
 	}
 
+	public String getID(){
+		return this.id;
+	}
+	
 	public int getPower() {
 		return power;
 	}

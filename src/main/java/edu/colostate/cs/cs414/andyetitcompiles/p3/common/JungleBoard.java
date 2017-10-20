@@ -18,84 +18,84 @@ public class JungleBoard {
 	
 	private void initializeWhiteTeam(){
 		JungleTile ratTile = tiles[6][6];
-		JunglePiece rat = new Rat(Color.WHITE, ratTile);
+		JunglePiece rat = new Rat(Color.WHITE, ratTile, "rat");
 		ratTile.setCurrentPiece(rat);
 		pieces.add(rat);
 		
 		JungleTile catTile = tiles[7][1];
-		JunglePiece cat = new Cat(Color.WHITE, catTile);
+		JunglePiece cat = new Cat(Color.WHITE, catTile, "cat");
 		catTile.setCurrentPiece(cat);
 		pieces.add(cat);
 		
 		JungleTile dogTile = tiles[7][5];
-		JunglePiece dog = new Dog(Color.WHITE, dogTile);
+		JunglePiece dog = new Dog(Color.WHITE, dogTile, "dog");
 		dogTile.setCurrentPiece(dog);
 		pieces.add(dog);
 		
 		JungleTile wolfTile = tiles[6][2];
-		JunglePiece wolf = new Wolf(Color.WHITE, wolfTile);
+		JunglePiece wolf = new Wolf(Color.WHITE, wolfTile, "wolf");
 		wolfTile.setCurrentPiece(wolf);
 		pieces.add(wolf);
 		
 		JungleTile lionTile = tiles[8][6];
-		JunglePiece lion = new Lion(Color.WHITE, lionTile);
+		JunglePiece lion = new Lion(Color.WHITE, lionTile, "lion");
 		lionTile.setCurrentPiece(lion);
 		pieces.add(lion);
 		
 		JungleTile leopardTile = tiles[6][4];
-		JunglePiece leopard = new Leopard(Color.WHITE, leopardTile);
+		JunglePiece leopard = new Leopard(Color.WHITE, leopardTile, "lion");
 		leopardTile.setCurrentPiece(leopard);
 		pieces.add(leopard);
 		
 		JungleTile tigerTile = tiles[8][0];
-		JunglePiece tiger = new Tiger(Color.WHITE, tigerTile);
+		JunglePiece tiger = new Tiger(Color.WHITE, tigerTile, "tiger");
 		tigerTile.setCurrentPiece(tiger);
 		pieces.add(tiger);
 		
 		JungleTile elephantTile = tiles[6][0];
-		JunglePiece elephant = new Elephant(Color.WHITE, elephantTile);
+		JunglePiece elephant = new Elephant(Color.WHITE, elephantTile, "elephant");
 		elephantTile.setCurrentPiece(elephant);
 		pieces.add(elephant);
 	}
 	
 	private void initializeBlackTeam(){
 		JungleTile ratTile = tiles[ROWS - 1 - 6][COLS - 1 - 6];
-		JunglePiece rat = new Rat(Color.BLACK, ratTile);
+		JunglePiece rat = new Rat(Color.BLACK, ratTile, "rat");
 		ratTile.setCurrentPiece(rat);
 		pieces.add(rat);
 		
 		JungleTile catTile = tiles[ROWS - 1 - 7][COLS - 1 - 1];
-		JunglePiece cat = new Cat(Color.BLACK, catTile);
+		JunglePiece cat = new Cat(Color.BLACK, catTile, "cat");
 		catTile.setCurrentPiece(cat);
 		pieces.add(cat);
 		
 		JungleTile dogTile = tiles[ROWS - 1 - 7][COLS - 1 - 5];
-		JunglePiece dog = new Dog(Color.BLACK, dogTile);
+		JunglePiece dog = new Dog(Color.BLACK, dogTile, "dog");
 		dogTile.setCurrentPiece(dog);
 		pieces.add(dog);
 		
 		JungleTile wolfTile = tiles[ROWS - 1 - 6][COLS - 1 - 2];
-		JunglePiece wolf = new Wolf(Color.BLACK, wolfTile);
+		JunglePiece wolf = new Wolf(Color.BLACK, wolfTile, "wolf");
 		wolfTile.setCurrentPiece(wolf);
 		pieces.add(wolf);
 		
 		JungleTile lionTile = tiles[ROWS - 1 - 8][COLS - 1 - 6];
-		JunglePiece lion = new Lion(Color.BLACK, lionTile);
+		JunglePiece lion = new Lion(Color.BLACK, lionTile, "lion");
 		lionTile.setCurrentPiece(lion);
 		pieces.add(lion);
 		
 		JungleTile leopardTile = tiles[ROWS - 1 - 6][COLS - 1 - 4];
-		JunglePiece leopard = new Leopard(Color.BLACK, leopardTile);
+		JunglePiece leopard = new Leopard(Color.BLACK, leopardTile, "leopard");
 		leopardTile.setCurrentPiece(leopard);
 		pieces.add(leopard);
 		
 		JungleTile tigerTile = tiles[ROWS - 1 - 8][COLS - 1 - 0];
-		JunglePiece tiger = new Tiger(Color.BLACK, tigerTile);
+		JunglePiece tiger = new Tiger(Color.BLACK, tigerTile, "tiger");
 		tigerTile.setCurrentPiece(tiger);
 		pieces.add(tiger);
 		
 		JungleTile elephantTile = tiles[ROWS - 1 - 6][COLS - 1 - 0];
-		JunglePiece elephant = new Elephant(Color.BLACK, elephantTile);
+		JunglePiece elephant = new Elephant(Color.BLACK, elephantTile, "elephant");
 		elephantTile.setCurrentPiece(elephant);
 		pieces.add(elephant);
 	}
@@ -103,6 +103,15 @@ public class JungleBoard {
 	public void initializePieces(){
 		initializeWhiteTeam();
 		initializeBlackTeam();
+	}
+	
+	public JunglePiece getPiece(Color color, String id){
+		for(JunglePiece piece: pieces){
+			if(piece.getColor() == color && id.equals(piece.getID())){
+				return piece;
+			}
+		}
+		return null;
 	}
 	
 	public void initializeBoard(){
