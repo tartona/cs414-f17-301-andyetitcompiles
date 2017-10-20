@@ -6,8 +6,12 @@ import java.util.ArrayList;
 public class JungleGame implements GameInterface{
 	private JungleBoard board;
 	private ArrayList<JunglePiece> pieces;
+	private User player1;	//player 1 is white
+	private User player2; 	//player 2 is black
 	
-	public JungleGame(){
+	public JungleGame(User player1, User player2){
+		this.player1 = player1;
+		this.player2 = player2;
 		board = new JungleBoard();
 	}
 
@@ -22,10 +26,15 @@ public class JungleGame implements GameInterface{
 	}
 
 	public boolean capturePiece(JunglePiece attacker, JunglePiece victim){
+		if(attacker.getColor() == victim.getColor())	//pieces cannot attack their teammates
+			return false;
+		
 		if((attacker.getPower() > victim.getPower()) || (attacker instanceof Rat && victim instanceof Elephant)){
 			board.movePieceToTile(attacker, victim.getCurrentTile());
 			board.removePiece(victim);
+			return true;
 		}
+		return false;
 	}
 	
 	public JunglePiece getPiece(Color color, String id){
@@ -51,7 +60,10 @@ public class JungleGame implements GameInterface{
 
 	@Override
 	public User getWinner() {
-		// TODO Auto-generated method stub
+		if(board.getWinner() == Color.WHITE)
+			return player1;
+		if(board.getWinner() == Color.BLACK)
+			return player2;
 		return null;
 	}
 

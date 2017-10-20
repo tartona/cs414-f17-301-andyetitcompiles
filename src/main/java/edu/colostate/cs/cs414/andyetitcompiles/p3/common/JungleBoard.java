@@ -119,8 +119,10 @@ public class JungleBoard {
 		for(int i = 0; i < ROWS; i++){
 			for(int j = 0; j < COLS; j++){
 				type = TileType.NORMAL;
-				if((i == 0 && j == 3) || (i == 8 && j == 3))
-					type = TileType.DEN;
+				if(i == 0 && j == 3) 
+					type = TileType.BLACK_DEN;
+				if(i == 8 && j == 3)
+					type = TileType.WHITE_DEN;
 				if((i <= 5 && i >= 3) && (j == 1 || j == 2 || j == 4 || j== 5))
 					type = TileType.RIVER;
 				if((i == 0 || i == 8) && (j == 2 || j == 4))
@@ -135,14 +137,19 @@ public class JungleBoard {
 	public void movePieceToTile(JunglePiece piece, JungleTile tile){
 		if(tile.getType() == TileType.TRAP)
 			piece.setPower(0);
+		
 	}
 	
 	public void removePiece(JunglePiece piece){
 		pieces.remove(piece);
 	}
 	
-	public boolean isWon(){ 
-		return (tiles[0][3].getCurrentPiece().getColor() == Color.WHITE) || (tiles[8][3].getCurrentPiece().getColor() == Color.BLACK);
+	public Color getWinner(){ 
+		if(tiles[0][3].getCurrentPiece().getColor() == Color.WHITE)
+			return Color.WHITE;
+		if(tiles[8][3].getCurrentPiece().getColor() == Color.BLACK)
+			return Color.BLACK;
+		return null;
 	}
 	
 	public JungleTile getTile(int row, int col){
