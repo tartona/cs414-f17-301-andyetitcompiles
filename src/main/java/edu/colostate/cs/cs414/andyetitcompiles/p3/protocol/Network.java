@@ -16,6 +16,8 @@ public class Network {
 		kryo.register(LoginResponse.class);
 		kryo.register(RegisterRequest.class);
 		kryo.register(RegisterResponse.class);
+		kryo.register(UnregisterRequest.class);
+		kryo.register(UnregisterResponse.class);
 		kryo.register(UserRequest.class);
 		kryo.register(UserResponse.class);
 		kryo.register(InviteRequest.class);
