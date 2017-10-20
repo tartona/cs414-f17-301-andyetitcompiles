@@ -1,7 +1,5 @@
 package edu.colostate.cs.cs414.andyetitcompiles.p3.test;
 
-import java.io.IOException;
-
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
@@ -19,50 +17,42 @@ public class KryoServerMock {
 	Server kryoServer;
 	Object lastReceived;
 	
-	public KryoServerMock() throws IOException {
+	public KryoServerMock() {
 		kryoServer = new Server();
 		
 		Network.register(kryoServer);
 		
 		kryoServer.addListener(new Listener() {
 			public void received(Connection c, Object object) {
+				
 				// Most of the methods in the client block to wait for a response from the server, so 
 				// the mock server has to send back some stock responses so we can test how the client reacts
 				if(object instanceof LoginRequest) {
 					lastReceived = object;
 					LoginRequest actualLogin = (LoginRequest)object;
-					if(actualLogin.getEmail().equals("email"))
-						send(c, new LoginResponse(true, new User("email", "nickname", "password"), "Login Successful"));
+					LoginRequest correctLogin = new LoginRequest("email", "password");
+					if(actualLogin.equals(correctLogin))
+						send(c, new LoginResponse(true, new User("email", "nickname", "password")));
 					else
-						send(c, new LoginResponse(false, null, "Login Unsuccessful"));
+						send(c, new LoginResponse(false, null));
 				}
 				if(object instanceof RegisterRequest) {
 					lastReceived = object;
 					RegisterRequest actualRequest = (RegisterRequest)object;
 					RegisterRequest correctRequest = new RegisterRequest("email", "nickname", "password");
 					if(actualRequest.equals(correctRequest))
-						send(c, new RegisterResponse(true, "Registration Successful"));
+						send(c, new RegisterResponse(true));
 					else
-						send(c, new RegisterResponse(false, "Registration Unsuccessful"));
+						send(c, new RegisterResponse(false));
 				}
 				if(object instanceof UserRequest) {
 					lastReceived = object;
 					UserRequest actualRequest = (UserRequest)object;
 					UserRequest correctRequest = new UserRequest("nickname");
 					if(actualRequest.equals(correctRequest))
-						send(c, new UserResponse(false, new User("email", "nickname", "password"), "User found"));
+						send(c, new UserResponse(new User("email", "nickname", "password")));
 					else
-						send(c, new UserResponse(false, null, "User not found"));
-				}
-				if(object instanceof UnregisterRequest) {
-					lastReceived = object;
-					UnregisterRequest actual = (UnregisterRequest)object;
-					if(actual.getEmail().equals("email")) {
-						send(c, new UnregisterResponse(true, "Unregistration Successful"));
-					}
-					else {
-						send(c, new UnregisterResponse(false, "Unregistration Unsuccessful"));
-					}
+						send(c, new UserResponse(null));
 				}
 				// Sending invites from the client does not block to wait for a response, so just update the object
 				if(object instanceof InviteRequest) {
@@ -70,8 +60,7 @@ public class KryoServerMock {
 				}
 			}
 		});
-		kryoServer.bind(Network.port);
-		kryoServer.start();
+		
 	}
 	
 	public void stop() {

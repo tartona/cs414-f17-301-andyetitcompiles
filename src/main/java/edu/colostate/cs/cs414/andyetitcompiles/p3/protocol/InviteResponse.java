@@ -14,19 +14,5 @@ public class InviteResponse {
 		this.sender = sender;
 		this.recipient = recipient;
 	}
-	
-	public InviteResponse() {}
-
-	public boolean isAccepted() {
-		return isAccepted;
-	}
-
-	public User getSender() {
-		return sender;
-	}
-
-	public User getRecipient() {
-		return recipient;
-	}
 
 }

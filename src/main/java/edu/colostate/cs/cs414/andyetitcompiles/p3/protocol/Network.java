@@ -3,10 +3,6 @@ package edu.colostate.cs.cs414.andyetitcompiles.p3.protocol;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.EndPoint;
 
-import edu.colostate.cs.cs414.andyetitcompiles.p3.common.GameRecord;
-import edu.colostate.cs.cs414.andyetitcompiles.p3.common.User;
-import edu.colostate.cs.cs414.andyetitcompiles.p3.common.UserStatus;
-
 public class Network {
 	
 	static public final int port = 22222;
@@ -26,9 +22,6 @@ public class Network {
 		kryo.register(UserResponse.class);
 		kryo.register(InviteRequest.class);
 		kryo.register(InviteResponse.class);
-		kryo.register(User.class);
-		kryo.register(GameRecord.class);
-		kryo.register(UserStatus.class);
 		// Add any classes that we want to send as we develop the project
 	}
 }
