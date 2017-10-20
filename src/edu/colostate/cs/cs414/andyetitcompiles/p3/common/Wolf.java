@@ -7,5 +7,10 @@ public class Wolf extends JunglePiece{
 		super(color, startTile);
 		this.power = 4;
 	}
+	
+	@Override
+	public String toString(){
+		return "Wolf";
+	}
 
 }

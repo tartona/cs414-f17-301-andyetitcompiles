@@ -7,4 +7,9 @@ public class Tiger extends JunglePiece{
 		super(color, startTile);
 		this.power = 6;
 	}
+
+	@Override
+	public String toString(){
+		return "Tiger";
+	}
 }

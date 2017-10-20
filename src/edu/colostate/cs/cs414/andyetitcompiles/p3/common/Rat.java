@@ -7,5 +7,10 @@ public class Rat extends JunglePiece {
 		super(color, startTile);
 		this.power = 1;	
 	}
+	
+	@Override
+	public String toString(){
+		return "Rat";
+	}
 
 }
