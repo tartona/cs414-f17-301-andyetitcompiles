@@ -16,6 +16,10 @@ public class KryoClientMock {
 		boolean connected;
 		User clientUser;
 		String host;
+		private Object lastResponse=null;
+		public Object getResp() {
+			return lastResponse;
+		}
 		
 		// Regular production constructor
 		public KryoClientMock() {
@@ -43,7 +47,7 @@ public class KryoClientMock {
 				}
 				// Called whenever the client receives a message from the server
 				public void received(Connection c, Object object) {
-					
+					lastResponse=object;
 				}
 				// Called whenever the client is disconnected from the server
 				public void disconnected(Connection c) {
