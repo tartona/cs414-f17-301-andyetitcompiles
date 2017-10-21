@@ -12,6 +12,7 @@ public class DatabaseManager {
 	private Set<User> users = new HashSet<User>();
 	//TODO add real database
 	
+
 	public void registerUser(String email, String password, String nickname) 
 	{
 		RegisteredUsers.setemail(email);
