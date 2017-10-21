@@ -12,10 +12,18 @@ public class JungleServer {
 	Object lastReceived;
 	DatabaseManager database;
 	
+	public JungleServer(DatabaseManager database) {
+		server = new Server();
+		this.database = database;
+		networkSetup();
+	}
 	public JungleServer() {
 		server = new Server();
-		database = new DatabaseManager();
-		
+		this.database = new DatabaseManager();
+		networkSetup();
+	}
+	
+	private void networkSetup() {
 		Network.register(server);
 		
 		server.addListener(new Listener() {
@@ -45,8 +53,7 @@ public class JungleServer {
 					lastReceived = object;
 				}
 			}
-		});
-		
+		});	
 	}
 	
 	public void stop() {
