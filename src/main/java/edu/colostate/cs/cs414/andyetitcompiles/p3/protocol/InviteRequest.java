@@ -1,3 +1,4 @@
+
 package edu.colostate.cs.cs414.andyetitcompiles.p3.protocol;
 
 import edu.colostate.cs.cs414.andyetitcompiles.p3.common.User;
@@ -12,5 +13,9 @@ public class InviteRequest {
 		this.recipient = recipient;
 		this.sender = sender;
 	}
-
+	
+	public InviteRequest() {}
+	
+	public User getRecipient() {return recipient;}
+	public User getSender() {return sender;}
 }

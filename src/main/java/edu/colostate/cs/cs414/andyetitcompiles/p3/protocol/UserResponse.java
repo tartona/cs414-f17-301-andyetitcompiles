@@ -13,5 +13,8 @@ public class UserResponse {
 		this.user = user;
 		this.message = message;
 	}
-
+	
+	public boolean isSuccesful() {return isSuccesful;}
+	public User getUser() {return user;}
+	public String getMessage() {return message;}
 }

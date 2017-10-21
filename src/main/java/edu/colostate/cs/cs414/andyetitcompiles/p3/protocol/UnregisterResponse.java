@@ -1,11 +1,14 @@
 package edu.colostate.cs.cs414.andyetitcompiles.p3.protocol;
 
 public class UnregisterResponse {
-	boolean isSuccesful;
+	boolean isSuccessful;
 	String message;
 	
-	public UnregisterResponse(boolean isSuccesful, String message) {
-		this.isSuccesful = true;
+	public UnregisterResponse(boolean isSuccessful, String message) {
+		this.isSuccessful = isSuccessful;
 		this.message = message;
 	}
+	
+	public boolean successful() {return isSuccessful;}
+	public String getMessage() {return message;}
 }

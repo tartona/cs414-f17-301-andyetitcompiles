@@ -9,9 +9,14 @@ public class LoginResponse {
 	String message;
 	
 	public LoginResponse(boolean isSuccessful, User user, String message) {
-		this.isSuccessful = true;
+		this.isSuccessful = isSuccessful;
 		this.user = user;
 		this.message = message;
 	}
+	
+	public LoginResponse() {}
 
+	public boolean successful() {return isSuccessful;}
+	public User getUser() {return user;}
+	public String getMessage() {return message;}
 }
