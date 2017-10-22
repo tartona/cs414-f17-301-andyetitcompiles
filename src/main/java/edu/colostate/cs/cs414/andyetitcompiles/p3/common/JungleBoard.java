@@ -43,7 +43,7 @@ public class JungleBoard {
 		pieces.add(lion);
 		
 		JungleTile leopardTile = tiles[6][4];
-		JunglePiece leopard = new Leopard(Color.WHITE, leopardTile, "lion");
+		JunglePiece leopard = new Leopard(Color.WHITE, leopardTile, "leopard");
 		leopardTile.setCurrentPiece(leopard);
 		pieces.add(leopard);
 		
@@ -150,9 +150,11 @@ public class JungleBoard {
 	}
 	
 	public Color getWinner(){ 
-		if(tiles[0][3].getCurrentPiece().getColor() == Color.WHITE)
+		if(tiles[0][3].getCurrentPiece() == null && tiles[8][3].getCurrentPiece() == null)
+			return null;
+		if(tiles[0][3].getCurrentPiece() != null && tiles[0][3].getCurrentPiece().getColor() == Color.WHITE)
 			return Color.WHITE;
-		if(tiles[8][3].getCurrentPiece().getColor() == Color.BLACK)
+		if(tiles[8][3].getCurrentPiece() != null && tiles[8][3].getCurrentPiece().getColor() == Color.BLACK)
 			return Color.BLACK;
 		return null;
 	}

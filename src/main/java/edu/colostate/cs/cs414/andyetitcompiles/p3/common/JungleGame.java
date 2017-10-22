@@ -92,6 +92,8 @@ public class JungleGame implements GameInterface{
 
 	@Override
 	public User getWinner() {
+		if(board.getWinner() == null)
+			return null;
 		if(board.getWinner() == Color.WHITE)
 			return player1;
 		if(board.getWinner() == Color.BLACK)

@@ -16,10 +16,53 @@ import java.awt.Color;
 
 public class JungleGameTest {
 	JungleGame game;
+	User player1 = new User("player1", null, null);
+	User player2 = new User("player2", null, null);
 
 	@Before
 	public void setUp(){
-		game = new JungleGame(new User(null, null, null), new User(null, null, null));
+		game = new JungleGame(player1, player2);
+	}
+	
+	@Test
+	public void testMoveOffBoard(){
+		JunglePiece bwolf = game.getPiece(Color.BLACK, "wolf");
+		game.makeMove(bwolf, game.getTile(1, 4));
+		game.makeMove(bwolf, game.getTile(0, 4));
+		game.makeMove(bwolf, game.getTile(-1, 4));
+		assertEquals(0, bwolf.getCurrentTile().getRow());
+		assertEquals(4, bwolf.getCurrentTile().getCol());
+	}
+	
+	@Test
+	public void testGetWinnerNoWinner(){
+		assertEquals(null, game.getWinner());
+	}
+	
+	@Test
+	public void testGetWinnerPlayer1(){
+		JunglePiece wleopard = game.getPiece(Color.WHITE, "leopard");
+		game.makeMove(wleopard, game.getTile(6, 3));
+		game.makeMove(wleopard, game.getTile(5, 3));
+		game.makeMove(wleopard, game.getTile(4, 3));
+		game.makeMove(wleopard, game.getTile(3, 3));
+		game.makeMove(wleopard, game.getTile(2, 3));
+		game.makeMove(wleopard, game.getTile(1, 3));
+		game.makeMove(wleopard, game.getTile(0, 3));
+		assertEquals(player1, game.getWinner());
+	}
+	
+	@Test
+	public void testGetWinnerPlayer2(){
+		JunglePiece bleopard = game.getPiece(Color.BLACK, "leopard");
+		game.makeMove(bleopard, game.getTile(2, 3));
+		game.makeMove(bleopard, game.getTile(3, 3));
+		game.makeMove(bleopard, game.getTile(4, 3));
+		game.makeMove(bleopard, game.getTile(5, 3));
+		game.makeMove(bleopard, game.getTile(6, 3));
+		game.makeMove(bleopard, game.getTile(7, 3));
+		game.makeMove(bleopard, game.getTile(8, 3));
+		assertEquals(player2, game.getWinner());
 	}
 	
 	@Test
