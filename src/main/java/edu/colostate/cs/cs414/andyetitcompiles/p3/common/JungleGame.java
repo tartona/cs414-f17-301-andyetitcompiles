@@ -114,6 +114,7 @@ public class JungleGame implements GameInterface{
 	
 	public JungleBoard getBoard(){
 		return this.board;
+
 	}
 	
 }

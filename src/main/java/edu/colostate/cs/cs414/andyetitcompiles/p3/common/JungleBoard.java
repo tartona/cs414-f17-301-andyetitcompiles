@@ -9,7 +9,7 @@ public class JungleBoard {
 	private final int COLS = 7;
 	
 	private JungleTile[][] tiles = new JungleTile[ROWS][COLS];
-	private ArrayList<JunglePiece> pieces = new ArrayList<>();
+	private ArrayList<JunglePiece> pieces = new ArrayList<JunglePiece>();
 
 	public JungleBoard(){
 		initializeBoard();

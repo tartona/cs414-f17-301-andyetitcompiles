@@ -8,5 +8,10 @@ public class UserRequest {
 	public UserRequest(String nickname) {
 		this.nickname = nickname;
 	}
+	
+	public UserRequest() {}
 
+	public String getNickname() {
+		return nickname;
+	}
 }
