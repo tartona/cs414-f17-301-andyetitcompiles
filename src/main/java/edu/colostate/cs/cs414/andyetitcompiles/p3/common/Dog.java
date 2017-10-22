@@ -8,9 +8,13 @@ public class Dog extends JunglePiece{
 		this.power = 3;
 	}
 
-
 	@Override
 	public String toString(){
 		return "Dog";
+	}
+
+	@Override
+	public void restorePower() {
+		this.power = 3;
 	}
 }

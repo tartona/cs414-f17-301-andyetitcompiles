@@ -107,7 +107,7 @@ public class JungleBoard {
 	
 	public JunglePiece getPiece(Color color, String id){
 		for(JunglePiece piece: pieces){
-			if(piece.getColor() == color && id.equals(piece.getID())){
+			if(piece.getColor() == color && id.equalsIgnoreCase(piece.getID())){
 				return piece;
 			}
 		}
@@ -137,11 +137,16 @@ public class JungleBoard {
 	public void movePieceToTile(JunglePiece piece, JungleTile tile){
 		if(tile.getType() == TileType.TRAP)
 			piece.setPower(0);
-		
+		else if(piece.getPower() == 0)
+			piece.restorePower();
+		piece.getCurrentTile().setCurrentPiece(null);
+		piece.setCurrentTile(tile);
+		tile.setCurrentPiece(piece);
 	}
 	
 	public void removePiece(JunglePiece piece){
 		pieces.remove(piece);
+		piece.getCurrentTile().setCurrentPiece(null);
 	}
 	
 	public Color getWinner(){ 
@@ -153,9 +158,9 @@ public class JungleBoard {
 	}
 	
 	public JungleTile getTile(int row, int col){
-		if(row >= ROWS)
+		if(row < 0 || row >= ROWS)
 			return null;
-		if(col >= COLS)
+		if(col < 0 || col >= COLS)
 			return null;
 		return tiles[row][col];
 	}

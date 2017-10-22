@@ -12,4 +12,9 @@ public class Cat extends JunglePiece{
 	public String toString(){
 		return "Cat";
 	}
+
+	@Override
+	public void restorePower() {
+		this.power = 2;
+	}
 }

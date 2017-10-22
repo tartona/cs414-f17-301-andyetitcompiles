@@ -23,7 +23,17 @@ public abstract class JunglePiece {
 		}
 		return false;
 	}
-
+	
+	public int getCurrentRow(){
+		return currentTile.getRow();
+	}
+	
+	public int getCurrentCol(){
+		return currentTile.getCol();
+	}
+	
+	public abstract void restorePower();
+	
 	public String getID(){
 		return this.id;
 	}

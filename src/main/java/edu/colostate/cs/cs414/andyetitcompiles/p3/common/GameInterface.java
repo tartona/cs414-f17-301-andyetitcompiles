@@ -1,13 +1,18 @@
 package edu.colostate.cs.cs414.andyetitcompiles.p3.common;
 
+import java.util.ArrayList;
+
 public interface GameInterface {
 	/**
 	 * Checks to see if suggested move is allowed given current game state. If necessary, will call capturePiece. If move is allowed,
 	 * then the board will be updated.
 	 * @param piece Piece making the move
 	 * @param tile	Tile where piece is attempting to move
+	 * @return True if move is successful, false if move was not allowed
 	 */
-	public void makeMove(JunglePiece piece, JungleTile tile);
+	public boolean makeMove(JunglePiece piece, JungleTile tile);
+	
+	public JungleTile getTile(int row, int col);
 	
 	/**
 	 * 
@@ -20,7 +25,12 @@ public interface GameInterface {
 	 * @param piece
 	 * @return array holding 0 to 4 permissable moves from the piece's current location
 	 */
-	public JungleTile[] getValidMoves(JunglePiece piece);
+	public ArrayList<JungleTile> getValidMoves(JunglePiece piece);
+	
+	/**
+	 * Restarts the game and resets board to initial state with the same users as before.
+	 */
+	public void resetGame();
 	
 	/**
 	 * @return User that has won the game, null if game is not yet won.

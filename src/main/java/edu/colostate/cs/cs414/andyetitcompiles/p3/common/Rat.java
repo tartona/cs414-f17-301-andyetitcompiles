@@ -13,4 +13,10 @@ public class Rat extends JunglePiece {
 		return "Rat";
 	}
 
+	@Override
+	public void restorePower() {
+		this.power = 1;
+	}
+	
+	
 }

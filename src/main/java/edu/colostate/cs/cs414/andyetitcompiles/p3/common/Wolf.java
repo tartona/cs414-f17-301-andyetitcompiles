@@ -13,4 +13,10 @@ public class Wolf extends JunglePiece{
 		return "Wolf";
 	}
 
+	@Override
+	public void restorePower() {
+		this.power = 4;
+	}
+	
+	
 }

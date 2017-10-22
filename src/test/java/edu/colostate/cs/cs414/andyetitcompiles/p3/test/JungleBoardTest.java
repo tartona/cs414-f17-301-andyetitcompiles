@@ -8,6 +8,7 @@ import java.awt.Color;
 import org.junit.Before;
 import org.junit.Test;
 import edu.colostate.cs.cs414.andyetitcompiles.p3.common.JungleBoard;
+import edu.colostate.cs.cs414.andyetitcompiles.p3.common.JunglePiece;
 
 public class JungleBoardTest {
 
@@ -19,15 +20,19 @@ public class JungleBoardTest {
 	}
 	
 	@Test
-	public void testPrintBoard() {
-		board.printBoard();
-		fail();
+	public void testTraps(){
+		JunglePiece wrat = board.getPiece(Color.WHITE, "rat");
+		board.movePieceToTile(wrat, board.getTile(8,2));
+		assertEquals(0, wrat.getPower());
+		board.movePieceToTile(wrat, board.getTile(8, 1));
+		assertEquals(1, wrat.getPower());
 	}
 	
 	@Test
 	public void testGetPiece(){
 		assertEquals("lion", board.getPiece(Color.WHITE, "lion").getID());
-		fail("Needs additional test cases");
+		assertEquals(null, board.getPiece(Color.CYAN, "elephant"));
+		assertEquals(null, board.getPiece(Color.BLACK, "not an animal"));
 	}
 	
 	@Test

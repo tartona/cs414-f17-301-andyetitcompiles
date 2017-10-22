@@ -12,4 +12,9 @@ public class Elephant extends JunglePiece{
 	public String toString(){
 		return "Elephant";
 	}
+
+	@Override
+	public void restorePower() {
+		this.power = 8;
+	}
 }

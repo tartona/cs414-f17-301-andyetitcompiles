@@ -6,6 +6,7 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
+import edu.colostate.cs.cs414.andyetitcompiles.p3.common.JungleBoard;
 import edu.colostate.cs.cs414.andyetitcompiles.p3.common.JungleGame;
 import edu.colostate.cs.cs414.andyetitcompiles.p3.common.JunglePiece;
 import edu.colostate.cs.cs414.andyetitcompiles.p3.common.Rat;
@@ -29,8 +30,88 @@ public class JungleGameTest {
 	}
 	
 	@Test 
-	public void testMakeMove(){
-		fail("Needs to be implemented");
+	public void testInvalidMoveNotAdjacent(){
+		JunglePiece wdog = game.getPiece(Color.WHITE, "dog");
+		assertEquals(7, wdog.getCurrentRow());
+		assertEquals(5, wdog.getCurrentCol());
+		assertFalse(game.isValidMove(wdog, game.getTile(0, 0)));
+		assertEquals(7, wdog.getCurrentRow());
+		assertEquals(5, wdog.getCurrentCol());
+	}
+	
+	@Test
+	public void testInvalidMoveCaptureSameColor(){
+		JunglePiece bcat = game.getPiece(Color.BLACK, "cat");
+		assertEquals(1, bcat.getCurrentRow());
+		assertEquals(5, bcat.getCurrentCol());
+		game.makeMove(bcat, game.getTile(2, 5));
+		assertEquals(2, bcat.getCurrentRow());
+		assertEquals(5, bcat.getCurrentCol());
+		game.makeMove(bcat, game.getTile(4,2));
+		assertEquals(2, bcat.getCurrentRow());
+		assertEquals(5, bcat.getCurrentCol());
+	}
+	
+	@Test
+	public void testValidMoveCapture(){
+		JunglePiece belephant = game.getPiece(Color.BLACK, "elephant");
+		JunglePiece bcat = game.getPiece(Color.BLACK, "cat");
+		game.makeMove(belephant, game.getTile(2, 5));
+		assertEquals(2, belephant.getCurrentRow());
+		assertEquals(5, belephant.getCurrentCol());
+		game.makeMove(bcat, game.getTile(1, 6));
+		game.makeMove(bcat, game.getTile(2, 6));
+		game.makeMove(bcat, game.getTile(3, 6));
+		game.makeMove(bcat, game.getTile(4, 6));
+		assertEquals(4, bcat.getCurrentRow());
+		assertEquals(6, bcat.getCurrentCol());
+		game.makeMove(bcat, game.getTile(5, 6));
+		assertEquals(5, bcat.getCurrentRow());
+		assertEquals(6, bcat.getCurrentCol());
+		game.makeMove(bcat, game.getTile(6, 6));
+		assertEquals(6, bcat.getCurrentRow());
+		assertEquals(6, bcat.getCurrentCol());
+		assertEquals(null, game.getBoard().getPiece(Color.WHITE, "rat"));
+	}
+	
+	@Test
+	public void testLegalRiverJump(){
+		JunglePiece btiger = game.getPiece(Color.BLACK, "tiger");
+		game.makeMove(game.getPiece(Color.BLACK, "cat"), game.getTile(1, 4));
+		game.makeMove(btiger, game.getTile(0, 5));
+		game.makeMove(btiger, game.getTile(1, 5));
+		game.makeMove(btiger, game.getTile(2, 5));
+		game.makeMove(btiger, game.getTile(3, 5));
+		assertEquals(2, btiger.getCurrentRow());
+		assertEquals(5, btiger.getCurrentCol());
+		game.makeMove(btiger, game.getTile(6, 5));
+		assertEquals(6, btiger.getCurrentRow());
+		assertEquals(5, btiger.getCurrentCol());
+	}
+	
+	@Test
+	public void testIllegalRiverJump(){
+		JunglePiece wwolf = game.getPiece(Color.WHITE, "wolf");
+		assertEquals(6, wwolf.getCurrentRow());
+		assertEquals(2, wwolf.getCurrentCol());
+		game.makeMove(wwolf, game.getTile(5, 2));
+		assertEquals(6, wwolf.getCurrentRow());
+		assertEquals(2, wwolf.getCurrentCol());
+		game.makeMove(wwolf, game.getTile(2, 2));
+		assertEquals(6, wwolf.getCurrentRow());
+		assertEquals(2, wwolf.getCurrentCol());
+	}
+	
+	@Test
+	public void testResetGame(){
+		JunglePiece bLeopard = game.getPiece(Color.BLACK, "leopard");
+		JungleBoard board = game.getBoard();
+		board.movePieceToTile(bLeopard, board.getTile(7, 4));
+		assertEquals(4, bLeopard.getCurrentTile().getCol());
+		game.resetGame();
+		bLeopard = game.getPiece(Color.BLACK, "leopard");
+		assertEquals(2, bLeopard.getCurrentTile().getCol());
+		assertEquals(2, bLeopard.getCurrentTile().getCol());
 	}
 	
 	@Test
