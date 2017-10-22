@@ -49,7 +49,7 @@ public class JungleGameTest {
 		game.makeMove(wleopard, game.getTile(2, 3));
 		game.makeMove(wleopard, game.getTile(1, 3));
 		game.makeMove(wleopard, game.getTile(0, 3));
-		assertEquals(player1, game.getWinner());
+		assertEquals(player1.getNickname(), game.getWinner().getNickname());
 	}
 	
 	@Test
@@ -62,7 +62,7 @@ public class JungleGameTest {
 		game.makeMove(bleopard, game.getTile(6, 3));
 		game.makeMove(bleopard, game.getTile(7, 3));
 		game.makeMove(bleopard, game.getTile(8, 3));
-		assertEquals(player2, game.getWinner());
+		assertEquals(player2.getNickname(), game.getWinner().getNickname());
 	}
 	
 	@Test
