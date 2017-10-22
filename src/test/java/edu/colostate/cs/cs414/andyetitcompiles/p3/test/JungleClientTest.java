@@ -2,12 +2,13 @@ package edu.colostate.cs.cs414.andyetitcompiles.p3.test;
 
 import static org.junit.Assert.*;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import java.io.IOException;
 
-import static org.mockito.Mockito.*;
-import com.esotericsoftware.kryonet.Client;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import edu.colostate.cs.cs414.andyetitcompiles.p3.client.JungleClient;
 import edu.colostate.cs.cs414.andyetitcompiles.p3.common.*;
@@ -15,37 +16,50 @@ import edu.colostate.cs.cs414.andyetitcompiles.p3.protocol.*;
 
 public class JungleClientTest {
 	public JungleClient jClient;
-	public KryoServerMock mockServer;
+	public static KryoServerMock mockServer;
 	
+	// setUpClass and tearDownClass are only run once for this test class.
+	// This is so we can use one server instance for all the test cases
+	@BeforeClass
+	public static void setUpClass() {
+		try {
+			mockServer = new KryoServerMock();
+		}
+		catch(IOException ex) {
+			System.out.println("Something went wrong starting the server: " + ex.getMessage());
+		}
+	}
+	
+	@AfterClass
+	public static void tearDownClass() {
+		mockServer.stop();
+		mockServer = null;
+	}
+	
+	// setUp and tearDown are run for each individual test case
 	@Before
 	public void setUp() throws Exception {
-		mockServer = new KryoServerMock();
 		jClient = new JungleClient();
+		// Wait for the client to fully start
+		Thread.sleep(500);
 	}
 
 	@After
 	public void tearDown() throws Exception {
+		jClient.stop();
 		jClient = null;
-		mockServer.stop();
-		mockServer = null;
 	}
 
 	@Test
-	public void testInitializeKryoClient() {
-		jClient.initializeKryoClient();
-		assertTrue(jClient.getConnectedStatus());
-	}
-	
-	@Test
-	public void testLoginSucessful() {
+	public void testLoginSucessful() throws InterruptedException {
 		jClient.login("email", "password");
-		// The expected object that the server receives
-		LoginRequest expected = new LoginRequest("email", "password");
+		// Have to wait for the server to receive the message
+		Thread.sleep(500);
 		// The actual object the server receives
-		Object lastReceived = mockServer.getLastReceived();
+		Object actual = mockServer.getLastReceived();
 		// Make sure the server received the same object that was sent
-		if(lastReceived instanceof LoginRequest) {
-			assertEquals(expected, (LoginRequest)lastReceived);
+		if(actual instanceof LoginRequest) {
+			assertEquals("email", ((LoginRequest) actual).getEmail());
 		}
 		else {
 			fail("Incorrect object type received from client");
@@ -56,30 +70,29 @@ public class JungleClientTest {
 	}
 	
 	@Test
-	public void testLoginFailure() {
+	public void testLoginFailure() throws InterruptedException {
 		jClient.login("wrongemail", "wrongpassword");
-		// The expected object that the server receives
-		LoginRequest expected = new LoginRequest("wrongemail", "wrongpassword");
+		Thread.sleep(500);
 		// The actual object the server receives
-		Object lastReceived = mockServer.getLastReceived();
+		Object actual = mockServer.getLastReceived();
 		// Make sure the server received the same object that was sent
-		if(lastReceived instanceof LoginRequest) {
-			assertEquals(expected, (LoginRequest)lastReceived);
+		if(actual instanceof LoginRequest) {
+			assertEquals("wrongemail", ((LoginRequest) actual).getEmail());
 		}
 		else {
 			fail("Incorrect object type received from client");
 		}
-		// Make sure the client updates its login state
+		// Make sure the client is still set to logged off
 		assertFalse(jClient.getLoggedInStatus());	
 	}
 	
 	@Test
-	public void testRegisterSuccess() {
+	public void testRegisterSuccess() throws InterruptedException {
 		jClient.register("email", "nickname", "password");
-		RegisterRequest expected = new RegisterRequest("email", "nickname", "password");
-		Object lastReceived = mockServer.getLastReceived();
-		if(lastReceived instanceof RegisterRequest) {
-			assertEquals(expected, (RegisterRequest)lastReceived);
+		Thread.sleep(500);
+		Object actual = mockServer.getLastReceived();
+		if(actual instanceof RegisterRequest) {
+			assertEquals("email", ((RegisterRequest) actual).getEmail());
 		}
 		else {
 			fail("Incorrect object type recevied from client");
@@ -88,12 +101,12 @@ public class JungleClientTest {
 	}
 
 	@Test
-	public void testRegisterFailure() {
+	public void testRegisterFailure() throws InterruptedException {
 		jClient.register("bademail", "badnickname", "badpassword");
-		RegisterRequest expected = new RegisterRequest("bademail", "badnickname", "badpassword");
-		Object lastReceived = mockServer.getLastReceived();
-		if(lastReceived instanceof RegisterRequest) {
-			assertEquals(expected, (RegisterRequest)mockServer.lastReceived);
+		Thread.sleep(500);
+		Object actual = mockServer.getLastReceived();
+		if(actual instanceof RegisterRequest) {
+			assertEquals("bademail", ((RegisterRequest) actual).getEmail());
 		}
 		else {
 			fail("Incorrect object type recevied from client");
@@ -102,12 +115,14 @@ public class JungleClientTest {
 	}
 	
 	@Test
-	public void testUnregisterSuccess() {
+	public void testUnregisterSuccess() throws InterruptedException {
+		jClient.login("email", "password");
+		Thread.sleep(500);
 		jClient.unregister("email", "password");
-		UnregisterRequest expected = new UnregisterRequest("email", "password");
-		Object lastReceived = mockServer.getLastReceived();
-		if(lastReceived instanceof RegisterRequest) {
-			assertEquals(expected, (UnregisterRequest)lastReceived);
+		Thread.sleep(500);
+		Object actual = mockServer.getLastReceived();
+		if(actual instanceof UnregisterRequest) {
+			assertEquals("email", ((UnregisterRequest) actual).getEmail());
 		}
 		else {
 			fail("Incorrect object type recevied from client");
@@ -116,12 +131,14 @@ public class JungleClientTest {
 	}
 	
 	@Test
-	public void testUnregisterFailure() {
+	public void testUnregisterFailure() throws InterruptedException {
+		jClient.login("email", "password");
+		Thread.sleep(500);
 		jClient.unregister("bademail", "badpassword");
-		UnregisterRequest expected = new UnregisterRequest("bademail", "badpassword");
-		Object lastReceived = mockServer.getLastReceived();
-		if(lastReceived instanceof RegisterRequest) {
-			assertEquals(expected, (UnregisterRequest)lastReceived);
+		Thread.sleep(500);
+		Object actual = mockServer.getLastReceived();
+		if(actual instanceof UnregisterRequest) {
+			assertEquals("bademail", ((UnregisterRequest) actual).getEmail());
 		}
 		else {
 			fail("Incorrect object type recevied from client");
@@ -130,39 +147,27 @@ public class JungleClientTest {
 	}
 	
 	@Test
-	public void testFindUserSuccess() {
-		User actualUser = jClient.findUser("nickname");
+	public void testFindUser() throws InterruptedException {
+		jClient.findUser("nickname");
+		Thread.sleep(500);
 		UserRequest expected = new UserRequest("nickname");
 		Object lastReceived = mockServer.getLastReceived();
 		if(lastReceived instanceof UserRequest) 
-			assertEquals(expected, (UserRequest)lastReceived);
+			assertEquals("nickname", ((UserRequest) lastReceived).getNickname());
 		else
 			fail("incorrect object type received from client");
-		// Received a real user from the server, indicating success
-		assertEquals(actualUser, new User("email", "nickname", "password"));
 	}
 	
 	@Test
-	public void testFindUserFailure() {
-		User actualUser = jClient.findUser("badnickname");
-		UserRequest expected = new UserRequest("badnickname");
-		Object lastReceived = mockServer.getLastReceived();
-		if(lastReceived instanceof UserRequest) 
-			assertEquals(expected, (UserRequest)lastReceived);
-		else
-			fail("incorrect object type received from client");
-		// Did not receive a real user from the server, indicating failure
-		assertEquals(actualUser, null);
-	}
-	@Test
-	public void testInvite() {
-		// Invites don't block the client to wait for a response, so we don't have to 
-		// test how it handles receiving a response
+	public void testInvite() throws InterruptedException {
 		User user = new User("email", "nickname", "password");
-		InviteRequest expected = new InviteRequest(user);
+		jClient.invite(user);
+		Thread.sleep(500);
+		InviteRequest expected = new InviteRequest(user, user);
 		Object lastReceived = mockServer.getLastReceived();
-		if(lastReceived instanceof InviteRequest)
-			assertEquals(expected, (UserRequest)lastReceived);
+		if(lastReceived instanceof InviteRequest) {
+			assertEquals(expected.getInvitee(), ((InviteRequest) lastReceived).getInvitee());
+		}
 		else
 			fail("incorrect object type received from the client");
 	}

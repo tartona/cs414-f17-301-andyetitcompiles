@@ -13,13 +13,13 @@ public class DatabaseManager {
 	
 	public void registerUser(String email, String password, String nickname) 
 	{
-		RegisteredUsers.setemail(email);
-		RegisteredUsers.setpassword(password);
-		RegisteredUsers.setnickname(nickname);
+		RegisteredUsers.setEmail(email);
+		RegisteredUsers.setPassword(password);
+		RegisteredUsers.setNickname(nickname);
     }
 	public boolean authenticateUser(String email,String password)
 	{
-		if(OnlineUsers.getemail().equals(email)&&OnlineUsers.getpassword().equals(password))
+		if(OnlineUsers.getEmail().equals(email)&&OnlineUsers.getPassword().equals(password))
 		{   users.add(OnlineUsers);
 		    return true;
 		}

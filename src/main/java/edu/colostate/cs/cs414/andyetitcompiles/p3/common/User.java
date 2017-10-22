@@ -10,14 +10,28 @@ public class User {
 	private UserStatus ustatus;
 	private JunglePiece piece;
 		
-	public User(String string, String string2, String string3) {
-		// TODO Auto-generated constructor stub
+	public User(String email, String nickname, String password) {
+		this.email = email;
+		this.nickname = nickname;
+		this.password = password;
 	}
-	public String getemail() {return this.email;}
-	public String getpassword() {return this.password;}
-	public String getnickname() {return this.nickname;}
-	public String setemail(String email) {return this.email = email;}
-	public String setpassword(String password) {return this.password = password;}
-	public String setnickname(String nickname) {return this.nickname = nickname;}
+	
+	public User() {}
+	
+	public String getEmail() {return this.email;}
+	public String getPassword() {return this.password;}
+	public String getNickname() {return this.nickname;}
+	public String setEmail(String email) {return this.email = email;}
+	public String setPassword(String password) {return this.password = password;}
+	public String setNickname(String nickname) {return this.nickname = nickname;}
+	
+	public boolean equals(Object other) {
+		if(other instanceof User) {
+			User otherUser = (User)other;
+			return otherUser.getEmail().equals(email) && otherUser.getNickname().equals(nickname);
+		}
+		else
+			return false;
+	}
 
 }
