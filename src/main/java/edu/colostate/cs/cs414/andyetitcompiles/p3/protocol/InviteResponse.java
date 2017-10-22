@@ -6,13 +6,15 @@ import edu.colostate.cs.cs414.andyetitcompiles.p3.common.User;
 // InviteResponses are also sent by the server when it receives an InviteResponse from a client
 public class InviteResponse {
 	boolean isAccepted;
-	User sender;
-	User recipient;
+	User inviter;
+	User invitee;
+	String message;
 	
-	public InviteResponse(boolean isAccepted, User sender, User recipient) {
+	public InviteResponse(boolean isAccepted, User inviter, User invitee, String message) {
 		this.isAccepted = true;
-		this.sender = sender;
-		this.recipient = recipient;
+		this.inviter = inviter;
+		this.invitee = invitee;
+		this.message = message;
 	}
 	
 	public InviteResponse() {}
@@ -21,12 +23,15 @@ public class InviteResponse {
 		return isAccepted;
 	}
 
-	public User getSender() {
-		return sender;
+	public User getInviter() {
+		return inviter;
 	}
 
-	public User getRecipient() {
-		return recipient;
+	public User getInvitee() {
+		return invitee;
 	}
-
+	
+	public String getMessage() {
+		return message;
+	}
 }

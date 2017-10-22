@@ -29,15 +29,22 @@ public class JungleClient {
 		kryoClient.addListener(new Listener() {
 			// Called after client successfully connects to the server
 			public void connected(Connection c) {
-				System.out.println("Client: Successfully connected");
+				System.out.println("Successfully connected");
 			}
-			// Called whenever the client receives a message from the server
-			public void received(Connection c, Object object) {
-				
+			// This listener is where we handle any requests from the server that
+			// are unsolicited from the client, such as invite requests from other users.
+			// All the other listeners are defined in their respective methods (login, register, unregister, finduser)
+			public void received(Connection c, Object o) {
+				if(o instanceof InviteRequest) {
+					InviteRequest request = (InviteRequest)o;
+					handleInviteRequest(request);
+				}
+
 			}
 			// Called whenever the client is disconnected from the server
 			public void disconnected(Connection c) {
 				loggedIn = false;
+				System.out.println("You have been disconnected from the server");
 			}
 		});
 		new Thread("Connect") {
@@ -50,7 +57,14 @@ public class JungleClient {
 			}
 		}.start();
 	}
-	// Sends login request to the server and defines the listener used for login responses
+
+	private void handleInviteRequest(InviteRequest request) {
+		System.out.println("You have been invited to play jungle by: " + request.getInviter().getNickname());
+		// Now we send a notification to the ui, which will then communicate back whether the user accepts or rejects
+		// I can't do this until the interface to the ui is defined.
+	}
+
+	// Sends login request to the server
 	public void login(String email, String password) {
 		if(loggedIn) {
 			System.out.println("Already logged in!");
@@ -61,39 +75,39 @@ public class JungleClient {
 			public void received(Connection c, Object o) {
 				// Do nothing if the object is not a LoginResponse
 				if(o instanceof LoginResponse) {
-					LoginResponse response = (LoginResponse)o;
-					// Login successful
-					if(response.successful()) {
-						clientUser = response.getUser();
-						loggedIn = true;
-						// This is where we would add some sort of UI update, just print to the console for now
-						System.out.println(response.getMessage());
-					}
-					else {
-						System.out.println(response.getMessage());
-					}
+					handleLoginResponse((LoginResponse)o);
 				}
 			}
 		};
 		kryoClient.addListener(loginListener);
-		// Send the request
 		LoginRequest request = new LoginRequest(email, password);
 		kryoClient.sendTCP(request);
 	}
 	
+	// Called when a LoginResponse object is received from the server
+	private void handleLoginResponse(LoginResponse response) {
+		if(response.successful()) {
+			loggedIn = true;
+			clientUser = response.getUser();
+			System.out.println(response.getMessage());
+		}
+		else {
+			System.out.println(response.getMessage());
+		}
+		
+	}
+
 	// Sends registration request to the server
 	public void register(String email, String nickname, String password) {
 		// Add a listener to listen for the server response
+		if(loggedIn) {
+			System.out.println("Can't register a new user if you are already logged in!");
+			return;
+		}
 		Listener registerListener = new Listener() {
 			public void received(Connection c, Object o) {
 				if(o instanceof RegisterResponse) {
-					RegisterResponse response = (RegisterResponse)o;
-					if(response.successful()) {
-						System.out.println(response.getMessage());
-					}
-					else {
-						System.out.println(response.getMessage());
-					}
+					handleRegisterResposne((RegisterResponse)o);
 				}
 			}
 		};
@@ -102,19 +116,26 @@ public class JungleClient {
 		kryoClient.sendTCP(request);
 	}
 	
+	private void handleRegisterResposne(RegisterResponse response) {
+		if(response.successful()) {
+			System.out.println(response.getMessage());
+		}
+		else {
+			System.out.println(response.getMessage());
+		}
+	}
+
 	// Sends unregistration request to the server
 	public void unregister(String email, String password) {
+		if(!loggedIn) {
+			System.out.println("Please login with the account you want to unregister");
+			return;
+		}
 		Listener unregisterListener = new Listener() {
 			public void received(Connection c, Object o) {
 				if(o instanceof UnregisterResponse) {
 					UnregisterResponse response = (UnregisterResponse)o;
-					if(response.successful()) {
-						// If it was successful, the server should kick you, so no need to disconnect
-						System.out.println(response.getMessage());
-					}
-					else {
-						System.out.println(response.getMessage());
-					}
+					handleUnregisterResponse(response);
 				}
 			}
 		};
@@ -123,16 +144,60 @@ public class JungleClient {
 		kryoClient.sendTCP(request);
 	}
 	
-	// Sends findUser request to the server. Returns a User object
-	public User findUser(String nickname) {
-		return null;
+	private void handleUnregisterResponse(UnregisterResponse response) {
+		if(response.successful()) {
+			System.out.println(response.getMessage());
+		}
+		else {
+			System.out.println(response.getMessage());
+		}
+	}
+
+	// Sends findUser request to the server. 
+	public void findUser(String nickname) {
+		Listener userListener = new Listener() {
+			public void received(Connection c, Object o) {
+				if(o instanceof UserResponse) {
+					UserResponse response = (UserResponse)o;
+					handleUserResponse(response);	
+					}
+				}
+			};
+		kryoClient.addListener(userListener);
+		UserRequest request = new UserRequest(nickname);
+		kryoClient.sendTCP(request);
+	}
+	
+	private void handleUserResponse(UserResponse response) {
+		// TODO: figure out how to handle the user object. Probably something with the ui.
+		// I was thinking maybe this triggers a popup with the user, and you can choose
+		// to invite them or view their profile page, or maybe it just pops up the profile page
 	}
 	
 	// Sends an invite request to the server 
 	public void invite(User otherUser) {
-		
+		Listener inviteListener = new Listener() {
+			public void received(Connection c, Object o) {
+				if(o instanceof InviteResponse) {
+					InviteResponse response = (InviteResponse)o;
+					handleInviteResponse(response);
+				}
+			}
+		};
+		kryoClient.addListener(inviteListener);
+		InviteRequest request = new InviteRequest(otherUser, clientUser);
+		kryoClient.sendTCP(request);
 	}
 	
+	private void handleInviteResponse(InviteResponse response) {
+		if(response.isAccepted()) {
+			System.out.println(response.getMessage());
+		}
+		else {
+			System.out.println(response.getMessage());
+		}
+	}
+
 	public boolean getConnectedStatus() {
 		return kryoClient.isConnected();
 	}
