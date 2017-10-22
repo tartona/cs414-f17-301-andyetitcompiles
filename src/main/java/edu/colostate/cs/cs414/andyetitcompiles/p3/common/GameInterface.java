@@ -1,5 +1,6 @@
 package edu.colostate.cs.cs414.andyetitcompiles.p3.common;
 
+import java.awt.Color;
 import java.util.ArrayList;
 
 public interface GameInterface {
@@ -12,6 +13,20 @@ public interface GameInterface {
 	 */
 	public boolean makeMove(JunglePiece piece, JungleTile tile);
 	
+	/**
+	 * Returns the JunglePiece with specified color and ID
+	 * @param color Either Color.BLACK or Color.WHITE
+	 * @param id name of animal represented by JunglePiece (i.e. "cat", "dog", "elephant")
+	 * @return
+	 */
+	public JunglePiece getPiece(Color color, String id);
+	
+	/**
+	 * Returns JungleTile located at (row, col) using standard array indexing so (0,0) is the upper leftmost spot.
+	 * @param row
+	 * @param col
+	 * @return
+	 */
 	public JungleTile getTile(int row, int col);
 	
 	/**

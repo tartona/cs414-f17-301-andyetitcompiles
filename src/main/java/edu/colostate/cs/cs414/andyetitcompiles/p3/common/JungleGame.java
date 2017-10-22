@@ -43,6 +43,7 @@ public class JungleGame implements GameInterface{
 		return false;
 	}
 	
+	@Override
 	public JunglePiece getPiece(Color color, String id){
 		return board.getPiece(color, id);
 	}

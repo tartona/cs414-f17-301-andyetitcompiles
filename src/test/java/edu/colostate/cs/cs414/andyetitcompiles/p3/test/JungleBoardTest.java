@@ -31,6 +31,7 @@ public class JungleBoardTest {
 	@Test
 	public void testGetPiece(){
 		assertEquals("lion", board.getPiece(Color.WHITE, "lion").getID());
+		assertEquals("leopard", board.getPiece(Color.BLACK, "leopard").getID());
 		assertEquals(null, board.getPiece(Color.CYAN, "elephant"));
 		assertEquals(null, board.getPiece(Color.BLACK, "not an animal"));
 	}
@@ -40,12 +41,16 @@ public class JungleBoardTest {
 		assertEquals(null, board.getWinner());		
 		board.movePieceToTile(board.getPiece(Color.WHITE, "lion"), board.getTile(0, 3));
 		assertEquals(Color.WHITE, board.getWinner());
-		fail("Needs to be implemented");
 	}
 	
 	@Test
 	public void testMovePieceToTile(){
-		fail("Needs work");
+		JunglePiece brat = board.getPiece(Color.BLACK, "rat");
+		board.movePieceToTile(brat, board.getTile(4,3));
+		assertEquals(null, board.getTile(2, 0).getCurrentPiece());
+		assertEquals("rat", board.getTile(4, 3).getCurrentPiece().getID());
+		assertEquals(4, brat.getCurrentRow());
+		assertEquals(3, brat.getCurrentCol());
 	}
 
 }
