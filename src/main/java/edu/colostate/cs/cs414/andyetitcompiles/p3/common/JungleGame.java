@@ -3,6 +3,7 @@ package edu.colostate.cs.cs414.andyetitcompiles.p3.common;
 import java.awt.Color;
 import java.util.ArrayList;
 
+
 public class JungleGame implements GameInterface{
 	private JungleBoard board;
 	private User player1;	//player 1 is white
@@ -14,7 +15,6 @@ public class JungleGame implements GameInterface{
 		board = new JungleBoard();
 	}
 
-	@Override
 	public boolean makeMove(JunglePiece piece, JungleTile tile) {
 		if(!getValidMoves(piece).contains(tile))
 			return false;
@@ -28,7 +28,6 @@ public class JungleGame implements GameInterface{
 		return true;
 	}
 
-	@Override
 	public JungleTile[][] getJungleTiles() {
 		return board.getTiles();
 	}
@@ -43,14 +42,12 @@ public class JungleGame implements GameInterface{
 		return false;
 	}
 	
-	@Override
 	public JunglePiece getPiece(Color color, String id){
 		return board.getPiece(color, id);
 	}
 	
-	@Override
 	public ArrayList<JungleTile> getValidMoves(JunglePiece piece) {
-		ArrayList<JungleTile> moves = new ArrayList<>();
+		ArrayList<JungleTile> moves = new ArrayList<JungleTile>();
 		JungleTile up = board.getTile(piece.getCurrentTile().row - 1, piece.getCurrentTile().col);
 		JungleTile down = board.getTile(piece.getCurrentTile().row + 1, piece.getCurrentTile().col);
 		JungleTile left = board.getTile(piece.getCurrentTile().row, piece.getCurrentTile().col - 1);
@@ -91,7 +88,6 @@ public class JungleGame implements GameInterface{
 		return true;
 	}
 
-	@Override
 	public User getWinner() {
 		if(board.getWinner() == null)
 			return null;
@@ -102,12 +98,10 @@ public class JungleGame implements GameInterface{
 		return null;
 	}
 	
-	@Override
 	public JungleTile getTile(int row, int col){
 		return board.getTile(row, col);
 	}
 	
-	@Override
 	public void resetGame() {
 		board = new JungleBoard();
 	}
