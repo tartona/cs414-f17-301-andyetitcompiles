@@ -6,17 +6,26 @@ import edu.colostate.cs.cs414.andyetitcompiles.p3.common.User;
 // InviteResponses are also sent by the server when it receives an InviteResponse from a client
 public class InviteResponse {
 	boolean isAccepted;
-	User sender;
-	User recipient;
+	User inviter;
+	User invitee;
+	String message;
 	
-	public InviteResponse(boolean isAccepted, User sender, User recipient) {
+	public InviteResponse(boolean isAccepted, User inviter, User invitee, String message) {
 		this.isAccepted = true;
-		this.sender = sender;
-		this.recipient = recipient;
+		this.inviter = inviter;
+		this.invitee = invitee;
+		this.message = message;
 	}
 	
 	public InviteResponse() {}
 
+	public boolean isAccepted() {
+		return isAccepted;
+	}
+	
+	public InviteResponse() {}
+
+<<<<<<< HEAD
 	public boolean isAccepted() {
 		return isAccepted;
 	}
@@ -30,3 +39,17 @@ public class InviteResponse {
 	}
 
 }
+=======
+	public User getInviter() {
+		return inviter;
+	}
+
+	public User getInvitee() {
+		return invitee;
+	}
+	
+	public String getMessage() {
+		return message;
+	}
+}
+>>>>>>> branch 'master' of https://github.com/tartona/cs414-f17-301-andyetitcompiles

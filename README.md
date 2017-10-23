@@ -9,7 +9,7 @@ First iteration - Requirements Analysis > ./P1/
 
 Second iteration - Domain Model Analysis > ./P2/
 
-Third iteration - TBD
+Third iteration - First Implementation Iteration
 
 Fourth iteration - TBD
 

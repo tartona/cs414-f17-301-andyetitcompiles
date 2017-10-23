@@ -9,5 +9,14 @@ public class UserRequest {
 		this.nickname = nickname;
 	}
 	
+<<<<<<< HEAD
 	public String getNickname() {return nickname;}
 }
+=======
+	public UserRequest() {}
+
+	public String getNickname() {
+		return nickname;
+	}
+}
+>>>>>>> branch 'master' of https://github.com/tartona/cs414-f17-301-andyetitcompiles
