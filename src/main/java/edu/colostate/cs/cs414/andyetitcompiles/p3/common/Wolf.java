@@ -3,8 +3,8 @@ package edu.colostate.cs.cs414.andyetitcompiles.p3.common;
 import java.awt.Color;
 
 public class Wolf extends JunglePiece{
-	public Wolf(Color color, JungleTile startTile){
-		super(color, startTile);
+	public Wolf(Color color, JungleTile startTile, String id){
+		super(color, startTile, id);
 		this.power = 4;
 	}
 	
@@ -13,4 +13,10 @@ public class Wolf extends JunglePiece{
 		return "Wolf";
 	}
 
+	@Override
+	public void restorePower() {
+		this.power = 4;
+	}
+	
+	
 }
