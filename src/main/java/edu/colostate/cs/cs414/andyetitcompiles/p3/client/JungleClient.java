@@ -57,7 +57,7 @@ public class JungleClient {
 				if(o instanceof UserResponse) {
 					handleUserResponse((UserResponse)o);	
 				}
-				// Response from the server after an invite the client sent is accepted or rejected
+				// Response from the server after an invite has been accepted. Sent to both the intviter and invitee
 				if(o instanceof InviteResponse) {
 					handleInviteResponse((InviteResponse)o);
 				}
@@ -185,7 +185,7 @@ public class JungleClient {
 	private void handleInviteResponse(InviteResponse response) {
 		if(response.isAccepted()) {
 			System.out.println(response.getMessage());
-			// Now we need some sort of logic that uses the this response to create/join a game session
+			
 		}
 		else {
 			System.out.println(response.getMessage());
