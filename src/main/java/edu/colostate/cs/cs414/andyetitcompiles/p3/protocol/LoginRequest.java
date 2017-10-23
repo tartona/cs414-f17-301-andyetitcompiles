@@ -14,8 +14,4 @@ public class LoginRequest {
 	
 	public String getEmail() {return email;}
 	public String getPassword() {return password;}
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> branch 'master' of https://github.com/tartona/cs414-f17-301-andyetitcompiles

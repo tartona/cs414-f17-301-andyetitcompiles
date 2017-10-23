@@ -23,23 +23,6 @@ public class InviteResponse {
 		return isAccepted;
 	}
 	
-	public InviteResponse() {}
-
-<<<<<<< HEAD
-	public boolean isAccepted() {
-		return isAccepted;
-	}
-
-	public User getSender() {
-		return sender;
-	}
-
-	public User getRecipient() {
-		return recipient;
-	}
-
-}
-=======
 	public User getInviter() {
 		return inviter;
 	}
@@ -52,4 +35,3 @@ public class InviteResponse {
 		return message;
 	}
 }
->>>>>>> branch 'master' of https://github.com/tartona/cs414-f17-301-andyetitcompiles

@@ -9,11 +9,6 @@ public class UnregisterRequest {
 		this.password = password;
 	}
 	
-<<<<<<< HEAD
-	public String getEmail() {return email;}
-	public String getPassword() {return password;}
-}
-=======
 	public UnregisterRequest() {}
 
 	public String getEmail() {
@@ -25,4 +20,3 @@ public class UnregisterRequest {
 	}
 
 }
->>>>>>> branch 'master' of https://github.com/tartona/cs414-f17-301-andyetitcompiles

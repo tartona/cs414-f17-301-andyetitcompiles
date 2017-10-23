@@ -57,19 +57,20 @@ public class JungleServer {
 				if(object instanceof UserRequest) {
 					lastReceived = object;
 					UserRequest userRequest = (UserRequest)object;
-					boolean isSuccessful;
-					User user;
-					String message;
+					boolean isSuccessful = false;
+					User user = null;
+					String message = null;
 					c.sendTCP(new UserResponse(isSuccessful, user, message));
 				}
 				// Sending invites from the client does not block to wait for a response, so just update the object
 				if(object instanceof InviteRequest) {
 					lastReceived = object;
 					
-					boolean isAccepted;
-					User sender;
-					User recipient;
-					c.sendTCP(new InviteResponse(isAccepted, sender, recipient));
+					boolean isAccepted = false;
+					User inviter = null;
+					User invitee = null;
+					String message = null;
+					c.sendTCP(new InviteResponse(isAccepted, inviter, invitee, message));
 					
 				}
 			}

@@ -14,12 +14,6 @@ public class UserResponse {
 		this.message = message;
 	}
 	
-<<<<<<< HEAD
-	public boolean isSuccesful() {return isSuccesful;}
-	public User getUser() {return user;}
-	public String getMessage() {return message;}
-}
-=======
 	public UserResponse() {}
 
 	public User getUser() {
@@ -36,4 +30,3 @@ public class UserResponse {
 	}
 	
 }
->>>>>>> branch 'master' of https://github.com/tartona/cs414-f17-301-andyetitcompiles

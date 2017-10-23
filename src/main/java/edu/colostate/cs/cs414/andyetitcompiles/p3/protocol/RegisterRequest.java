@@ -11,11 +11,7 @@ public class RegisterRequest {
 		this.nickname = nickname;
 		this.password = password;
 	}
-<<<<<<< HEAD
-=======
-
 	public RegisterRequest() {}
->>>>>>> branch 'master' of https://github.com/tartona/cs414-f17-301-andyetitcompiles
 	
 	public String getEmail() {return email;}
 	public String getNickname() {return nickname;}

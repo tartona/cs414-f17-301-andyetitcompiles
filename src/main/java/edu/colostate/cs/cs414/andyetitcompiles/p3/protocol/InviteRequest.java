@@ -16,12 +16,6 @@ public class InviteRequest {
 	
 	public InviteRequest() {}
 	
-<<<<<<< HEAD
-	public User getRecipient() {return recipient;}
-	public User getSender() {return sender;}
-}
-=======
 	public User getInvitee() {return invitee;}
 	public User getInviter() {return inviter;}
 }
->>>>>>> branch 'master' of https://github.com/tartona/cs414-f17-301-andyetitcompiles

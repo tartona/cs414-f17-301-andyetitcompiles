@@ -31,8 +31,8 @@ public class DatabaseManager {
 	public boolean authenticateUser(String email,String password)
 	{
 		for(User user:users) {
-        	if(user.getemail().equalsIgnoreCase(email) || user.getnickname().equalsIgnoreCase(email)) {
-        		if(user.getpassword().equals(password)) {
+        	if(user.getEmail().equalsIgnoreCase(email) || user.getNickname().equalsIgnoreCase(email)) {
+        		if(user.getPassword().equals(password)) {
         			return true;
         		}
         	}

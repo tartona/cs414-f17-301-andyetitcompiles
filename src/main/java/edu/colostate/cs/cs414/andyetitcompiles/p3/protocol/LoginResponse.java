@@ -19,8 +19,4 @@ public class LoginResponse {
 	public boolean successful() {return isSuccessful;}
 	public User getUser() {return user;}
 	public String getMessage() {return message;}
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> branch 'master' of https://github.com/tartona/cs414-f17-301-andyetitcompiles
