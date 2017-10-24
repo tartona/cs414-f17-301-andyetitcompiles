@@ -58,7 +58,7 @@ public class DatabaseManager {
 					onlineUsers.add(user);
 					return new LoginResponse(true, user, "Login Sucessful");
 				} else { // user found password incorrect
-					return new LoginResponse(false, null, "Incorrect Password");
+					return new LoginResponse(false, null, "Incorrect Password: expected:" + user.getPassword() + " received: " +password);
 				}
 			}
 		}

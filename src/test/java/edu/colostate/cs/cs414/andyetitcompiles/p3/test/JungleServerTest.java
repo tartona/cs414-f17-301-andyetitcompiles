@@ -66,6 +66,7 @@ public class JungleServerTest {
 
 	@Test
 	public void testRegisterSuccess() throws InterruptedException {
+		System.out.println("***********START TestRegisterSuccess***********");
 		client.send(new RegisterRequest("Email@email.com", "Nickname", "Password"));
 		Thread.sleep(500);
 		Object response = client.getResp();
@@ -78,11 +79,13 @@ public class JungleServerTest {
 
 	@Test
 	public void testRegisterFailure1() throws InterruptedException {
+		System.out.println("***********START testRegisterFailure1***********");
 		client.send(new RegisterRequest("Email@email.com", "Nickname", "Password"));
 		Thread.sleep(500);
 		Object response = client.getResp();
 		if (response instanceof RegisterResponse) {
 			// Should register email/username
+			System.out.println(((RegisterResponse) response).getMessage()+" "+((RegisterResponse) response).successful());
 			assertTrue(((RegisterResponse) response).successful());
 		} else {
 			fail("Incorrect object type received from server!");
@@ -93,7 +96,7 @@ public class JungleServerTest {
 		Thread.sleep(500);
 		response = client.getResp();
 		if (response instanceof RegisterResponse) {
-			System.out.println(((RegisterResponse) response).getMessage());
+			System.out.println(((RegisterResponse) response).getMessage()+" "+((RegisterResponse) response).successful());
 			assertFalse(((RegisterResponse) response).successful());
 		} else {
 			fail("Incorrect object type received from server!");
@@ -112,6 +115,7 @@ public class JungleServerTest {
 
 	@Test
 	public void testRegisterFailure2() throws InterruptedException {
+		System.out.println("***********START testRegisterFailure2***********");
 		// incorrect email format
 		client.send(new RegisterRequest("Email%email.com", "Nickname", "Password"));
 		Thread.sleep(500);
@@ -125,6 +129,7 @@ public class JungleServerTest {
 
 	@Test
 	public void testLoginSuccess() throws InterruptedException {
+		System.out.println("***********START testLoginSuccess***********");
 		client.send(new RegisterRequest("Email@email.com", "Nickname", "Password"));
 		Thread.sleep(500);
 		// send request to server;
@@ -146,6 +151,7 @@ public class JungleServerTest {
 
 	@Test
 	public void testLoginFailure1() throws InterruptedException {
+		System.out.println("***********START testLoginFailure1***********");
 		client.send(new RegisterRequest("Email@email.com", "Nickname", "Password"));
 		Thread.sleep(500);
 		// send request to server;
@@ -162,6 +168,7 @@ public class JungleServerTest {
 
 	@Test
 	public void testLoginFailure2() throws InterruptedException {
+		System.out.println("***********START testLoginFailure2***********");
 		client.send(new RegisterRequest("Email@email.com", "Nickname", "Password"));
 		Thread.sleep(500);
 		// send request to server;
@@ -177,6 +184,7 @@ public class JungleServerTest {
 
 	@Test
 	public void testUnregisterSuccess() throws InterruptedException {
+		System.out.println("***********START testUnregisterSuccess***********");
 		client.send(new RegisterRequest("Email@email.com", "Nickname", "Password"));
 		Thread.sleep(500);
 		client.send(new UnregisterRequest("Email@email.com", "Password"));
@@ -191,6 +199,7 @@ public class JungleServerTest {
 
 	@Test
 	public void testUnregisterFailure1() throws InterruptedException {
+		System.out.println("***********START testUnregisterFailure1***********");
 		// email not in database
 		client.send(new UnregisterRequest("Email%email.com", "Password"));
 		Thread.sleep(500);
@@ -204,6 +213,7 @@ public class JungleServerTest {
 
 	@Test
 	public void testUnregisterFailure2() throws InterruptedException {
+		System.out.println("***********START testUnregisterFailure2***********");
 		// Wrong password for email.
 		client.send(new UnregisterRequest("Email@email.com", "wrongPassword"));
 		Thread.sleep(500);

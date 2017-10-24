@@ -34,13 +34,13 @@ public class JungleServer {
 
 				if (object instanceof LoginRequest) {
 					LoginRequest loginRequest = (LoginRequest) object;
-					c.sendTCP(database.authenticateUser(loginRequest.getEmail(), loginRequest.getEmail()));
+					c.sendTCP(database.authenticateUser(loginRequest.getEmail(), loginRequest.getPassword()));
 				}
 				if (object instanceof RegisterRequest) {
 					lastReceived = object;
 					RegisterRequest registerRequest = (RegisterRequest) object;
-					User user = new User(registerRequest.getEmail(), registerRequest.getPassword(),
-							registerRequest.getNickname());
+					User user = new User(registerRequest.getEmail(), registerRequest.getNickname(),
+							registerRequest.getPassword());
 					if (validEmail(user.getEmail())) {
 						System.out.println("Sending RegisterResponse");
 						c.sendTCP(database.registerUser(user));
