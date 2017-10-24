@@ -19,12 +19,13 @@ public class Main extends Application {
 		this.primaryStage = primaryStage;
 		this.primaryStage.setTitle("XGameJungle : And Yet It Compiles");
 
+		// Show Login Screen as initial
 		showLoginOverview();
 	}
 
+	// Display Login Screen
 	public void showLoginOverview() {
 		try {
-			// Load person overview.
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(Main.class.getResource("LoginOverview.fxml"));
 			rootLayout = (VBox) loader.load();
@@ -41,9 +42,9 @@ public class Main extends Application {
 		}
 	}
 
+	// Display Main Screen
 	public void showMainOverview() {
 		try {
-			// Load person overview.
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(Main.class.getResource("MainOverview.fxml"));
 			rootLayout = (VBox) loader.load();
@@ -60,6 +61,7 @@ public class Main extends Application {
 		}
 	}
 
+	// Display Register Screen as Dialog
     public void showRegisterDialog() {
         try {
             FXMLLoader loader = new FXMLLoader();
@@ -73,11 +75,9 @@ public class Main extends Application {
             Scene scene = new Scene(page);
             dialogStage.setScene(scene);
 
-            // Set the person into the controller.
             RegisterDialogController controller = loader.getController();
             controller.setDialogStage(dialogStage);
 
-            // Show the dialog and wait until the user closes it
             dialogStage.showAndWait();
 
         } catch (IOException e) {
@@ -85,6 +85,7 @@ public class Main extends Application {
         }
     }
 
+    // Display FindUser Screen as Dialog
     public void showFindUserDialog() {
         try {
             FXMLLoader loader = new FXMLLoader();
@@ -98,11 +99,9 @@ public class Main extends Application {
             Scene scene = new Scene(page);
             dialogStage.setScene(scene);
 
-            // Set the person into the controller.
             FindUserDialogController controller = loader.getController();
             controller.setDialogStage(dialogStage);
 
-            // Show the dialog and wait until the user closes it
             dialogStage.showAndWait();
 
         } catch (IOException e) {

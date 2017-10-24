@@ -12,8 +12,8 @@
          <children>
             <TextField fx:id="txtNickname" layoutX="92.0" layoutY="27.0" prefHeight="26.0" prefWidth="158.0" />
             <Label layoutX="24.0" layoutY="31.0" text="Nickname:" />
-            <Button fx:id="btnViewUserP" layoutX="27.0" layoutY="74.0" mnemonicParsing="false" text="View User Profile" />
-            <Button fx:id="btnSendInv" layoutX="154.0" layoutY="74.0" mnemonicParsing="false" text="Send Invitation" />
+            <Button fx:id="btnViewUserP" layoutX="27.0" layoutY="74.0" mnemonicParsing="false" onAction="#handleViewUserP" text="View User Profile" />
+            <Button fx:id="btnSendInv" layoutX="154.0" layoutY="74.0" mnemonicParsing="false" onAction="#handleSendInv" text="Send Invitation" />
          </children>
       </AnchorPane>
    </children>

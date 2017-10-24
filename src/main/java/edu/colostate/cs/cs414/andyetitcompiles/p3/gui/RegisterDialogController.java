@@ -27,7 +27,7 @@ public class RegisterDialogController {
 	}
 
 	private boolean isValidInput() {
-		// getting texts from textfields..
+		// getting texts from textfields
 		txtNickname.getText();
 		txtEmail.getText();
 		txtPassword.getText();
@@ -55,7 +55,9 @@ public class RegisterDialogController {
 
 	@FXML
 	private void handleRegister() {
-		// getting texts from textfields..
+		// handles 'Register' button click
+
+		// getting texts from textfields
 		txtNickname.getText();
 		txtEmail.getText();
 		txtPassword.getText();
@@ -70,6 +72,8 @@ public class RegisterDialogController {
 
 	@FXML
 	private void handleCancel() {
+		// handles 'Cence' button click
+		// close the dialog
 		dialogStage.close();
 	}
 }

@@ -21,6 +21,7 @@ public class MainOverviewController {
 	private Main main;
 
     public void setMain(Main main) {
+    	// for accessing root
         this.main = main;
     }
 
@@ -29,6 +30,7 @@ public class MainOverviewController {
 		int numCols = 7 ;
 		int numRows = 9 ;
 
+		// populating Grid Pane
 		for (int i = 0 ; i < numCols ; i++) {
 			ColumnConstraints colConstraints = new ColumnConstraints();
 			colConstraints.setHgrow(Priority.SOMETIMES);
@@ -44,31 +46,32 @@ public class MainOverviewController {
 			for (int i = 0 ; i < numCols ; i++) {
 				addPane(j, i);
 				Label a = new Label();
-				a.setText("He");
+				a.setText("He"); // set graphic for images
 				gameBoard.add((Node)a, i, j);
 			}
 		}
-		for (int i = 0 ; i < numCols ; i++) {
-			for (int j = 0; j < numRows; j++) {
-				Label a = new Label();
-				a.setText("He"); // use set graphic for images
-				gameBoard.add((Node)a, i, j);
+		for (Node node : gameBoard.getChildren()) {
+			if (node instanceof Label && gameBoard.getColumnIndex(node) == 3 && gameBoard.getRowIndex(node) == 3) {
+				((Label)node).setText("3,3");
 			}
 		}
 	}
 
 	@FXML
 	private void openFindUser() {
+		// hadnles 'Find User' button click
 		main.showFindUserDialog();
 	}
 
 	private void addPane(int colIndex, int rowIndex) {
+		// add pane to the grid pane
 		Pane pane = new Pane();
-		pane.setOnMouseClicked(e -> cellClicked(e));
+		pane.setOnMouseClicked(e -> cellClicked(e)); // assigns onClick method
 		gameBoard.add(pane, colIndex, rowIndex);
 	}
 
 	private void cellClicked(MouseEvent e){
+		// when cell is selected
 		Node source = (Node)e.getSource() ;
         Integer colIndex = GridPane.getColumnIndex(source);
         Integer rowIndex = GridPane.getRowIndex(source);

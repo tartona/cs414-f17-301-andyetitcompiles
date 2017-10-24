@@ -23,15 +23,17 @@ public class LoginOverviewController {
 
     @FXML
     private void openRegister() {
+    	// open Register Screen in a new dialog
     	main.showRegisterDialog();
     }
 
     public void setMain(Main main) {
+    	// For accessing root page
         this.main = main;
     }
 
     private boolean isValidInput() {
-    	// getting texts from textfields..
+    	// getting texts from textfields
     	txtEmail.getText();
     	txtPassword.getText();
 
@@ -49,9 +51,7 @@ public class LoginOverviewController {
             alert.setTitle("Invalid User Information");
             alert.setHeaderText("Please revise username/password.");
             alert.setContentText("Invalid user!");
-
             alert.showAndWait();
-
             return false;
         }
     }
