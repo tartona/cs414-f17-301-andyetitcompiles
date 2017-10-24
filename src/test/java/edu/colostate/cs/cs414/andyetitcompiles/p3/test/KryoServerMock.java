@@ -10,23 +10,23 @@ import edu.colostate.cs.cs414.andyetitcompiles.p3.common.User;
 import edu.colostate.cs.cs414.andyetitcompiles.p3.protocol.*;
 
 // This is a very simple dummy server that sends back a set of static responses based on what the client sends.
-// This allows the ability to actually "unit" test the client, without involving the actual server. 
-// It can also send arbitrary objects to the client 
+// This allows the ability to actually "unit" test the client, without involving the actual server.
+// It can also send arbitrary objects to the client
 // to make it very easy to create new tests, and to test how the client responds to getting responses/requests from
-// the server that are unsolicited. Obviously, it will be wise to get some sort of integration test up and running to 
+// the server that are unsolicited. Obviously, it will be wise to get some sort of integration test up and running to
 // see if the client and server interact correctly in production, but that should be separate from the unit tests.
 public class KryoServerMock {
 	Server kryoServer;
 	Object lastReceived;
-	
+
 	public KryoServerMock() throws IOException {
 		kryoServer = new Server();
-		
+
 		Network.register(kryoServer);
-		
+
 		kryoServer.addListener(new Listener() {
 			public void received(Connection c, Object object) {
-				// Most of the methods in the client block to wait for a response from the server, so 
+				// Most of the methods in the client block to wait for a response from the server, so
 				// the mock server has to send back some stock responses so we can test how the client reacts
 				if(object instanceof LoginRequest) {
 					lastReceived = object;
@@ -73,15 +73,15 @@ public class KryoServerMock {
 		kryoServer.bind(Network.port);
 		kryoServer.start();
 	}
-	
+
 	public void stop() {
 		kryoServer.stop();
 	}
-	
+
 	public void send(Connection c, Object object) {
 		c.sendTCP(object);
 	}
-	
+
 	public Object getLastReceived() {
 		return lastReceived;
 	}
