@@ -2,6 +2,7 @@ package edu.colostate.cs.cs414.andyetitcompiles.p3.gui;
 
 import javafx.fxml.FXML;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.ColumnConstraints;
@@ -14,8 +15,14 @@ import javafx.scene.layout.RowConstraints;
 public class MainOverviewController {
 
 	@FXML private GridPane gameBoard;
+	@FXML private Button btnFindUser;
 
 	private boolean cellSelected = false;
+	private Main main;
+
+    public void setMain(Main main) {
+        this.main = main;
+    }
 
 	@FXML
 	private void initialize() {
@@ -48,6 +55,11 @@ public class MainOverviewController {
 				gameBoard.add((Node)a, i, j);
 			}
 		}
+	}
+
+	@FXML
+	private void openFindUser() {
+		main.showFindUserDialog();
 	}
 
 	private void addPane(int colIndex, int rowIndex) {

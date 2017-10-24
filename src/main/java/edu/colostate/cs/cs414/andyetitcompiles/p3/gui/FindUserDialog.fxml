@@ -6,14 +6,14 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.colostate.cs.cs414.andyetitcompiles.p3.gui.FindUserDialogController">
+<VBox xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.colostate.cs.cs414.andyetitcompiles.p3.gui.FindUserDialogController">
    <children>
-      <AnchorPane prefHeight="200.0" prefWidth="200.0">
+      <AnchorPane prefHeight="143.0" prefWidth="280.0">
          <children>
-            <TextField layoutX="26.0" layoutY="60.0" />
-            <Label layoutX="73.0" layoutY="31.0" text="Nickname" />
-            <Button layoutX="47.0" layoutY="100.0" mnemonicParsing="false" text="View User Profile" />
-            <Button layoutX="52.0" layoutY="138.0" mnemonicParsing="false" text="Send Invitation" />
+            <TextField fx:id="txtNickname" layoutX="92.0" layoutY="27.0" prefHeight="26.0" prefWidth="158.0" />
+            <Label layoutX="24.0" layoutY="31.0" text="Nickname:" />
+            <Button fx:id="btnViewUserP" layoutX="27.0" layoutY="74.0" mnemonicParsing="false" text="View User Profile" />
+            <Button fx:id="btnSendInv" layoutX="154.0" layoutY="74.0" mnemonicParsing="false" text="Send Invitation" />
          </children>
       </AnchorPane>
    </children>

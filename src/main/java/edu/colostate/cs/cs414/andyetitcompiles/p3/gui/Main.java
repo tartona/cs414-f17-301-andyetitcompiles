@@ -52,6 +52,9 @@ public class Main extends Application {
             primaryStage.setScene(scene);
             primaryStage.show();
 
+            MainOverviewController controller = loader.getController();
+            controller.setMain(this);
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -72,6 +75,31 @@ public class Main extends Application {
 
             // Set the person into the controller.
             RegisterDialogController controller = loader.getController();
+            controller.setDialogStage(dialogStage);
+
+            // Show the dialog and wait until the user closes it
+            dialogStage.showAndWait();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void showFindUserDialog() {
+        try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(Main.class.getResource("FindUserDialog.fxml"));
+            VBox page = (VBox) loader.load();
+
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Find User");
+            dialogStage.initModality(Modality.WINDOW_MODAL);
+            dialogStage.initOwner(primaryStage);
+            Scene scene = new Scene(page);
+            dialogStage.setScene(scene);
+
+            // Set the person into the controller.
+            FindUserDialogController controller = loader.getController();
             controller.setDialogStage(dialogStage);
 
             // Show the dialog and wait until the user closes it
