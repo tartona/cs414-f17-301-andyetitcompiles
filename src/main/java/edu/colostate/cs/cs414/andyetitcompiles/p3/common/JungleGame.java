@@ -1,6 +1,6 @@
 package edu.colostate.cs.cs414.andyetitcompiles.p3.common;
 
-import java.awt.Color;
+import edu.colostate.cs.cs414.andyetitcompiles.p3.common.Color;
 import java.util.ArrayList;
 
 
@@ -109,6 +109,10 @@ public class JungleGame implements GameInterface{
 	public JungleBoard getBoard(){
 		return this.board;
 
+	}
+
+	public void updateBoard(JungleBoard board) {
+		this.board = board;
 	}
 	
 }
