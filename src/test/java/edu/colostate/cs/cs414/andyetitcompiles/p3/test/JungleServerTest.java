@@ -26,22 +26,6 @@ public class JungleServerTest {
 	JungleServer jServer;
 	KryoClientMock client = new KryoClientMock();
 
-	// @BeforeClass
-	// public static void setUpClass() {
-	// try {
-	// jServer = new JungleServer();
-	// }
-	// catch(IOException ex) {
-	// System.out.println("Something went wrong starting the server: " +
-	// ex.getMessage());
-	// }
-	// }
-	//
-	// @AfterClass
-	// public static void tearDownClass() {
-	// jServer.stop();
-	// }
-
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -75,6 +59,7 @@ public class JungleServerTest {
 		} else {
 			fail("Incorrect object type received from server!");
 		}
+		System.out.println("***********END TestRegisterSuccess***********");
 	}
 
 	@Test
@@ -111,6 +96,7 @@ public class JungleServerTest {
 			fail("Incorrect object type received from server!");
 		}
 
+		System.out.println("***********END testRegisterFailure1***********");
 	}
 
 	@Test
@@ -125,6 +111,7 @@ public class JungleServerTest {
 		} else {
 			fail("Incorrect object type received from server!");
 		}
+		System.out.println("***********END testRegisterFailure2***********");
 	}
 
 	@Test
@@ -147,6 +134,7 @@ public class JungleServerTest {
 			}
 			fail("Incorrect object type received from server!");
 		}
+		System.out.println("***********END testLoginSuccess***********");
 	}
 
 	@Test
@@ -164,6 +152,7 @@ public class JungleServerTest {
 		} else {
 			fail("Incorrect object type received from server!");
 		}
+		System.out.println("***********END testLoginFailure1***********");
 	}
 
 	@Test
@@ -180,6 +169,7 @@ public class JungleServerTest {
 		} else {
 			fail("Incorrect object type received from server!");
 		}
+		System.out.println("***********END testLoginFailure2***********");
 	}
 
 	@Test
@@ -195,6 +185,7 @@ public class JungleServerTest {
 		} else {
 			fail("Incorrect object type received from server!");
 		}
+		System.out.println("***********END testUnregisterSuccess***********");
 	}
 
 	@Test
@@ -209,6 +200,7 @@ public class JungleServerTest {
 		} else {
 			fail("Incorrect object type received from server!");
 		}
+		System.out.println("***********END testUnregisterFailure1***********");
 	}
 
 	@Test
@@ -223,6 +215,7 @@ public class JungleServerTest {
 		} else {
 			fail("Incorrect object type received from server!");
 		}
+		System.out.println("***********END testUnregisterFailure2***********");
 	}
 
 	// @Test

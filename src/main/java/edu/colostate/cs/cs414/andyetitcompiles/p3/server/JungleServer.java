@@ -1,6 +1,8 @@
 package edu.colostate.cs.cs414.andyetitcompiles.p3.server;
 
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
@@ -11,18 +13,20 @@ import edu.colostate.cs.cs414.andyetitcompiles.p3.protocol.*;
 
 public class JungleServer {
 	Server server;
-	Object lastReceived;
 	DatabaseManager database;
+	Set<ConnectionManager> onlineUsers;
 
 	public JungleServer(DatabaseManager database) throws IOException {
 		server = new Server();
 		this.database = database;
+		onlineUsers = new HashSet<ConnectionManager>();
 		networkSetup();
 	}
 
 	public JungleServer() throws IOException {
 		server = new Server();
 		this.database = new DatabaseManager();
+		onlineUsers = new HashSet<ConnectionManager>();
 		networkSetup();
 	}
 
@@ -34,10 +38,14 @@ public class JungleServer {
 
 				if (object instanceof LoginRequest) {
 					LoginRequest loginRequest = (LoginRequest) object;
-					c.sendTCP(database.authenticateUser(loginRequest.getEmail(), loginRequest.getPassword()));
+					LoginResponse loginResp = database.authenticateUser(loginRequest.getEmail(), loginRequest.getPassword());
+					c.sendTCP(loginResp);
+					if(loginResp.successful()) {
+						c.setName(loginResp.getUser().getNickname());//set connection name to user nickname
+						onlineUsers.add(new ConnectionManager(loginResp.getUser(), c));
+					}
 				}
 				if (object instanceof RegisterRequest) {
-					lastReceived = object;
 					RegisterRequest registerRequest = (RegisterRequest) object;
 					User user = new User(registerRequest.getEmail(), registerRequest.getNickname(),
 							registerRequest.getPassword());
@@ -49,26 +57,39 @@ public class JungleServer {
 					}
 				}
 				if (object instanceof UnregisterRequest) {
-					lastReceived = object;
 					UnregisterRequest unregisterRequest = (UnregisterRequest) object;
 					c.sendTCP(database.unRegisterUser(unregisterRequest.getEmail(), unregisterRequest.getPassword()));
 				}
 				if (object instanceof UserRequest) {
-					lastReceived = object;
 					UserRequest userRequest = (UserRequest) object;
 					c.sendTCP(database.findUser(userRequest.getNickname()));
 				}
 				// Sending invites from the client does not block to wait for a response, so
 				// just update the object
 				if (object instanceof InviteRequest) {
-					lastReceived = object;
+					InviteRequest inviteReq = (InviteRequest)object;
 
+					for (ConnectionManager clientConn : onlineUsers) {
+						//find online user with username
+						if (clientConn.getUser().getNickname().equalsIgnoreCase(inviteReq.getInvitee().getNickname())) {
+							clientConn.getConnection().sendTCP(inviteReq);//invite user
+						}
+					}
+					
 					boolean isAccepted = false;
 					User inviter = null;
 					User invitee = null;
 					String message = null;
 					c.sendTCP(new InviteResponse(isAccepted, inviter, invitee, message));
 
+				}
+			}
+			public void disconnected (Connection c) {
+				String nickname = c.toString();
+				for (ConnectionManager clientConn : onlineUsers) {
+					if (clientConn.getUser().getNickname().equalsIgnoreCase(nickname)) {
+						onlineUsers.remove(clientConn);
+					}
 				}
 			}
 		});
@@ -83,10 +104,6 @@ public class JungleServer {
 	// for testing, may be removed if not needed
 	public void send(Connection c, Object object) {
 		c.sendTCP(object);
-	}
-
-	public Object getLastReceived() {
-		return lastReceived;
 	}
 
 	// TODO improve email check
