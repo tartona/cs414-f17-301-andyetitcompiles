@@ -1,11 +1,15 @@
 package edu.colostate.cs.cs414.andyetitcompiles.p3.client;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
+import com.esotericsoftware.kryonet.Listener.ThreadedListener;
+
 import edu.colostate.cs.cs414.andyetitcompiles.p3.common.User;
 import edu.colostate.cs.cs414.andyetitcompiles.p3.protocol.*;
 
@@ -15,11 +19,13 @@ public class JungleClient {
 	User clientUser;
 	String host;
 	Set<User> requestedUsers;
+	Map<Integer, ClientGameController> activeGames;
 	
 	public JungleClient() {
 		loggedIn = false;
 		kryoClient = new Client();
 		requestedUsers = new HashSet<User>();
+		activeGames = new HashMap<Integer, ClientGameController>();
 		initializeKryoClient();
 	}
 	
@@ -29,7 +35,7 @@ public class JungleClient {
 		// Register the client with the Network class
 		Network.register(kryoClient);
 		
-		// Define listeners
+		// Define listeners that run on the main update thread
 		kryoClient.addListener(new Listener() {
 			// Called after client successfully connects to the server
 			public void connected(Connection c) {
@@ -57,9 +63,13 @@ public class JungleClient {
 				if(o instanceof UserResponse) {
 					handleUserResponse((UserResponse)o);	
 				}
-				// Response from the server after an invite has been accepted. Sent to both the intviter and invitee
+				// Response from the server after an invite has been accepted
 				if(o instanceof InviteResponse) {
 					handleInviteResponse((InviteResponse)o);
+				}
+				// Sent by the server after it creates a new game for the client
+				if(o instanceof GameInstance) {
+					handleGameInstance((GameInstance)o);
 				}
 			}
 			// Called whenever the client is disconnected from the server
@@ -68,6 +78,21 @@ public class JungleClient {
 				System.out.println("You have been disconnected from the server");
 			}
 		});
+		
+		// Define a listener that runs on its own thread to handle game communication
+		kryoClient.addListener(new ThreadedListener (new Listener() {
+			public void received(Connection c, Object o) {
+				// This listener is only concerned with GameMessages
+				if(o instanceof GameMessage) {
+					GameMessage message = (GameMessage)o;
+					// Find the associated game
+					ClientGameController game = activeGames.get(message.getGameID());
+					if(game == null) // Do nothing if the message gameID is not for one of the clients active games
+						return;
+					game.handleMessage(message);
+				}
+			}
+		}));
 		// It is best to attempt the connection on its own thread so it does block the loading of other client components (like ui)
 		new Thread("Connect") {
 			public void run () {
@@ -84,6 +109,13 @@ public class JungleClient {
 	private void handleConnection() {
 		System.out.println("Successfully connected");
 	}
+	
+	// Called when the client receives a new game instance from the server
+	private void handleGameInstance(GameInstance game) {
+		// Create a new game controller and add it to the active games. 
+		activeGames.put(game.getGameID(), new ClientGameController(game.getGameID(), clientUser, game.getOpponent(), game.getColor(), kryoClient));
+	}
+	
 	// Called when the client receives an invite request from another player
 	private void handleInviteRequest(InviteRequest request) {
 		System.out.println("You have been invited to play jungle by: " + request.getInviter().getNickname());
@@ -185,7 +217,6 @@ public class JungleClient {
 	private void handleInviteResponse(InviteResponse response) {
 		if(response.isAccepted()) {
 			System.out.println(response.getMessage());
-			
 		}
 		else {
 			System.out.println(response.getMessage());

@@ -41,7 +41,7 @@ public class GameMessage {
 	// Update constructor
 	public GameMessage(int gameID, GameMessageType type, JungleBoard board) {
 		if(type != GameMessageType.UPDATE)
-			throw new IllegalArgumentException("Type of GameMessage should be MAKE_MOVE");
+			throw new IllegalArgumentException("Type of GameMessage should be UPDATE");
 		if(board == null)
 			throw new IllegalArgumentException("A UPDATE GameMessage must contain a valid JungleBoard");
 		this.gameID = gameID;

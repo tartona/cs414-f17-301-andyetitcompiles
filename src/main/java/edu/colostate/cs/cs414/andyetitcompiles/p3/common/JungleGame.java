@@ -110,5 +110,9 @@ public class JungleGame implements GameInterface{
 		return this.board;
 
 	}
+
+	public void updateBoard(JungleBoard board) {
+		this.board = board;
+	}
 	
 }
