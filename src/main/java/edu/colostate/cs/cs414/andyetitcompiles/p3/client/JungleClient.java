@@ -87,8 +87,10 @@ public class JungleClient {
 					GameMessage message = (GameMessage)o;
 					// Find the associated game
 					ClientGameController game = activeGames.get(message.getGameID());
-					if(game == null) // Do nothing if the message gameID is not for one of the clients active games
+					if(game == null) { // Do nothing if the message gameID is not for one of the clients active games
+						System.out.println("Received packet for game that couldn't be found on the client");
 						return;
+					}
 					game.handleMessage(message);
 				}
 			}
@@ -188,6 +190,10 @@ public class JungleClient {
 
 	// Sends findUser request to the server. 
 	public void findUser(String nickname) {
+		if(!loggedIn) {
+			System.out.println("Please login before searching for other users");
+			return;
+		}
 		UserRequest request = new UserRequest(nickname);
 		kryoClient.sendTCP(request);
 	}
@@ -209,6 +215,10 @@ public class JungleClient {
 	
 	// Sends an invite request to the server 
 	public void invite(User otherUser) {
+		if(!loggedIn) {
+			System.out.println("Please login before inviting another user");
+			return;
+		}
 		InviteRequest request = new InviteRequest(otherUser, clientUser);
 		kryoClient.sendTCP(request);
 	}
