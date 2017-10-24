@@ -23,8 +23,24 @@ import edu.colostate.cs.cs414.andyetitcompiles.p3.server.JungleServer;
  */
 public class JungleServerTest {
 
-	JungleServer jServer = new JungleServer();
+	JungleServer jServer;
 	KryoClientMock client = new KryoClientMock();
+
+	// @BeforeClass
+	// public static void setUpClass() {
+	// try {
+	// jServer = new JungleServer();
+	// }
+	// catch(IOException ex) {
+	// System.out.println("Something went wrong starting the server: " +
+	// ex.getMessage());
+	// }
+	// }
+	//
+	// @AfterClass
+	// public static void tearDownClass() {
+	// jServer.stop();
+	// }
 
 	/**
 	 * @throws java.lang.Exception
@@ -33,6 +49,7 @@ public class JungleServerTest {
 	public void setUp() throws Exception {
 		jServer = new JungleServer();
 		client = new KryoClientMock();
+		Thread.sleep(500);
 	}
 
 	/**
@@ -41,48 +58,52 @@ public class JungleServerTest {
 	@After
 	public void tearDown() throws Exception {
 		jServer.stop();
-		client=null;
+		client = null;
+		Thread.sleep(500);
 	}
 
-	
 	// **********Begin Tests********** //
 
 	@Test
-	public void testRegisterSuccess() {
+	public void testRegisterSuccess() throws InterruptedException {
 		client.send(new RegisterRequest("Email@email.com", "Nickname", "Password"));
+		Thread.sleep(500);
 		Object response = client.getResp();
-		if(response instanceof RegisterResponse) {
-			assertTrue(((RegisterResponse)response).successful());
-		}else {
+		if (response instanceof RegisterResponse) {
+			assertTrue(((RegisterResponse) response).successful());
+		} else {
 			fail("Incorrect object type received from server!");
 		}
 	}
 
 	@Test
-	public void testRegisterFailure1() {
+	public void testRegisterFailure1() throws InterruptedException {
 		client.send(new RegisterRequest("Email@email.com", "Nickname", "Password"));
+		Thread.sleep(500);
 		Object response = client.getResp();
-		if(response instanceof RegisterResponse) {
-			//Should register email/username
-			assertTrue(((RegisterResponse)response).successful());
+		if (response instanceof RegisterResponse) {
+			// Should register email/username
+			assertTrue(((RegisterResponse) response).successful());
 		} else {
 			fail("Incorrect object type received from server!");
 		}
 
-		//email already in database
+		// email already in database
 		client.send(new RegisterRequest("Email@email.com", "newNickname", "Password"));
+		Thread.sleep(500);
 		response = client.getResp();
-		if(response instanceof RegisterResponse) {
-			assertFalse(((RegisterResponse)response).successful());
+		if (response instanceof RegisterResponse) {
+			System.out.println(((RegisterResponse) response).getMessage());
+			assertFalse(((RegisterResponse) response).successful());
 		} else {
 			fail("Incorrect object type received from server!");
 		}
 
-		//username already in database
+		// username already in database
 		client.send(new RegisterRequest("newEmail@email.com", "Nickname", "Password"));
 		response = client.getResp();
-		if(response instanceof RegisterResponse) {
-			assertFalse(((RegisterResponse)response).successful());
+		if (response instanceof RegisterResponse) {
+			assertFalse(((RegisterResponse) response).successful());
 		} else {
 			fail("Incorrect object type received from server!");
 		}
@@ -90,96 +111,118 @@ public class JungleServerTest {
 	}
 
 	@Test
-	public void testRegisterFailure2() {
-		//incorrect email format
+	public void testRegisterFailure2() throws InterruptedException {
+		// incorrect email format
 		client.send(new RegisterRequest("Email%email.com", "Nickname", "Password"));
+		Thread.sleep(500);
 		Object response = client.getResp();
-		if(response instanceof RegisterResponse) {
-			assertFalse(((RegisterResponse)response).successful());
-		}else {
+		if (response instanceof RegisterResponse) {
+			assertFalse(((RegisterResponse) response).successful());
+		} else {
 			fail("Incorrect object type received from server!");
 		}
 	}
 
 	@Test
-	public void testLoginSuccess() {
-		//send request to server;
-		client.send(new LoginRequest("UserName", "Password"));
+	public void testLoginSuccess() throws InterruptedException {
+		client.send(new RegisterRequest("Email@email.com", "Nickname", "Password"));
+		Thread.sleep(500);
+		// send request to server;
+		client.send(new LoginRequest("Email@email.com", "Password"));
+		Thread.sleep(500);
 		Object response = client.getResp();
-		if(response instanceof LoginResponse) {
-			assertTrue(((LoginResponse)response).successful());
-		}else {
+		if (response instanceof LoginResponse) {
+			System.out.println(((LoginResponse) response).getMessage());
+			assertTrue(((LoginResponse) response).successful());
+		} else {
+			if (response != null) {
+				System.out.println("recieved:" + response.getClass().getName() + " ...Expected LoginResponse");
+			} else {
+				System.out.println("Server sent null object");
+			}
 			fail("Incorrect object type received from server!");
 		}
 	}
 
 	@Test
-	public void testLoginFailure1() {
-		//send request to server;
+	public void testLoginFailure1() throws InterruptedException {
+		client.send(new RegisterRequest("Email@email.com", "Nickname", "Password"));
+		Thread.sleep(500);
+		// send request to server;
 		client.send(new LoginRequest("wrongUserName", "Password"));
+		Thread.sleep(500);
 		Object response = client.getResp();
-		if(response instanceof LoginResponse) {
-			assertFalse(((LoginResponse)response).successful());
-		}else {
+		Thread.sleep(500);
+		if (response instanceof LoginResponse) {
+			assertFalse(((LoginResponse) response).successful());
+		} else {
 			fail("Incorrect object type received from server!");
 		}
 	}
 
 	@Test
-	public void testLoginFailure2() {
-		//send request to server;
+	public void testLoginFailure2() throws InterruptedException {
+		client.send(new RegisterRequest("Email@email.com", "Nickname", "Password"));
+		Thread.sleep(500);
+		// send request to server;
 		client.send(new LoginRequest("UserName", "wrongPassword"));
+		Thread.sleep(500);
 		Object response = client.getResp();
-		if(response instanceof LoginResponse) {
-			assertFalse(((LoginResponse)response).successful());
-		}else {
+		if (response instanceof LoginResponse) {
+			assertFalse(((LoginResponse) response).successful());
+		} else {
 			fail("Incorrect object type received from server!");
 		}
 	}
 
 	@Test
-	public void testUnregisterSuccess() {
+	public void testUnregisterSuccess() throws InterruptedException {
+		client.send(new RegisterRequest("Email@email.com", "Nickname", "Password"));
+		Thread.sleep(500);
 		client.send(new UnregisterRequest("Email@email.com", "Password"));
 		Object response = client.getResp();
-		if(response instanceof RegisterResponse) {
-			assertTrue(((RegisterResponse)response).successful());
-		}else {
+		Thread.sleep(500);
+		if (response instanceof RegisterResponse) {
+			assertTrue(((RegisterResponse) response).successful());
+		} else {
 			fail("Incorrect object type received from server!");
 		}
 	}
 
 	@Test
-	public void testUnregisterFailure1() {
-		//email not in database
+	public void testUnregisterFailure1() throws InterruptedException {
+		// email not in database
 		client.send(new UnregisterRequest("Email%email.com", "Password"));
+		Thread.sleep(500);
 		Object response = client.getResp();
-		if(response instanceof UnregisterResponse) {
-			assertFalse(((UnregisterResponse)response).successful());
-		}else {
+		if (response instanceof UnregisterResponse) {
+			assertFalse(((UnregisterResponse) response).successful());
+		} else {
 			fail("Incorrect object type received from server!");
 		}
 	}
 
 	@Test
-	public void testUnregisterFailure2() {
-		//Wrong password for email.
+	public void testUnregisterFailure2() throws InterruptedException {
+		// Wrong password for email.
 		client.send(new UnregisterRequest("Email@email.com", "wrongPassword"));
+		Thread.sleep(500);
 		Object response = client.getResp();
-		if(response instanceof UnregisterResponse) {
-			assertFalse(((UnregisterResponse)response).successful());
-		}else {
+		if (response instanceof UnregisterResponse) {
+			assertFalse(((UnregisterResponse) response).successful());
+		} else {
 			fail("Incorrect object type received from server!");
 		}
 	}
 
-	@Test
-	public void testInviteSuccess() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testInviteFailure() {
-		fail("Not yet implemented");
-	}
+	// @Test
+	// public void testInviteSuccess() {
+	// fail("Not yet implemented");
+	// }
+	//
+	// @Test
+	// public void testInviteFailure() {
+	// fail("Not yet implemented");
+	// }
 
 }

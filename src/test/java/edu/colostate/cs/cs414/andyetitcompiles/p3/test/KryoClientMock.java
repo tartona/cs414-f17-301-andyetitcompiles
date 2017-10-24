@@ -14,15 +14,29 @@ public class KryoClientMock {
 		Client kryoClient;
 		boolean loggedIn;
 		boolean connected;
+		boolean received=false;
 		User clientUser;
 		String host;
-		private Object lastResponse=null;
+		private Object lastResponse;
 		public Object getResp() {
+			if(lastResponse==null) {
+				System.out.println("Client: Sending lastResponse: null");
+			} else {
+				System.out.println("Client: Sending lastResponse: "+lastResponse.getClass().getName());
+			}
 			return lastResponse;
+		}
+		public boolean received() {
+			if(received) {
+				received=false;
+				return true;
+			}
+			return false;
 		}
 		
 		// Regular production constructor
 		public KryoClientMock() {
+			lastResponse=null;
 			// Initialize the kryo client
 			kryoClient = new Client();
 			initializeKryoClient();
@@ -36,6 +50,7 @@ public class KryoClientMock {
 		
 		// This contains all the code for setting up the kryo client
 		public void initializeKryoClient() {
+			kryoClient.start();
 			// Register the client with the Network class
 			Network.register(kryoClient);
 			
@@ -44,10 +59,13 @@ public class KryoClientMock {
 				// Called after client successfully connects to the server
 				public void connected(Connection c) {
 					connected = true;
+					System.out.println("Successfully connected");
 				}
 				// Called whenever the client receives a message from the server
 				public void received(Connection c, Object object) {
+					System.out.println("Client: Received object:"+object.getClass().getName());
 					lastResponse=object;
+					received=true;
 				}
 				// Called whenever the client is disconnected from the server
 				public void disconnected(Connection c) {
@@ -63,7 +81,7 @@ public class KryoClientMock {
 						// Attempt to connect to the server. The port and host is defined in the Network class. 5000ms timeout
 						kryoClient.connect(5000, Network.host, Network.port);
 					} catch(IOException ex) {
-						ex.printStackTrace();
+						System.out.println("Something went wrong while connecting to the server: " + ex.getMessage());
 					}
 				}
 			}.start();
