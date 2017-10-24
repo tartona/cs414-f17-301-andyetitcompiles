@@ -23,7 +23,7 @@ public class JungleClient {
 	
 	public JungleClient() {
 		loggedIn = false;
-		kryoClient = new Client();
+		kryoClient = new Client(8192, 4096);
 		requestedUsers = new HashSet<User>();
 		activeGames = new HashMap<Integer, ClientGameController>();
 		initializeKryoClient();

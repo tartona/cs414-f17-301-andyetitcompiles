@@ -1,6 +1,6 @@
 package edu.colostate.cs.cs414.andyetitcompiles.p3.server;
 
-import java.awt.Color;
+import edu.colostate.cs.cs414.andyetitcompiles.p3.common.Color;
 
 import edu.colostate.cs.cs414.andyetitcompiles.p3.common.JungleGame;
 import edu.colostate.cs.cs414.andyetitcompiles.p3.common.JunglePiece;
@@ -18,6 +18,7 @@ public class ServerGameController {
 	User player2User; // Black
 	Color turn;
 	
+	// All code in this class assumes that player1 is white and player2 is black, also player/white always goes first (so the person who invited the other player is player1)
 	public ServerGameController(int gameID, JungleClientConnection player1, JungleClientConnection player2) {
 		this.gameID = gameID;
 		this.player1 = player1;
@@ -47,18 +48,18 @@ public class ServerGameController {
 
 	}
 
-	public void handleMove(GameMessage move) {
-		JunglePiece piece = move.getPiece();
-		JungleTile tile = move.getTile();
+	private void handleMove(GameMessage move) {
+		JunglePiece piece = game.getPiece(move.getPieceColor(), move.getPieceID());
+		JungleTile tile = game.getTile(move.getTileRow(), move.getTileCol());
 		// Check to see if it is that colors turn
 		if(piece.getColor() == turn) {
 			// Currently, we are expecting the client to make sure the move is valid.
-			// If the move isn't successful, throw an exception for debugging purposes. 
-			if(game.makeMove(move.getPiece(), move.getTile())) {
+			// If the move isn't successful, do nothing to notify the client, and don't pass the move on to the other client
+			if(game.makeMove(piece, tile)) {
 				// Set the turn to the next player
 				if(turn == Color.WHITE) turn = Color.BLACK;
 				else turn = Color.WHITE;
-				sendBoardUpdate();
+				sendMove(turn, move);
 				sendTurnUpdate(turn);
 				// Someone won the game!
 				User winner = game.getWinner();
@@ -85,11 +86,12 @@ public class ServerGameController {
 		
 	}
 	
-	// Sends a board update to the players
-	private void sendBoardUpdate() {
-		GameMessage boardUpdate = new GameMessage(gameID, GameMessageType.UPDATE, game.getBoard());
-		player1.sendTCP(boardUpdate);
-		player2.sendTCP(boardUpdate);
+	// Sends a move to the specified color
+	private void sendMove(Color color, GameMessage move) {
+		if(color == Color.WHITE)
+			player1.sendTCP(move);
+		else
+			player2.sendTCP(move);
 	}
 
 	// Sends a game over notification to the players, and notifies the server that the game has ended

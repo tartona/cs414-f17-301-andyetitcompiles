@@ -1,6 +1,6 @@
 package edu.colostate.cs.cs414.andyetitcompiles.p3.protocol;
 
-import java.awt.Color;
+import edu.colostate.cs.cs414.andyetitcompiles.p3.common.Color;
 
 import edu.colostate.cs.cs414.andyetitcompiles.p3.common.User;
 

@@ -1,6 +1,6 @@
 package edu.colostate.cs.cs414.andyetitcompiles.p3.common;
 
-import java.awt.Color;
+import edu.colostate.cs.cs414.andyetitcompiles.p3.common.Color;
 
 public class Elephant extends JunglePiece{
 	public Elephant(Color color, JungleTile startTile, String id){
