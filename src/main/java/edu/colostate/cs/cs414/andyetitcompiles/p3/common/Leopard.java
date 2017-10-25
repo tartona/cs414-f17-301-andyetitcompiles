@@ -1,6 +1,6 @@
 package edu.colostate.cs.cs414.andyetitcompiles.p3.common;
 
-import java.awt.Color;
+import edu.colostate.cs.cs414.andyetitcompiles.p3.common.Color;
 
 public class Leopard extends JunglePiece{
 	public Leopard(Color color, JungleTile startTile, String id){

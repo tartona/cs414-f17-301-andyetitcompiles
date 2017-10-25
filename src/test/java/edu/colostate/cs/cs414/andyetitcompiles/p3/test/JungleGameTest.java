@@ -12,7 +12,7 @@ import edu.colostate.cs.cs414.andyetitcompiles.p3.common.JunglePiece;
 import edu.colostate.cs.cs414.andyetitcompiles.p3.common.Rat;
 import edu.colostate.cs.cs414.andyetitcompiles.p3.common.User;
 
-import java.awt.Color;
+import edu.colostate.cs.cs414.andyetitcompiles.p3.common.Color;
 
 public class JungleGameTest {
 	JungleGame game;

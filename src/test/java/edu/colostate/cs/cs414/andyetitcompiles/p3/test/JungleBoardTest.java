@@ -3,7 +3,7 @@ package edu.colostate.cs.cs414.andyetitcompiles.p3.test;
 
 import static org.junit.Assert.*;
 
-import java.awt.Color;
+import edu.colostate.cs.cs414.andyetitcompiles.p3.common.Color;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -32,7 +32,6 @@ public class JungleBoardTest {
 	public void testGetPiece(){
 		assertEquals("lion", board.getPiece(Color.WHITE, "lion").getID());
 		assertEquals("leopard", board.getPiece(Color.BLACK, "leopard").getID());
-		assertEquals(null, board.getPiece(Color.CYAN, "elephant"));
 		assertEquals(null, board.getPiece(Color.BLACK, "not an animal"));
 	}
 	
