@@ -9,6 +9,9 @@ public class GameInstance {
 	User opponent;
 	Color color;
 	
+	// For kryo
+	public GameInstance() {}
+	
 	public GameInstance(int gameID, User opponent, Color color) {
 		this.gameID = gameID;
 		this.opponent = opponent;

@@ -18,14 +18,13 @@ public class JungleClient {
 	boolean loggedIn;
 	User clientUser;
 	String host;
-	Set<User> requestedUsers;
-	Map<Integer, ClientGameController> activeGames;
+	User requestedUser;
+	ClientGameController gameController;
 	
 	public JungleClient() {
 		loggedIn = false;
 		kryoClient = new Client(8192, 4096);
-		requestedUsers = new HashSet<User>();
-		activeGames = new HashMap<Integer, ClientGameController>();
+		gameController = null;
 		initializeKryoClient();
 	}
 	
@@ -43,6 +42,7 @@ public class JungleClient {
 			}
 			// Listeners for server requests and responses
 			public void received(Connection c, Object o) {
+				System.out.println("Client " + kryoClient.getID() + " received " + o.getClass());
 				// An invite from another user
 				if(o instanceof InviteRequest) {
 					handleInviteRequest((InviteRequest)o);
@@ -71,6 +71,16 @@ public class JungleClient {
 				if(o instanceof GameInstance) {
 					handleGameInstance((GameInstance)o);
 				}
+				// Sent by the server for game communications
+				if(o instanceof GameMessage) {
+					GameMessage message = (GameMessage)o;
+					// IMPORTANT TODO: Make it so we can have multiple games
+					if(gameController == null) {
+						System.out.println("GameMessage ignored on client, no game has been started");
+						return;
+					}
+					gameController.handleMessage(message);
+				}
 			}
 			// Called whenever the client is disconnected from the server
 			public void disconnected(Connection c) {
@@ -79,22 +89,6 @@ public class JungleClient {
 			}
 		});
 		
-		// Define a listener that runs on its own thread to handle game communication
-		kryoClient.addListener(new ThreadedListener (new Listener() {
-			public void received(Connection c, Object o) {
-				// This listener is only concerned with GameMessages
-				if(o instanceof GameMessage) {
-					GameMessage message = (GameMessage)o;
-					// Find the associated game
-					ClientGameController game = activeGames.get(message.getGameID());
-					if(game == null) { // Do nothing if the message gameID is not for one of the clients active games
-						System.out.println("Received packet for game that couldn't be found on the client");
-						return;
-					}
-					game.handleMessage(message);
-				}
-			}
-		}));
 		// It is best to attempt the connection on its own thread so it does block the loading of other client components (like ui)
 		new Thread("Connect") {
 			public void run () {
@@ -115,14 +109,19 @@ public class JungleClient {
 	// Called when the client receives a new game instance from the server
 	private void handleGameInstance(GameInstance game) {
 		// Create a new game controller and add it to the active games. 
-		activeGames.put(game.getGameID(), new ClientGameController(game.getGameID(), clientUser, game.getOpponent(), game.getColor(), kryoClient));
+		if(gameController != null) {
+			System.out.println("Ignoring GameInstance message on client, there is already an active game");
+			return;
+		}
+		System.out.println("Creating a new game instance on client");
+		gameController = new ClientGameController(game.getGameID(), clientUser, game.getOpponent(), game.getColor(), kryoClient);
 	}
 	
 	// Called when the client receives an invite request from another player
 	private void handleInviteRequest(InviteRequest request) {
 		System.out.println("You have been invited to play jungle by: " + request.getInviter().getNickname());
-		// Now we send a notification to the ui, which will then communicate back whether the user accepts or rejects
-		// I can't do this until the interface to the ui is defined.
+		// For now, just automatically accept the invite
+		kryoClient.sendTCP(new InviteResponse(true, request.getInviter(), request.getInvitee(), getClientUser().getNickname() + " has accepted your invite."));
 	}
 
 	// Sends login request to the server
@@ -202,9 +201,9 @@ public class JungleClient {
 	private void handleUserResponse(UserResponse response) {
 		if(response.successful()) {
 			System.out.println(response.getMessage());
-			// Add the user to the set of users the client has searched for
+			// Set the requested user field
 			User requestedUser = response.getUser();
-			requestedUsers.add(requestedUser);
+			this.requestedUser = requestedUser;
 			// Then we would send an update to the ui, maybe with a popup,
 			// maybe just updating a side menu with a set of a users "friends"
 		}
@@ -223,6 +222,10 @@ public class JungleClient {
 		kryoClient.sendTCP(request);
 	}
 	
+	public User getClientUser() {
+		return clientUser;
+	}
+
 	// Called when the client receives a reply to an invite they sent
 	private void handleInviteResponse(InviteResponse response) {
 		if(response.isAccepted()) {
@@ -241,6 +244,10 @@ public class JungleClient {
 		return loggedIn;
 	}
 	
+	public User getRequestedUser() {
+		return requestedUser;
+	}
+
 	// Stops the client
 	public void stop() {
 		kryoClient.stop();
@@ -249,5 +256,11 @@ public class JungleClient {
 		// TODO Auto-generated method stub
 
 	}
+
+	// For testing. 
+	public ClientGameController getController() {
+		return gameController;
+	}
+
 
 }
