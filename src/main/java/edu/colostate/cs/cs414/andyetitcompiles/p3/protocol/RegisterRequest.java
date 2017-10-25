@@ -11,7 +11,6 @@ public class RegisterRequest {
 		this.nickname = nickname;
 		this.password = password;
 	}
-
 	public RegisterRequest() {}
 	
 	public String getEmail() {return email;}

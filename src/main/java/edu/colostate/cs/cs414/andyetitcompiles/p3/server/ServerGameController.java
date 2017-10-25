@@ -39,6 +39,7 @@ public class ServerGameController {
 	public void handleMessage(GameMessage message) {
 		// Received message should have a matching gameID. 
 		// This exception should never be thrown if the server is working properly
+		System.out.println("Server game " + message.getGameID() + " received GameMessage of type " + message.getType());
 		if(message.getGameID() != gameID)
 			throw new RuntimeException("Message for game " + message.getGameID() + " sent to wrong game " + gameID);
 		if(message.getType() == GameMessageType.MAKE_MOVE)

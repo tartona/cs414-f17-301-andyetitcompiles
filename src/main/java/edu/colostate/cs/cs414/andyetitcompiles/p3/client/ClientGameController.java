@@ -38,6 +38,7 @@ public class ClientGameController {
 	public void handleMessage(GameMessage message) {
 		if(message.getGameID() != gameID)
 			throw new IllegalArgumentException("Message for wrong game " + message.getGameID() + " received. Should be " + gameID);
+		System.out.println("Client controller " + message.getGameID() + " for user " + self.getNickname() + " received GameMessage of type " + message.getType());
 		if(message.getType() == GameMessageType.SET_TURN) {
 			handleSetTurn(message);
 		}

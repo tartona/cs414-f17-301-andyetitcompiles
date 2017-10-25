@@ -22,7 +22,7 @@ public class InviteResponse {
 	public boolean isAccepted() {
 		return isAccepted;
 	}
-
+	
 	public User getInviter() {
 		return inviter;
 	}

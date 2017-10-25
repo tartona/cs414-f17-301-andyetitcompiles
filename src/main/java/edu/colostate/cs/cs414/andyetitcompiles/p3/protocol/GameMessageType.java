@@ -4,6 +4,6 @@ public enum GameMessageType {
 	MAKE_MOVE,
 	GAME_OVER,
 	QUIT_GAME,
-	UPDATE,
+	READY,
 	SET_TURN
 }

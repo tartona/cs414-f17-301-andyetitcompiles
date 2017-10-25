@@ -32,9 +32,9 @@ public class Network {
 		kryo.register(UserStatus.class);
 		kryo.register(GameMessage.class);
 		kryo.register(GameMessageType.class);
+		kryo.register(GameInstance.class);
 		kryo.register(GameRecord.class);
 		kryo.register(Color.class);
-		kryo.register(float[].class);
 		// Add any classes that we want to send as we develop the project
 	}
 }
