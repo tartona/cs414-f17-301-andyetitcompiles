@@ -1,8 +1,8 @@
 package edu.colostate.cs.cs414.andyetitcompiles.p3.common;
 
-import edu.colostate.cs.cs414.andyetitcompiles.p3.common.Color;
+//import edu.colostate.cs.cs414.andyetitcompiles.p3.common.Color;
 import java.util.ArrayList;
-
+import java.util.Scanner;
 
 public class JungleGame implements GameInterface{
 	private JungleBoard board;
@@ -15,6 +15,38 @@ public class JungleGame implements GameInterface{
 		board = new JungleBoard();
 	}
 
+	public static void main(String[] args){
+		Scanner scnr = new Scanner(System.in);
+		System.out.println("Initializing board...");
+		JungleGame game = new JungleGame(new User("Player1", null, null), new User("Player2", null, null));
+		game.board.printBoard();
+		while(scnr.hasNext()){
+			String[] in = scnr.nextLine().split(" ");
+			Color color = (in[0].equals("P1") ? Color.WHITE : Color.BLACK);
+			String id = in[1];
+			JunglePiece piece = game.getPiece(color, id);
+			System.out.println("Moving piece " + piece.id);
+			String direction = in[2];
+			int row = piece.getCurrentRow();
+			int col = piece.getCurrentCol();
+			if(direction.equals("up")){
+				row--;
+			}
+			if(direction.equals("down")){
+				row++;
+			}
+			if(direction.equals("left")){
+				col--;
+			}
+			if(direction.equals("row")){
+				col++;
+			}
+			System.out.println(game.getTile(row, col).getType());
+			game.makeMove(piece, game.getTile(row, col));
+			game.board.printBoard();
+		}
+	}
+	
 	public boolean makeMove(JunglePiece piece, JungleTile tile) {
 		if(!getValidMoves(piece).contains(tile))
 			return false;

@@ -120,9 +120,9 @@ public class JungleBoard {
 			for(int j = 0; j < COLS; j++){
 				type = TileType.NORMAL;
 				if(i == 0 && j == 3) 
-					type = TileType.BLACK_DEN;
+					type = TileType.B_DEN;
 				if(i == 8 && j == 3)
-					type = TileType.WHITE_DEN;
+					type = TileType.W_DEN;
 				if((i <= 5 && i >= 3) && (j == 1 || j == 2 || j == 4 || j== 5))
 					type = TileType.RIVER;
 				if((i == 0 || i == 8) && (j == 2 || j == 4))
@@ -173,7 +173,7 @@ public class JungleBoard {
 				if(tiles[i][j].getCurrentPiece() == null)
 					System.out.print(tiles[i][j].getType() + "\t");
 				else
-					System.out.print(tiles[i][j].getCurrentPiece().toString() + " \t");
+					System.out.print(tiles[i][j].getCurrentPiece().toString() + "\t");
 			}
 			System.out.println();
 		}

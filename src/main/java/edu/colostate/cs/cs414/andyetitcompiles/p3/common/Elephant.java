@@ -10,7 +10,7 @@ public class Elephant extends JunglePiece{
 	
 	@Override
 	public String toString(){
-		return "Elephant";
+		return "Eleph";
 	}
 
 	@Override
