@@ -35,6 +35,8 @@ public class JungleGame implements GameInterface{
 	public boolean capturePiece(JunglePiece attacker, JunglePiece victim){
 		if(attacker.getColor() == victim.getColor())	//pieces cannot attack their teammates
 			return false;	
+		if(attacker instanceof Elephant && victim instanceof Rat)
+			return false;
 		if((attacker.getPower() > victim.getPower()) || (attacker instanceof Rat && victim instanceof Elephant)){
 			board.removePiece(victim);
 			return true;
