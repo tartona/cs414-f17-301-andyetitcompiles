@@ -14,36 +14,78 @@ public class JungleGame implements GameInterface{
 		this.player2 = player2;
 		board = new JungleBoard();
 	}
+	
+	public JungleGame(){
+		board = new JungleBoard();
+	}
 
+	public boolean readyToPlay(){
+		return player1 != null && player2 != null;
+	}
+	
 	public static void main(String[] args){
 		Scanner scnr = new Scanner(System.in);
-		System.out.println("Initializing board...");
-		JungleGame game = new JungleGame(new User("Player1", null, null), new User("Player2", null, null));
+		System.out.println("Welcome to Jungle! To get commands, type 'help'.");
+		JungleGame game = new JungleGame();
+		System.out.println("Please register two users to start the game.");
+		while(game.player1 == null){
+			String[] register1 = scnr.nextLine().split(" ");
+			if(register1[0].equals("register")){
+				game.player1 = new User(null, register1[1], null);
+				System.out.println("Registered player " + game.player1.getNickname() + " as P1");
+			}
+		}
+		while(game.player2 == null){
+			String[] register2 = scnr.nextLine().split(" ");
+			if(register2[0].equals("register")){
+				game.player2 = new User(null, register2[1], null);
+				System.out.println("Registered player " + game.player2.getNickname() + " as P2");
+			}
+		}
+		
+		boolean p1next = true;
 		game.board.printBoard();
 		while(scnr.hasNext()){
 			String[] in = scnr.nextLine().split(" ");
-			Color color = (in[0].equals("P1") ? Color.WHITE : Color.BLACK);
+			if((in[0].equalsIgnoreCase(game.player1.getNickname()) && !p1next) || in[0].equalsIgnoreCase(game.player2.getNickname()) && p1next){
+				System.out.println("It's not your turn right now.");
+				continue;
+			}
+			Color color = p1next ? Color.WHITE : Color.BLACK;
 			String id = in[1];
 			JunglePiece piece = game.getPiece(color, id);
-			System.out.println("Moving piece " + piece.id);
+			if(piece == null){
+				System.out.println("Whoops, I didn't recognize that command. Please try again.");
+				continue;
+			}
 			String direction = in[2];
+			int steps = Integer.parseInt(in[3]);
 			int row = piece.getCurrentRow();
 			int col = piece.getCurrentCol();
 			if(direction.equals("up")){
-				row--;
+				row -= steps;
 			}
 			if(direction.equals("down")){
-				row++;
+				row += steps;
 			}
 			if(direction.equals("left")){
-				col--;
+				col -= steps;
 			}
-			if(direction.equals("row")){
-				col++;
+			if(direction.equals("right")){
+				col += steps;
 			}
-			System.out.println(game.getTile(row, col).getType());
-			game.makeMove(piece, game.getTile(row, col));
+			if(game.isValidMove(piece, game.getTile(row, col))){
+				game.makeMove(piece, game.getTile(row, col));
+				p1next = !p1next;
+			}
+			else
+				System.out.println("Whoops! Invalid move.");
+			if(game.getWinner() != null){
+				System.out.println(game.getWinner().getNickname() + " wins the game!");
+				break;
+			}
 			game.board.printBoard();
+			System.out.println("It is " + (p1next ? game.player1.getNickname() : game.player2.getNickname())  + "'s turn to move.");		
 		}
 	}
 	
@@ -117,6 +159,8 @@ public class JungleGame implements GameInterface{
 		if(tile.getType() == TileType.RIVER && !piece.getID().equals("rat"))
 			return false;
 		JunglePiece pieceOnTile = tile.getCurrentPiece();
+		if(pieceOnTile != null && pieceOnTile.getID().equals("elephant") && piece.getID().equals("rat"))
+			return true;
 		if(pieceOnTile != null && pieceOnTile.getPower() > piece.getPower())
 			return false;
 		return true;

@@ -75,7 +75,7 @@ public class DatabaseManager {
 			if (user.getEmail().equalsIgnoreCase(username) || user.getNickname().equalsIgnoreCase(username)) {
 				return new UserResponse(true, user, "User Found");
 			}
-		}
+		} 
 		return new UserResponse(false, null, "User not found");
 	}
 }

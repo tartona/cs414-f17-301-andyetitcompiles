@@ -10,7 +10,7 @@ public class Dog extends JunglePiece{
 
 	@Override
 	public String toString(){
-		return "Dog";
+		return "Dog" + (color == Color.WHITE ? 1 : 2);
 	}
 
 	@Override
