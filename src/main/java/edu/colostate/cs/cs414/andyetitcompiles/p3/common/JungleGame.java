@@ -1,5 +1,12 @@
 package edu.colostate.cs.cs414.andyetitcompiles.p3.common;
 
+import java.io.Console;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 //import edu.colostate.cs.cs414.andyetitcompiles.p3.common.Color;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -8,6 +15,7 @@ public class JungleGame implements GameInterface{
 	private JungleBoard board;
 	private User player1;	//player 1 is white
 	private User player2; 	//player 2 is black
+	private File register;
 	
 	public JungleGame(User player1, User player2){
 		this.player1 = player1;
@@ -17,29 +25,123 @@ public class JungleGame implements GameInterface{
 	
 	public JungleGame(){
 		board = new JungleBoard();
+		register = new File("users.txt");
 	}
 
-	public boolean readyToPlay(){
-		return player1 != null && player2 != null;
+	public void registerUser(String nickname){
+		try {
+			Console console = System.console();
+			System.out.println(console == null);
+			String pass = new String(console.readPassword("Please create a password: "));
+			MessageDigest m = MessageDigest.getInstance("MD5");
+			m.update(pass.getBytes());
+			byte[]digest1 = m.digest();
+			m.update(new String(console.readPassword("Please type your password again: ")).getBytes());
+			byte[]digest2 = m.digest();
+			BigInteger bigInt1 = new BigInteger(1,digest1);
+			String hashtext1 = bigInt1.toString(16);
+			BigInteger bigInt2 = new BigInteger(1,digest2);	
+			String hashtext2 = bigInt2.toString(16);
+			if(hashtext1.equals(hashtext2)){
+				Scanner scnr = new Scanner(register);
+				File tempfile = new File("temp-file.txt");
+				PrintWriter pw = new PrintWriter(tempfile);
+				while(scnr.hasNextLine()){
+					String line = scnr.nextLine();
+					pw.println(line);
+				}
+				pw.println(nickname + " " + hashtext1);
+				if(player1 == null)
+					player1 = new User(null, nickname, null);
+				else if(player2 == null)
+					player2 = new User(null, nickname, null);
+				System.out.println("Registered player " + nickname);
+				pw.close();
+				tempfile.renameTo(register);
+			}
+			else{
+				System.out.println("Passwords did not match. Please try again.");
+				registerUser(nickname);
+			}
+		} catch (FileNotFoundException | NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void loginUser(String nickname){
+		try {
+			Console console = System.console();
+			String enteredPassword = new String(console.readPassword("Enter password: "));
+			MessageDigest m = MessageDigest.getInstance("MD5");
+			m.update(enteredPassword.getBytes());
+			byte[]digest = m.digest();
+			BigInteger bigInt2 = new BigInteger(1,digest);	
+			String hashtext = bigInt2.toString(16);
+			Scanner scnr = new Scanner(register);
+			while(!scnr.nextLine().contains(nickname));
+			if(hashtext.equals(scnr.nextLine().split(" ")[1])){
+				if(player1 == null)
+					player1 = new User(null, nickname, null);
+				else if(player2 == null)
+					player2 = new User(null, nickname, null);
+				else
+					System.out.println("Sorry, two players are already logged in.");
+			}
+			else
+				System.out.println("Incorrect password entered. Please try again.");
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void logoutUser(String nickname){
+		if(player1.getNickname().equals(nickname))
+			player1 = null;
+	}
+	
+	public void unregisterUser(String nickname){
+		Scanner scnr;
+		try {
+			scnr = new Scanner(register);
+			File tempfile = new File("temp-file.txt");
+			PrintWriter pw = new PrintWriter(tempfile);
+			while(scnr.hasNextLine()){
+				String line = scnr.nextLine();
+				if(line.split(" ")[0].equals(nickname)){
+					continue;
+				}
+				else{
+					pw.println(line);
+				}
+			}
+			pw.close();
+			tempfile.renameTo(register);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		
 	}
 	
 	public static void main(String[] args){
+		Console console = System.console();
 		Scanner scnr = new Scanner(System.in);
 		System.out.println("Welcome to Jungle! To get commands, type 'help'.");
 		JungleGame game = new JungleGame();
-		System.out.println("Please register two users to start the game.");
-		while(game.player1 == null){
-			String[] register1 = scnr.nextLine().split(" ");
-			if(register1[0].equals("register")){
-				game.player1 = new User(null, register1[1], null);
-				System.out.println("Registered player " + game.player1.getNickname() + " as P1");
+		System.out.println("Please register or log in two users to start the game.");
+		while(game.player1 == null || game.player2 == null){
+			String[] query = scnr.nextLine().split(" ");
+			if(query[0].equals("register")){
+				game.registerUser(query[1]);
 			}
-		}
-		while(game.player2 == null){
-			String[] register2 = scnr.nextLine().split(" ");
-			if(register2[0].equals("register")){
-				game.player2 = new User(null, register2[1], null);
-				System.out.println("Registered player " + game.player2.getNickname() + " as P2");
+			else if(query[0].equals("login")){
+				game.loginUser(query[1]);
+			}
+			else if(query[0].equals("logout")){
+				game.logoutUser(query[1]);
 			}
 		}
 		
@@ -87,6 +189,7 @@ public class JungleGame implements GameInterface{
 			game.board.printBoard();
 			System.out.println("It is " + (p1next ? game.player1.getNickname() : game.player2.getNickname())  + "'s turn to move.");		
 		}
+		scnr.close();
 	}
 	
 	public boolean makeMove(JunglePiece piece, JungleTile tile) {
