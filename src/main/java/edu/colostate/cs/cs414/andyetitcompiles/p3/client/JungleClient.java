@@ -10,7 +10,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
-import com.esotericsoftware.kryonet.Listener.ThreadedListener;
 
 import edu.colostate.cs.cs414.andyetitcompiles.p3.common.User;
 import edu.colostate.cs.cs414.andyetitcompiles.p3.protocol.*;
