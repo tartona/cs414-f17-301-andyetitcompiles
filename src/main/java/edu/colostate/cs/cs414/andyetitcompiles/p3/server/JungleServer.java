@@ -45,7 +45,6 @@ public class JungleServer {
 			public void received(Connection c, Object object) {
 				// We know every connection is a JungleClientConnection
 				JungleClientConnection jClient = (JungleClientConnection)c;
-				System.out.println("Server received " + object.getClass());
 				if (object instanceof LoginRequest) {
 					LoginRequest loginRequest = (LoginRequest) object;
 					LoginResponse loginResp = database.authenticateUser(loginRequest.getEmail(), loginRequest.getPassword());
@@ -183,5 +182,14 @@ public class JungleServer {
 	// for testing
 	public ServerGameController getController() {
 		return gameController;
+	}
+	
+	
+	public static void main(String args[]) {
+		try {
+			new JungleServer();
+		} catch (IOException e) {
+			System.out.println("Exception in server: "+e.getMessage());
+		}
 	}
 }
