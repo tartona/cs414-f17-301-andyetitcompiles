@@ -1,11 +1,12 @@
 package edu.colostate.cs.cs414.andyetitcompiles.p3.protocol;
 
+import edu.colostate.cs.cs414.andyetitcompiles.p3.common.Color;
+import java.util.ArrayList;
+
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.EndPoint;
 
-import edu.colostate.cs.cs414.andyetitcompiles.p3.common.GameRecord;
-import edu.colostate.cs.cs414.andyetitcompiles.p3.common.User;
-import edu.colostate.cs.cs414.andyetitcompiles.p3.common.UserStatus;
+import edu.colostate.cs.cs414.andyetitcompiles.p3.common.*;
 
 public class Network {
 	
@@ -16,6 +17,7 @@ public class Network {
 	// This keeps things consistent between the server and client
 	static public void register (EndPoint endPoint) {
 		Kryo kryo = endPoint.getKryo();
+		// Classes within the project
 		kryo.register(LoginRequest.class);
 		kryo.register(LoginResponse.class);
 		kryo.register(RegisterRequest.class);
@@ -27,8 +29,12 @@ public class Network {
 		kryo.register(InviteRequest.class);
 		kryo.register(InviteResponse.class);
 		kryo.register(User.class);
-		kryo.register(GameRecord.class);
 		kryo.register(UserStatus.class);
+		kryo.register(GameMessage.class);
+		kryo.register(GameMessageType.class);
+		kryo.register(GameInstance.class);
+		kryo.register(GameRecord.class);
+		kryo.register(Color.class);
 		// Add any classes that we want to send as we develop the project
 	}
 }

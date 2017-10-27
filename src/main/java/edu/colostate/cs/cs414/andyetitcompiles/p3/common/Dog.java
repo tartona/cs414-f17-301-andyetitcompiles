@@ -1,6 +1,6 @@
 package edu.colostate.cs.cs414.andyetitcompiles.p3.common;
 
-import java.awt.Color;
+import edu.colostate.cs.cs414.andyetitcompiles.p3.common.Color;
 
 public class Dog extends JunglePiece{
 	public Dog(Color color, JungleTile startTile, String id){
@@ -10,7 +10,7 @@ public class Dog extends JunglePiece{
 
 	@Override
 	public String toString(){
-		return "Dog";
+		return "Dog" + (color == Color.WHITE ? 1 : 2);
 	}
 
 	@Override

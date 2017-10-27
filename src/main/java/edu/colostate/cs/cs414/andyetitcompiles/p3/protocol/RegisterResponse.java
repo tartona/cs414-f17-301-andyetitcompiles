@@ -6,7 +6,7 @@ public class RegisterResponse {
 	String message;
 
 	public RegisterResponse(boolean isSuccesful, String message) {
-		this.isSuccessful = true;
+		this.isSuccessful = isSuccesful;
 		this.message = message;
 	}
 	

@@ -28,7 +28,7 @@ public class User {
 	public boolean equals(Object other) {
 		if(other instanceof User) {
 			User otherUser = (User)other;
-			return otherUser.getEmail().equals(email) && otherUser.getNickname().equals(nickname);
+			return otherUser.getNickname().equals(nickname);
 		}
 		else
 			return false;

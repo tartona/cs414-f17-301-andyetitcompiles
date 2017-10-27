@@ -12,7 +12,7 @@ import edu.colostate.cs.cs414.andyetitcompiles.p3.common.JunglePiece;
 import edu.colostate.cs.cs414.andyetitcompiles.p3.common.Rat;
 import edu.colostate.cs.cs414.andyetitcompiles.p3.common.User;
 
-import java.awt.Color;
+import edu.colostate.cs.cs414.andyetitcompiles.p3.common.Color;
 
 public class JungleGameTest {
 	JungleGame game;
@@ -161,7 +161,13 @@ public class JungleGameTest {
 	public void testCapturePiece(){
 		JunglePiece wrat = game.getPiece(Color.WHITE, "rat");
 		JunglePiece wlion = game.getPiece(Color.WHITE, "lion");
+		JunglePiece blion = game.getPiece(Color.BLACK, "lion");
+		JunglePiece belephant = game.getPiece(Color.BLACK, "elephant");
+
 		assertFalse(game.capturePiece(wrat, wlion));
+		assertFalse(game.capturePiece(wrat, blion));
+		assertFalse(game.capturePiece(belephant, wrat));
+		assertTrue(game.capturePiece(wrat, belephant));
 	}
 	
 }

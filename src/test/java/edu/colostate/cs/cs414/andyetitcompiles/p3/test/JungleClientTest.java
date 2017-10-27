@@ -148,6 +148,8 @@ public class JungleClientTest {
 	
 	@Test
 	public void testFindUser() throws InterruptedException {
+		jClient.login("email", "password");
+		Thread.sleep(500);
 		jClient.findUser("nickname");
 		Thread.sleep(500);
 		UserRequest expected = new UserRequest("nickname");
@@ -160,6 +162,8 @@ public class JungleClientTest {
 	
 	@Test
 	public void testInvite() throws InterruptedException {
+		jClient.login("email", "password");
+		Thread.sleep(500);
 		User user = new User("email", "nickname", "password");
 		jClient.invite(user);
 		Thread.sleep(500);
