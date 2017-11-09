@@ -1,8 +1,7 @@
 package edu.colostate.cs.cs414.andyetitcompiles.p3.server;
 
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
+import java.sql.SQLException;
 
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
@@ -34,7 +33,14 @@ public class JungleServer {
 				return new JungleClientConnection();
 			}
 		};
-		this.database = new DatabaseManager();
+		
+		//try to connect to database, if this fails use temp database
+		try {
+			this.database = new DatabaseManagerSQL();
+		} catch (ClassNotFoundException | SQLException e) {
+			e.printStackTrace();
+			this.database = new DatabaseManagerSets();
+		}
 		networkSetup();
 	}
 
@@ -176,9 +182,6 @@ public class JungleServer {
 	/**
 	 * Resets everything in current database for testing.
 	 */
-	public void resetDatabase() {
-		database = new DatabaseManager();
-	}
 	
 	// for testing
 	public ServerGameController getController() {

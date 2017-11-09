@@ -7,6 +7,7 @@ import static org.junit.Assert.*;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import edu.colostate.cs.cs414.andyetitcompiles.p3.protocol.LoginRequest;
@@ -15,6 +16,7 @@ import edu.colostate.cs.cs414.andyetitcompiles.p3.protocol.RegisterRequest;
 import edu.colostate.cs.cs414.andyetitcompiles.p3.protocol.RegisterResponse;
 import edu.colostate.cs.cs414.andyetitcompiles.p3.protocol.UnregisterRequest;
 import edu.colostate.cs.cs414.andyetitcompiles.p3.protocol.UnregisterResponse;
+import edu.colostate.cs.cs414.andyetitcompiles.p3.server.DatabaseManagerSQL;
 import edu.colostate.cs.cs414.andyetitcompiles.p3.server.JungleServer;
 
 /**
@@ -23,15 +25,22 @@ import edu.colostate.cs.cs414.andyetitcompiles.p3.server.JungleServer;
  */
 public class JungleServerTest {
 
+	static DatabaseManagerSQL db;
 	JungleServer jServer;
 	KryoClientMock client = new KryoClientMock();
+
+	@BeforeClass
+	public static void setUpBeforeClass() throws Exception {
+		db = new DatabaseManagerSQL("~/unitTest","test","password");
+	}
 
 	/**
 	 * @throws java.lang.Exception
 	 */
 	@Before
 	public void setUp() throws Exception {
-		jServer = new JungleServer();
+		db.resetTable();
+		jServer = new JungleServer(db);
 		client = new KryoClientMock();
 		Thread.sleep(500);
 	}
