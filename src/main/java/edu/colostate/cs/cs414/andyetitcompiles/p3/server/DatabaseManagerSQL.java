@@ -52,9 +52,17 @@ public class DatabaseManagerSQL extends DatabaseManager {
 		connection = DriverManager.getConnection("jdbc:h2:"+dbLocation+useSSL+ignoreCase, dbUsername, dbPassword);
 		System.out.println("-------- Connected to "+dbLocation+" -----------");
 		setupTables();
-		//TODO set all online statuses to 0
+
+		//Set all online statuses to 0 when database starts.
+		String sql = "UPDATE userProfile "
+					+ "SET Online = '0' ";
+				connection.prepareStatement(sql).executeUpdate();
 	}
 	
+	/**
+	 * Sets up the user profile and user history sql tables.
+	 * @throws SQLException
+	 */
 	private void setupTables() throws SQLException {
 		//*****setup tables*****
 		
@@ -95,6 +103,10 @@ public class DatabaseManagerSQL extends DatabaseManager {
 		System.out.println("-------- Database tables configured -------");
 	}
 	
+	/**
+	 * Drop tables and create new empty tables. 
+	 * @throws SQLException
+	 */
 	public void resetTable() throws SQLException{
 		System.out.println("-------- Database tables deleted -------");
 		connection.prepareStatement("DROP TABLE IF EXISTS userHistory").execute();
@@ -103,6 +115,11 @@ public class DatabaseManagerSQL extends DatabaseManager {
 		setupTables();
 	}
 
+	/**
+	 * Check that Username(nickname) and email are both unique. If both are unique, register user in database.
+	 * 
+	 * User must contain username, email, and password.
+	 */
 	public RegisterResponse registerUser(User user) {
 		if (checkUser(user)) {
 			return new RegisterResponse(false, "Username or Email already in use");
@@ -121,6 +138,12 @@ public class DatabaseManagerSQL extends DatabaseManager {
 
 	}
 
+	/**
+	 * Check that username and email are not already in use.
+	 * 
+	 * @param user
+	 * @return
+	 */
 	private boolean checkUser(User user) {
 		String sql = "SELECT * FROM userProfile" 
 				   + " WHERE Username = '" + user.getNickname() +"'"
@@ -147,6 +170,14 @@ public class DatabaseManagerSQL extends DatabaseManager {
 		return registerUser(new User(email, nickname, password));
 	}
 
+	/**
+	 * Allows user to remove their account and all game records. 
+	 * 
+	 * @param email User email address
+	 * @param password user password
+	 * 
+	 * @return unregister response
+	 */
 	public UnregisterResponse unRegisterUser(String email, String password) {
 		
 		//search for Email with matching password
@@ -186,19 +217,23 @@ public class DatabaseManagerSQL extends DatabaseManager {
 		}
 	}
 
+	/**
+	 * User sends email and password to login.
+	 * returns login response.
+	 */
 	public LoginResponse authenticateUser(String email, String password) {
 		String sql = "SELECT * FROM userProfile "
 				   + "WHERE email LIKE '" + email + "'"
 				   + "AND password LIKE '" + password + "'";
 		try {
 			ResultSet rtnSet = connection.prepareStatement(sql).executeQuery();
-			String idUser = null;
+			int idUser = -1;
 			User tempUser = null;
 			int n = 0;
 			while (rtnSet.next()) {
 				n++; // should never be more than 1
-				idUser = rtnSet.getString("idUser");
-				tempUser = new User(rtnSet.getInt("idUser"),rtnSet.getString("Email"),rtnSet.getString("Username"),"", UserStatus.ONLINE); 
+				idUser = rtnSet.getInt("idUser");
+				tempUser = new User(idUser,rtnSet.getString("Email"),rtnSet.getString("Username"),"", UserStatus.ONLINE,gameHistory(idUser)); 
 			}
 			// found 1 user
 			if (n == 1) {
@@ -222,6 +257,9 @@ public class DatabaseManagerSQL extends DatabaseManager {
 		return new LoginResponse(false, new User(), "User login failed.");
 	}
 
+	/**
+	 * Logout sets user profile to offline.
+	 */
 	public void logout(User user) {
 		String sql = "UPDATE userProfile "
 				   + "SET Online = '0' "
@@ -233,7 +271,9 @@ public class DatabaseManagerSQL extends DatabaseManager {
 		}
 	}
 
-	// take username or email as input for user.
+	/**
+	 * Search for user profile and game history in database. 
+	 */
 	public UserResponse findUser(String username) {
 		String sql = "SELECT * FROM userProfile WHERE Username LIKE '" + username +"'";
 		try {
@@ -268,6 +308,12 @@ public class DatabaseManagerSQL extends DatabaseManager {
 		return new UserResponse(false, new User(), "User not found");
 	}
 	
+	/**
+	 * Adds game records of both users in a game to the database. 
+	 * @param user1 
+	 * @param user2
+	 * @return true for successfully added to database, false when unsuccessful. 
+	 */
 	public boolean addGame(GameRecord user1, GameRecord user2) {
 
 		try {
@@ -305,6 +351,11 @@ public class DatabaseManagerSQL extends DatabaseManager {
 		
 	}
 	
+	/**
+	 * 
+	 * @param idUser user identification number
+	 * @return hashset<GameRecord> containing all game records for user
+	 */
 	public Set<GameRecord> gameHistory(int idUser){
 		Set<GameRecord> record = new HashSet<>();
 		
@@ -321,6 +372,11 @@ public class DatabaseManagerSQL extends DatabaseManager {
 		return record;
 	}
 	
+	/**
+	 * 
+	 * @param idUser user identification number
+	 * @return Matching username for given id.
+	 */
 	private String searchNickname(int idUser) {
 		String sql = "SELECT * FROM userProfile WHERE Username idUser '" + idUser +"'";
 		try {
