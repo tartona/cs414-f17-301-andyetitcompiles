@@ -202,7 +202,11 @@ public class JungleServer {
 	
 	public static void main(String args[]) {
 		try {
-			new JungleServer();
+			if(args.length == 3) {
+				new JungleServer(args[0],args[1],args[3]);
+			} else {
+				new JungleServer();
+			}
 		} catch (IOException e) {
 			System.out.println("Exception in server: "+e.getMessage());
 		}
