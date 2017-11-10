@@ -41,5 +41,11 @@ public class GameRecord {
 	public boolean isAbandoned() {
 		return abandoned;
 	}
-
+	
+	public String toString() {
+		String rtnRecord = String.format("%-15s | %tc | %tc | %-5s | %-5s", opponent,startTime,endTime,won,abandoned);
+		
+		return rtnRecord;
+	}
+	
 }

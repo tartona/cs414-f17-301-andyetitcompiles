@@ -76,6 +76,22 @@ public class User {
 			return false;
 	}
 	
+	public String toString() {
+		String userInfo 
+			= "ID: " + id + "\r\n"
+			+ "Nickname: " + nickname + "\r\n"
+			+ "Email: " + email + "\r\n"
+			+ "Status: " + status + "\r\n"
+			+ "----Game History----\r\n"
+			+ "Opponent Name   | Start Date                   | end Date                     | Won?  | Abandoned? \r\n";
+		
+		for(GameRecord record:gameRecords) {
+			userInfo = userInfo + record + "\r\n";
+		}
+		
+		return userInfo;
+	}
+	
 //	public int hashCode() {
 //		int rtn = 0;
 //		for(char c:nickname.toCharArray()) {
