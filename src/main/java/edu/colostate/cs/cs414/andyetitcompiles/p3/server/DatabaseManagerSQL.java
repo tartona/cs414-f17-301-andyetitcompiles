@@ -69,13 +69,13 @@ public class DatabaseManagerSQL extends DatabaseManager {
 		//setup userProfile table
 		String sql = "CREATE TABLE IF NOT EXISTS userProfile (\r\n"
 				+ "  idUser INT(11) NOT NULL AUTO_INCREMENT,\r\n"
-				+ "  Username VARCHAR_IGNORECASE(63) NOT NULL,\r\n"
-				+ "  Email VARCHAR_IGNORECASE(63) NOT NULL,\r\n"
-				+ "  Password VARCHAR(63) NOT NULL,\r\n"
-				+ "  Online TINYINT(1) NULL DEFAULT NULL,\r\n"
+				+ "  nickname VARCHAR_IGNORECASE(63) NOT NULL,\r\n"
+				+ "  email VARCHAR_IGNORECASE(63) NOT NULL,\r\n"
+				+ "  password VARCHAR(63) NOT NULL,\r\n"
+				+ "  online TINYINT(1) NULL DEFAULT NULL,\r\n"
 				+ "  PRIMARY KEY (idUser),\r\n"
 				+ "  UNIQUE INDEX idUser_UNIQUE (idUser ASC),\r\n"
-				+ "  UNIQUE INDEX Username_UNIQUE (Username ASC),\r\n"
+				+ "  UNIQUE INDEX nickname_UNIQUE (nickname ASC),\r\n"
 				+ "  UNIQUE INDEX Email_UNIQUE (Email ASC))\r\n"
 				+ "ENGINE = InnoDB\r\n"
 				+ "AUTO_INCREMENT = 1"
@@ -116,16 +116,16 @@ public class DatabaseManagerSQL extends DatabaseManager {
 	}
 
 	/**
-	 * Check that Username(nickname) and email are both unique. If both are unique, register user in database.
+	 * Check that nickname and email are both unique. If both are unique, register user in database.
 	 * 
-	 * User must contain username, email, and password.
+	 * @param user must contain nickname, email, and password.
 	 */
 	public RegisterResponse registerUser(User user) {
 		if (checkUser(user)) {
-			return new RegisterResponse(false, "Username or Email already in use");
+			return new RegisterResponse(false, "Nickname or Email already in use");
 		}
 
-		String query = "INSERT INTO userProfile (Username, Email, Password, Online) "
+		String query = "INSERT INTO userProfile (nickname, email, password, online) "
 					 + "VALUES('" + user.getNickname() + "', '" + user.getEmail() + "', '" + user.getPassword() + "', '0');";
 		try {
 			connection.prepareStatement(query).executeUpdate();
@@ -139,14 +139,14 @@ public class DatabaseManagerSQL extends DatabaseManager {
 	}
 
 	/**
-	 * Check that username and email are not already in use.
+	 * Check that nickname and email are not already in use.
 	 * 
 	 * @param user
 	 * @return
 	 */
 	private boolean checkUser(User user) {
 		String sql = "SELECT * FROM userProfile" 
-				   + " WHERE Username = '" + user.getNickname() +"'"
+				   + " WHERE nickname = '" + user.getNickname() +"'"
 				   + " OR Email = '" + user.getEmail() +"'"
 				   + " ;";
 		try {
@@ -233,7 +233,7 @@ public class DatabaseManagerSQL extends DatabaseManager {
 			while (rtnSet.next()) {
 				n++; // should never be more than 1
 				idUser = rtnSet.getInt("idUser");
-				tempUser = new User(idUser,rtnSet.getString("Email"),rtnSet.getString("Username"),"", UserStatus.ONLINE,gameHistory(idUser)); 
+				tempUser = new User(idUser,rtnSet.getString("Email"),rtnSet.getString("nickname"),"", UserStatus.ONLINE,gameHistory(idUser)); 
 			}
 			// found 1 user
 			if (n == 1) {
@@ -263,7 +263,7 @@ public class DatabaseManagerSQL extends DatabaseManager {
 	public void logout(User user) {
 		String sql = "UPDATE userProfile "
 				   + "SET Online = '0' "
-				   + "WHERE Username = '" + user.getNickname() + "'";
+				   + "WHERE nickname = '" + user.getNickname() + "'";
 		try {
 			connection.prepareStatement(sql).executeUpdate();
 		} catch (SQLException e) {
@@ -274,8 +274,8 @@ public class DatabaseManagerSQL extends DatabaseManager {
 	/**
 	 * Search for user profile and game history in database. 
 	 */
-	public UserResponse findUser(String username) {
-		String sql = "SELECT * FROM userProfile WHERE Username LIKE '" + username +"'";
+	public UserResponse findUser(String nickname) {
+		String sql = "SELECT * FROM userProfile WHERE nickname LIKE '" + nickname +"'";
 		try {
 			ResultSet rtnSet = connection.prepareStatement(sql).executeQuery();
 			int n = 0;
@@ -285,9 +285,9 @@ public class DatabaseManagerSQL extends DatabaseManager {
 				boolean online = rtnSet.getBoolean("Online");
 				int idUser = rtnSet.getInt("idUser");
 				if(online) {
-					tempUser = new User(idUser,rtnSet.getString("Email"),rtnSet.getString("Username"),"", UserStatus.ONLINE,gameHistory(idUser)); //user online
+					tempUser = new User(idUser,rtnSet.getString("Email"),rtnSet.getString("nickname"),"", UserStatus.ONLINE,gameHistory(idUser)); //user online
 				}else {
-					tempUser = new User(idUser,rtnSet.getString("Email"),rtnSet.getString("Username"),"", UserStatus.OFFLINE,gameHistory(idUser)); //user offline
+					tempUser = new User(idUser,rtnSet.getString("Email"),rtnSet.getString("nickname"),"", UserStatus.OFFLINE,gameHistory(idUser)); //user offline
 				}
 			}
 			// found 1 user
@@ -375,14 +375,14 @@ public class DatabaseManagerSQL extends DatabaseManager {
 	/**
 	 * 
 	 * @param idUser user identification number
-	 * @return Matching username for given id.
+	 * @return Matching nickname for given id.
 	 */
 	private String searchNickname(int idUser) {
-		String sql = "SELECT * FROM userProfile WHERE Username idUser '" + idUser +"'";
+		String sql = "SELECT * FROM userProfile WHERE nickname idUser '" + idUser +"'";
 		try {
 			ResultSet rtnSet = connection.prepareStatement(sql).executeQuery();
 			while (rtnSet.next()) {
-				return rtnSet.getString("Username"); //user online
+				return rtnSet.getString("nickname"); //user online
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

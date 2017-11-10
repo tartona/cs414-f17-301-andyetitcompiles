@@ -2,6 +2,7 @@ package edu.colostate.cs.cs414.andyetitcompiles.p3.server;
 
 import java.util.Set;
 
+import edu.colostate.cs.cs414.andyetitcompiles.p3.common.GameRecord;
 import edu.colostate.cs.cs414.andyetitcompiles.p3.common.User;
 import edu.colostate.cs.cs414.andyetitcompiles.p3.protocol.LoginResponse;
 import edu.colostate.cs.cs414.andyetitcompiles.p3.protocol.RegisterResponse;
@@ -76,5 +77,15 @@ public class DatabaseManagerSets extends DatabaseManager {
 			}
 		}
 		return new UserResponse(false, null, "User not found");
+	}
+
+	public boolean addGame(GameRecord user1, GameRecord user2) {
+		//not supported in this database
+		return false;
+	}
+
+	public Set<GameRecord> gameHistory(int idUser) {
+		//not supported in this database
+		return new HashSet<GameRecord>();
 	}
 }
