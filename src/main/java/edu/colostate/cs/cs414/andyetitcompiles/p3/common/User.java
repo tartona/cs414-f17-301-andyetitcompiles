@@ -25,6 +25,7 @@ public class User {
 	public String setPassword(String password) {return this.password = password;}
 	public String setNickname(String nickname) {return this.nickname = nickname;}
 	
+	@Override
 	public boolean equals(Object other) {
 		if(other instanceof User) {
 			User otherUser = (User)other;
@@ -33,5 +34,9 @@ public class User {
 		else
 			return false;
 	}
-
+	
+	@Override
+	public String toString() {
+		return nickname;
+	}
 }

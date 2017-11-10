@@ -2,6 +2,10 @@ package edu.colostate.cs.cs414.andyetitcompiles.p3.client;
 
 import edu.colostate.cs.cs414.andyetitcompiles.p3.common.Color;
 
+import java.util.concurrent.BlockingQueue;
+
+import javax.swing.JFrame;
+
 import com.esotericsoftware.kryonet.Connection;
 
 import edu.colostate.cs.cs414.andyetitcompiles.p3.common.JungleBoard;
@@ -12,7 +16,7 @@ import edu.colostate.cs.cs414.andyetitcompiles.p3.common.User;
 import edu.colostate.cs.cs414.andyetitcompiles.p3.protocol.GameMessage;
 import edu.colostate.cs.cs414.andyetitcompiles.p3.protocol.GameMessageType;
 
-public class ClientGameController {
+public class ClientGameController implements Runnable{
 	Connection client;
 	int gameID;
 	JungleGame game;
@@ -20,6 +24,11 @@ public class ClientGameController {
 	User opponent;
 	Color color; 
 	boolean turn;
+	// Message queue
+	BlockingQueue<GameMessage> messageQueue;
+	// UI objects
+	GameConsoleUI gameConsole;
+	JFrame frame;
 	
 	public ClientGameController(int gameID, User self, User opponent, Color color, Connection client) {
 		this.client = client;
@@ -33,12 +42,29 @@ public class ClientGameController {
 			this.game = new JungleGame(opponent, self);
 		// Default to false so the client can't make a move until the server sets their turn
 		this.turn = false;
+		gameConsole = new GameConsoleUI(this);
+		frame = new JFrame();
+		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		frame.getContentPane().add(gameConsole);
+		frame.setSize(700, 500);
+		frame.setVisible(true);
+		gameConsole.updateConsole(boardRepresentation());
+	}
+	
+	public void handleUserInput(String message) {
+		if(message.equals("quit")) {
+			quitGame();
+		}
+		else if(message.split(" ")[0].equals("move")) {
+			String piece = message.split(" ")[1];
+			String move = message.split(" ")[2];
+			makeMove(piece, move);
+		}
 	}
 	
 	public void handleMessage(GameMessage message) {
 		if(message.getGameID() != gameID)
 			throw new IllegalArgumentException("Message for wrong game " + message.getGameID() + " received. Should be " + gameID);
-		System.out.println("Client controller " + message.getGameID() + " for user " + self.getNickname() + " received GameMessage of type " + message.getType());
 		if(message.getType() == GameMessageType.SET_TURN) {
 			handleSetTurn(message);
 		}
@@ -58,55 +84,91 @@ public class ClientGameController {
 		JungleTile tile = game.getTile(message.getTileRow(), message.getTileCol());
 		// No need to check the turn, since this is the other players turn
 		game.makeMove(piece, tile);
-		// Notify ui
+		gameConsole.updateConsole(boardRepresentation());
+	}
+	
+	private String boardRepresentation() {
+		String board = "";
+		for(int i = 0; i < 9; i++){
+			for(int j = 0; j < 7; j++){
+				if(game.getBoard().getTiles()[i][j].getCurrentPiece() == null) 
+					board = board + game.getBoard().getTiles()[i][j].getType() + "\t";
+				else
+					board = board + game.getBoard().getTiles()[i][j].getCurrentPiece().toString() + " \t";
+
+			}
+			board = board + "\n";
+		}
+		return board;
 	}
 
 	private void handleGameOver(GameMessage message) {
 		if(message.getWinner().equals(self)) {
-			System.out.println("You won the game!");
-			// Notify ui
+			gameConsole.updateConsole("You won the game!");
 		}
 		else {
-			System.out.println("You lost the game");
-			// Notify ui
+			gameConsole.updateConsole("You lost the game");
 		}
 		// Let the client know it can get rid of this instance
 	}
 
 	private void handleSetTurn(GameMessage message) {
 		turn = message.isTurn();
-		// Notify ui
+		if(turn) {
+			gameConsole.updateConsole("It is now your turn");
+		}
+		else {
+			gameConsole.updateConsole("It is now the opponents turn");
+		}
 	}
 
-	// All of the following methods are used by the client to interact with the game. 
-	// They will be triggered by the ui, however that ends up being implemented
-	
+	public void makeMove(String piece, String move) {
+		JunglePiece jPiece = game.getPiece(color, piece);
+		JungleTile jTile;
+		if(move.equals("up")) {
+			jTile = game.getTile(jPiece.getCurrentRow()+1, jPiece.getCurrentCol());
+			makeMove(jPiece, jTile);
+		}
+		else if(move.equals("down")) {
+			jTile = game.getTile(jPiece.getCurrentRow()-1, jPiece.getCurrentCol());
+			makeMove(jPiece, jTile);
+		}
+		else if(move.equals("right")) {
+			jTile = game.getTile(jPiece.getCurrentRow(), jPiece.getCurrentCol()+1);
+			makeMove(jPiece, jTile);
+		}
+		else if(move.equals("left")) {
+			jTile = game.getTile(jPiece.getCurrentRow(), jPiece.getCurrentCol()-1);
+			makeMove(jPiece, jTile);
+		}
+	}
 	public void makeMove(JunglePiece piece, JungleTile tile) {
 		if(piece.getColor() == color) {
 			if(turn) {
 				if(game.makeMove(piece, tile)) {
-					System.out.println("Move successful");
+					gameConsole.updateConsole("Move successful");
 					GameMessage move = new GameMessage(gameID, GameMessageType.MAKE_MOVE, piece.getColor(), piece.getID(), tile.getRow(), tile.getCol(), self);
 					client.sendTCP(move);
-					// Notify ui, maybe. The server sends a game state update to both players when one makes a move, so maybe we shouldn't update the ui twice.
+					gameConsole.updateConsole(boardRepresentation());
 				}
 				else {
-					System.out.println("Your move was invalid, try again");
+					gameConsole.updateConsole("Your move was invalid, try again");
 					// notify ui
 				}
 			}
 			else {
-				System.out.println("It's not your turn");
+				gameConsole.updateConsole("It's not your turn");
 				// notify ui
 			}
 		}
 		else {
-			System.out.println("You can only move" + color + " peices");
+			gameConsole.updateConsole("You can only move" + color + " peices");
 			// notify ui
 		}
 	}
 	
 	public void quitGame() {
+		gameConsole.updateConsole("Quitting game...");
 		GameMessage quit = new GameMessage(gameID, GameMessageType.QUIT_GAME, self);
 		client.sendTCP(quit);
 	}
@@ -127,6 +189,12 @@ public class ClientGameController {
 
 	public JungleBoard getBoard() {
 		return game.getBoard();
+	}
+
+	// Run the game instance in a JFrame
+	@Override
+	public void run() {
+		
 	}
 }
 
