@@ -3,13 +3,15 @@ package edu.colostate.cs.cs414.andyetitcompiles.p3.common;
 import java.sql.Timestamp;
 
 public class GameRecord {
-	private User opponent;
+	private int iduser;
+	private String opponent;
 	private Timestamp startTime;
 	private Timestamp endTime;
 	private boolean won;
 	private boolean abandoned;
 	
-	public GameRecord(User opponent, Timestamp startTime, Timestamp endTime, boolean won, boolean abandoned) {
+	public GameRecord(int idUser, String opponent, Timestamp startTime, Timestamp endTime, boolean won, boolean abandoned) {
+		this.iduser = iduser;
 		this.opponent = opponent;
 		this.startTime = startTime;
 		this.endTime = endTime;
@@ -17,7 +19,10 @@ public class GameRecord {
 		this.abandoned = abandoned;
 	}
 
-	public User getOpponent() {
+	public int getIdUser() {
+		return iduser;
+	}
+	public String getOpponent() {
 		return opponent;
 	}
 

@@ -25,6 +25,18 @@ public class User {
 		this.piece = null;
 	}
 	
+	public User(int idUser, String email, String nickname, String password, UserStatus status, Set<GameRecord> gameRecords) {
+		this.id = idUser;
+		this.email = email;
+		this.nickname = nickname;
+		this.password = password;
+		this.status = status;
+		
+		this.gameRecords = gameRecords;
+
+		this.piece = null;
+	}
+	
 	public User(String email, String nickname, String password) {
 		this.email = email;
 		this.nickname = nickname;
