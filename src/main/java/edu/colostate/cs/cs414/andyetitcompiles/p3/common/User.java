@@ -65,7 +65,7 @@ public class User {
 	public void addRecord(GameRecord record) {
 		gameRecords.add(record);
 	}
-	
+	@Override
 	public boolean equals(Object other) {
 		if(other instanceof User) {
 			User otherUser = (User)other;
@@ -75,7 +75,6 @@ public class User {
 		else
 			return false;
 	}
-	
 	public String toString() {
 		String userInfo 
 			= "ID: " + id + "\r\n"
@@ -99,5 +98,4 @@ public class User {
 //		}
 //		return rtn;
 //	}
-
 }

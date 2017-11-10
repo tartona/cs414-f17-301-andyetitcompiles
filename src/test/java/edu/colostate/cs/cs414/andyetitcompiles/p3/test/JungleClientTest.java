@@ -152,7 +152,6 @@ public class JungleClientTest {
 		Thread.sleep(500);
 		jClient.findUser("nickname");
 		Thread.sleep(500);
-		UserRequest expected = new UserRequest("nickname");
 		Object lastReceived = mockServer.getLastReceived();
 		if(lastReceived instanceof UserRequest) 
 			assertEquals("nickname", ((UserRequest) lastReceived).getNickname());
