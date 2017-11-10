@@ -91,7 +91,7 @@ public class DatabaseManagerSQL extends DatabaseManager {
 				"  `won` TINYINT(1) NULL DEFAULT NULL,\r\n" + 
 				"  `abandoned` TINYINT(1) NULL DEFAULT NULL,\r\n" + 
 //				"  INDEX `fk_UserHistory_UserProfile_idx` (`idUser` ASC),\r\n" + 
-				"  PRIMARY KEY (`idUser`),\r\n" + 
+//				"  PRIMARY KEY (`idUser`),\r\n" + 
 //				"  CONSTRAINT `fk_UserHistory_UserProfile`\r\n" + 
 				"    FOREIGN KEY (`idUser`)\r\n" + 
 				"    REFERENCES `userprofile` (`idUser`)\r\n" + 
@@ -310,29 +310,29 @@ public class DatabaseManagerSQL extends DatabaseManager {
 	
 	/**
 	 * Adds game records of both users in a game to the database. 
-	 * @param user1 
-	 * @param user2
+	 * @param record1 
+	 * @param record2
 	 * @return true for successfully added to database, false when unsuccessful. 
 	 */
-	public boolean addGame(GameRecord user1, GameRecord user2) {
+	public boolean addGame(GameRecord record1, GameRecord record2) {
 
 		try {
-			int idUser1 = user1.getIdUser();
-			int idUser2 = user2.getIdUser();
-			Timestamp startTime1 = user1.getStartTime();
-			Timestamp startTime2 = user2.getStartTime();
-			Timestamp endTime1 = user1.getEndTime();
-			Timestamp endTime2 = user2.getEndTime();
+			int idUser1 = record1.getIdUser();
+			int idUser2 = record2.getIdUser();
+			Timestamp startTime1 = record1.getStartTime();
+			Timestamp startTime2 = record2.getStartTime();
+			Timestamp endTime1 = record1.getEndTime();
+			Timestamp endTime2 = record2.getEndTime();
 			int won1=0;
-			if(user1.isWon()) { 
+			if(record1.isWon()) { 
 				won1=1;
 			}
 			int won2=0;
-			if(user2.isWon()) { 
+			if(record2.isWon()) { 
 				won2=1;
 			}
 			int abandoned=0;
-			if(user1.isAbandoned()) { 
+			if(record1.isAbandoned()) { 
 				abandoned=1;
 			}
 			
@@ -342,7 +342,7 @@ public class DatabaseManagerSQL extends DatabaseManager {
 
 			query = "INSERT INTO userHistory (idUser, opponent, startTimestamp, endTimeStamp, won, abandoned) "
 					+ "VALUES('" + idUser2 + "', '" + idUser1 + "', '"+startTime2+"', '"+endTime2+"', '"+won2+"', '"+abandoned+"' );";
-			connection.prepareStatement(query).executeQuery();
+			connection.prepareStatement(query).executeUpdate();
 			return true;
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -378,7 +378,7 @@ public class DatabaseManagerSQL extends DatabaseManager {
 	 * @return Matching nickname for given id.
 	 */
 	private String searchNickname(int idUser) {
-		String sql = "SELECT * FROM userProfile WHERE nickname idUser '" + idUser +"'";
+		String sql = "SELECT * FROM userProfile WHERE idUser = '" + idUser +"'";
 		try {
 			ResultSet rtnSet = connection.prepareStatement(sql).executeQuery();
 			while (rtnSet.next()) {

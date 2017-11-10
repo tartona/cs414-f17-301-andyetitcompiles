@@ -169,7 +169,6 @@ public class JungleServer {
 		c.sendTCP(object);
 	}
 
-	// TODO improve email check
 	private boolean validEmail(String email) {
 		if (email.contains("@")) {
 			return email.substring(Math.max(email.length() - 6, 0)).contains(".");// should be improved
@@ -179,10 +178,6 @@ public class JungleServer {
 
 	}
 
-	/**
-	 * Resets everything in current database for testing.
-	 */
-	
 	// for testing
 	public ServerGameController getController() {
 		return gameController;

@@ -2,12 +2,15 @@ package edu.colostate.cs.cs414.andyetitcompiles.p3.test;
 
 import static org.junit.Assert.*;
 
+import java.sql.Timestamp;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import edu.colostate.cs.cs414.andyetitcompiles.p3.common.GameRecord;
 import edu.colostate.cs.cs414.andyetitcompiles.p3.common.User;
 import edu.colostate.cs.cs414.andyetitcompiles.p3.common.UserStatus;
 import edu.colostate.cs.cs414.andyetitcompiles.p3.protocol.LoginResponse;
@@ -121,4 +124,53 @@ public class DatabaseManagerSQLTest {
 
 	}
 
+	@Test
+	public void testUserHistory() {
+		//create user1
+		User user1 = new User("Email1@Email.com", "nickname1", "password");
+		RegisterResponse regResp = db.registerUser(user1);
+		assertTrue(regResp.successful());
+		user1 = db.findUser(user1.getNickname()).getUser();
+
+		//create user2
+		User user2 = new User("Email2@Email.com", "nickname2", "password");
+		regResp = db.registerUser(user2);
+		assertTrue(regResp.successful());
+		user2 = db.findUser(user2.getNickname()).getUser();
+
+		db.addGame(new GameRecord(user1.getId(), user2.getNickname(), new Timestamp(10000), new Timestamp(10005), true, false),
+				   new GameRecord(user2.getId(), user1.getNickname(), new Timestamp(10000), new Timestamp(10005), false, false));
+
+		db.addGame(new GameRecord(user1.getId(), user2.getNickname(), new Timestamp(10500), new Timestamp(10505), false, false),
+				   new GameRecord(user2.getId(), user1.getNickname(), new Timestamp(10500), new Timestamp(10505), true, false));
+
+		db.addGame(new GameRecord(user1.getId(), user2.getNickname(), new Timestamp(40000), new Timestamp(50005), true, true),
+				   new GameRecord(user2.getId(), user1.getNickname(), new Timestamp(40000), new Timestamp(50005), false, true));
+
+		db.addGame(new GameRecord(user1.getId(), user2.getNickname(), new Timestamp(80000), new Timestamp(88888), true, false),
+				   new GameRecord(user2.getId(), user1.getNickname(), new Timestamp(80000), new Timestamp(88888), false, false));
+
+		//get user information including updated user history
+		user1 = db.findUser(user1.getNickname()).getUser();
+		user2 = db.findUser(user2.getNickname()).getUser();
+		
+		System.out.println(user1.toString());
+		int winCount=0;
+		for(GameRecord temp:user1.getRecords()) {
+			if(temp.isWon()) {
+				winCount++;
+			}
+		}
+
+		assertEquals(3, winCount);//user1 should have 3 wins
+		
+		winCount=0;
+		for(GameRecord temp:user2.getRecords()) {
+			if(temp.isWon()) {
+				winCount++;
+			}
+		}
+		assertEquals(1, winCount);//user2 should have 1 wins
+
+	}
 }
