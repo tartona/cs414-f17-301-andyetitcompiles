@@ -11,7 +11,7 @@ public class GameRecord {
 	private boolean abandoned;
 	
 	public GameRecord(int idUser, String opponent, Timestamp startTime, Timestamp endTime, boolean won, boolean abandoned) {
-		this.iduser = iduser;
+		this.iduser = idUser;
 		this.opponent = opponent;
 		this.startTime = startTime;
 		this.endTime = endTime;
