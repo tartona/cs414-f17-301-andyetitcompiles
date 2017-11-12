@@ -11,7 +11,7 @@ public interface GameInterface {
 	 * @param tile	Tile where piece is attempting to move
 	 * @return True if move is successful, false if move was not allowed
 	 */
-	public boolean makeMove(JunglePiece piece, JungleTile tile);
+	public boolean makeMove(JunglePiece piece, int row, int col);
 	
 	/**
 	 * Returns the JunglePiece with specified color and ID
