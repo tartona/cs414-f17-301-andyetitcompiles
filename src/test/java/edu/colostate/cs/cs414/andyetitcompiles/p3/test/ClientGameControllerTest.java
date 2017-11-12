@@ -97,7 +97,7 @@ public class ClientGameControllerTest {
 		JungleTile tile = game.getValidMoves(piece).get(0);
 		// Set the turn and make the move, then wait for a response
 		controller.setTurn(true);
-		controller.makeMove(piece, tile);
+		controller.makeMove(piece, tile.getRow(), tile.getCol());
 		Thread.sleep(500);
 		Object serverReceived = server.getLastReceived();
 		if(serverReceived instanceof GameMessage) {

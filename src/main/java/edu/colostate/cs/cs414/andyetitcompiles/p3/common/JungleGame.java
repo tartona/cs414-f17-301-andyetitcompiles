@@ -42,12 +42,13 @@ public class JungleGame implements GameInterface{
 				col++;
 			}
 			System.out.println(game.getTile(row, col).getType());
-			game.makeMove(piece, row, col);
+			game.makeMove(piece.getColor(), piece.getID(), row, col);
 			game.board.printBoard();
 		}
 	}
 	
-	public boolean makeMove(JunglePiece piece, int row, int col) {
+	public boolean makeMove(Color color, String id, int row, int col) {
+		JunglePiece piece = board.getPiece(color, id);
 		JungleTile tile = board.getTile(row, col);
 		if(!getValidMoves(piece).contains(tile))
 			return false;

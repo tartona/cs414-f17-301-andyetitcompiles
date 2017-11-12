@@ -82,7 +82,7 @@ public class ClientGameController implements Runnable{
 	private void handleMakeMove(GameMessage message) {
 		JunglePiece piece = game.getPiece(message.getPieceColor(), message.getPieceID());
 		// No need to check the turn, since this is the other players turn
-		game.makeMove(piece, message.getTileRow(), message.getTileCol());
+		game.makeMove(piece.getColor(), piece.getID(), message.getTileRow(), message.getTileCol());
 		gameConsole.updateConsole(boardRepresentation());
 	}
 	
@@ -121,8 +121,8 @@ public class ClientGameController implements Runnable{
 		}
 	}
 
-	public void makeMove(String piece, String move) {
-		JunglePiece jPiece = game.getPiece(color, piece);
+	public void makeMove(String id, String move) {
+		JunglePiece jPiece = game.getPiece(color, id);
 		JungleTile jTile;
 		int currentRow = jPiece.getCurrentRow();
 		int currentCol = jPiece.getCurrentCol();
@@ -146,7 +146,7 @@ public class ClientGameController implements Runnable{
 	public void makeMove(JunglePiece piece, int row, int col) {
 		if(piece.getColor() == color) {
 			if(turn) {
-				if(game.makeMove(piece, row, col)) {
+				if(game.makeMove(piece.getColor(), piece.getID(), row, col)) {
 					gameConsole.updateConsole("Move successful");
 					GameMessage move = new GameMessage(gameID, GameMessageType.MAKE_MOVE, piece.getColor(), piece.getID(), row, col, self);
 					client.sendTCP(move);
