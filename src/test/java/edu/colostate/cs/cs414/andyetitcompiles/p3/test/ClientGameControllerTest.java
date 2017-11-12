@@ -94,7 +94,7 @@ public class ClientGameControllerTest {
 		// figure out a valid move
 		JungleGame game = controller.getGame();
 		JunglePiece piece = game.getPiece(Color.WHITE, "rat");
-		JungleTile tile = game.getValidMoves(piece).get(0);
+		JungleTile tile = game.getValidMoves(Color.WHITE, "rat").get(0);
 		// Set the turn and make the move, then wait for a response
 		controller.setTurn(true);
 		controller.makeMove(piece, tile.getRow(), tile.getCol());
@@ -145,7 +145,7 @@ public class ClientGameControllerTest {
 		// figure out a valid move
 		JungleGame game = controller.getGame();
 		JunglePiece piece = game.getPiece(Color.BLACK, "rat");
-		JungleTile tile = game.getValidMoves(piece).get(0);
+		JungleTile tile = game.getValidMoves(piece.getColor(), piece.getID()).get(0);
 		GameMessage gameUpdate = new GameMessage(gameID, GameMessageType.MAKE_MOVE, piece.getColor(), piece.getID(), tile.getRow(), tile.getCol(), player2);
 		client.sendTCP(gameUpdate);
 		Thread.sleep(500);
@@ -153,7 +153,7 @@ public class ClientGameControllerTest {
 			GameMessage received = (GameMessage)lastReceived;
 			// Maybe there should be a way to check if the board state has changed easier than this, like equals override for jungleboard.
 			// I am checking to see if the black rats first valid move has changed
-			assertNotEquals(tile, game.getValidMoves(piece).get(0));
+			assertNotEquals(tile, game.getValidMoves(piece.getColor(), piece.getID()).get(0));
 		}
 		else
 			fail("incorrect object received by client");

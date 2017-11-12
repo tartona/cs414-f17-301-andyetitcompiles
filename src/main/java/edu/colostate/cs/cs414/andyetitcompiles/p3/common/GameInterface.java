@@ -40,7 +40,7 @@ public interface GameInterface {
 	 * @param piece
 	 * @return array holding 0 to 4 permissable moves from the piece's current location
 	 */
-	public ArrayList<JungleTile> getValidMoves(JunglePiece piece);
+	public ArrayList<JungleTile> getValidMoves(Color color, String id);
 	
 	/**
 	 * Restarts the game and resets board to initial state with the same users as before.
@@ -51,12 +51,4 @@ public interface GameInterface {
 	 * @return User that has won the game, null if game is not yet won.
 	 */
 	public User getWinner();
-	
-	/**
-	 * Checks to see if an attack is allowed given the current state of the board.
-	 * @param attacker	Piece trying to attack
-	 * @param victim	Piece being attacked
-	 * @return true if attack is successful (board is also updated within this method), false otherwise (board is not changed)
-	 */
-	public boolean capturePiece(JunglePiece attacker, JunglePiece victim);
 }
