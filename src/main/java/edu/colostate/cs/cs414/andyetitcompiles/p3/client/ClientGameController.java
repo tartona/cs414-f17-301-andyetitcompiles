@@ -85,7 +85,7 @@ public class ClientGameController implements Runnable{
 		// No need to check the turn, since this is the other players turn
 		game.makeMove(piece, tile);
 		gameConsole.updateConsole(boardRepresentation());
-	}
+	} 
 	
 	private String boardRepresentation() {
 		String board = "";
