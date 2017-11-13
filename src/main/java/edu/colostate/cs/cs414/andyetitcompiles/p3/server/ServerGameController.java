@@ -50,13 +50,15 @@ public class ServerGameController {
 	}
 
 	private void handleMove(GameMessage move) {
-		JunglePiece piece = game.getPiece(move.getPieceColor(), move.getPieceID());
-		JungleTile tile = game.getTile(move.getTileRow(), move.getTileCol());
+		Color color = move.getPieceColor();
+		String id = move.getPieceID();
+		int row = move.getTileRow();
+		int col = move.getTileCol();
 		// Check to see if it is that colors turn
-		if(piece.getColor() == turn) {
+		if(color == turn) {
 			// Currently, we are expecting the client to make sure the move is valid.
 			// If the move isn't successful, do nothing to notify the client, and don't pass the move on to the other client
-			if(game.makeMove(piece, tile)) {
+			if(game.makeMove(color, id, row, col)) {
 				// Set the turn to the next player
 				if(turn == Color.WHITE) turn = Color.BLACK;
 				else turn = Color.WHITE;
