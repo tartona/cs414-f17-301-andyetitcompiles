@@ -1,6 +1,8 @@
 package edu.colostate.cs.cs414.andyetitcompiles.p3.protocol;
 
 import edu.colostate.cs.cs414.andyetitcompiles.p3.common.Color;
+
+import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -38,6 +40,7 @@ public class Network {
 		kryo.register(GameInstance.class);
 		kryo.register(GameRecord.class);
 		kryo.register(Color.class);
+		kryo.register(Timestamp.class);
 		// Add any classes that we want to send as we develop the project
 	}
 }

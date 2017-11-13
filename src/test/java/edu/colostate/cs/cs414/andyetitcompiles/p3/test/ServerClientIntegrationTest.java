@@ -69,9 +69,9 @@ public class ServerClientIntegrationTest {
 		client1.invite(client1.getRequestedUser());
 		Thread.sleep(500);
 		// Test making game moves
-		ClientGameController client1Controller = client1.getController();
-		ClientGameController client2Controller = client2.getController();
-		ServerGameController serverController = server.getController();
+		ClientGameController client1Controller = client1.getController(0);
+		ClientGameController client2Controller = client2.getController(0);
+		ServerGameController serverController = server.getController(0);
 		JunglePiece piece = client1Controller.getBoard().getPiece(Color.WHITE, "rat");
 		JungleTile tile = client1Controller.getGame().getValidMoves(piece).get(0);
 		client1Controller.makeMove(piece, tile);
