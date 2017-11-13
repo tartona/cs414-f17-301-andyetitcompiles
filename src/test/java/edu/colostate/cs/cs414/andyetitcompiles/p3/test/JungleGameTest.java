@@ -27,9 +27,9 @@ public class JungleGameTest {
 	@Test
 	public void testMoveOffBoard(){
 		JunglePiece bwolf = game.getPiece(Color.BLACK, "wolf");
-		game.makeMove(bwolf, game.getTile(1, 4));
-		game.makeMove(bwolf, game.getTile(0, 4));
-		game.makeMove(bwolf, game.getTile(-1, 4));
+		game.makeMove(bwolf.getColor(), bwolf.getID(), 1, 4);
+		game.makeMove(bwolf.getColor(), bwolf.getID(), 0, 4);
+		game.makeMove(bwolf.getColor(), bwolf.getID(), -1, 4);
 		assertEquals(0, bwolf.getCurrentTile().getRow());
 		assertEquals(4, bwolf.getCurrentTile().getCol());
 	}
@@ -42,26 +42,26 @@ public class JungleGameTest {
 	@Test
 	public void testGetWinnerPlayer1(){
 		JunglePiece wleopard = game.getPiece(Color.WHITE, "leopard");
-		game.makeMove(wleopard, game.getTile(6, 3));
-		game.makeMove(wleopard, game.getTile(5, 3));
-		game.makeMove(wleopard, game.getTile(4, 3));
-		game.makeMove(wleopard, game.getTile(3, 3));
-		game.makeMove(wleopard, game.getTile(2, 3));
-		game.makeMove(wleopard, game.getTile(1, 3));
-		game.makeMove(wleopard, game.getTile(0, 3));
+		game.makeMove(wleopard.getColor(), wleopard.getID(), 6, 3);
+		game.makeMove(wleopard.getColor(), wleopard.getID(), 5, 3);
+		game.makeMove(wleopard.getColor(), wleopard.getID(), 4, 3);
+		game.makeMove(wleopard.getColor(), wleopard.getID(), 3, 3);
+		game.makeMove(wleopard.getColor(), wleopard.getID(), 2, 3);
+		game.makeMove(wleopard.getColor(), wleopard.getID(), 1, 3);
+		game.makeMove(wleopard.getColor(), wleopard.getID(), 0, 3);
 		assertEquals(player1.getNickname(), game.getWinner().getNickname());
 	}
 	
 	@Test
 	public void testGetWinnerPlayer2(){
 		JunglePiece bleopard = game.getPiece(Color.BLACK, "leopard");
-		game.makeMove(bleopard, game.getTile(2, 3));
-		game.makeMove(bleopard, game.getTile(3, 3));
-		game.makeMove(bleopard, game.getTile(4, 3));
-		game.makeMove(bleopard, game.getTile(5, 3));
-		game.makeMove(bleopard, game.getTile(6, 3));
-		game.makeMove(bleopard, game.getTile(7, 3));
-		game.makeMove(bleopard, game.getTile(8, 3));
+		game.makeMove(bleopard.getColor(), bleopard.getID(), 2, 3);
+		game.makeMove(bleopard.getColor(), bleopard.getID(), 3, 3);
+		game.makeMove(bleopard.getColor(), bleopard.getID(), 4, 3);
+		game.makeMove(bleopard.getColor(), bleopard.getID(), 5, 3);
+		game.makeMove(bleopard.getColor(), bleopard.getID(), 6, 3);
+		game.makeMove(bleopard.getColor(), bleopard.getID(), 7, 3);
+		game.makeMove(bleopard.getColor(), bleopard.getID(), 8, 3);
 		assertEquals(player2.getNickname(), game.getWinner().getNickname());
 	}
 	
@@ -87,10 +87,10 @@ public class JungleGameTest {
 		JunglePiece bcat = game.getPiece(Color.BLACK, "cat");
 		assertEquals(1, bcat.getCurrentRow());
 		assertEquals(5, bcat.getCurrentCol());
-		game.makeMove(bcat, game.getTile(2, 5));
+		game.makeMove(bcat.getColor(), bcat.getID(), 2, 5);
 		assertEquals(2, bcat.getCurrentRow());
 		assertEquals(5, bcat.getCurrentCol());
-		game.makeMove(bcat, game.getTile(4,2));
+		game.makeMove(bcat.getColor(), bcat.getID(), 4,2);
 		assertEquals(2, bcat.getCurrentRow());
 		assertEquals(5, bcat.getCurrentCol());
 	}
@@ -99,19 +99,19 @@ public class JungleGameTest {
 	public void testValidMoveCapture(){
 		JunglePiece belephant = game.getPiece(Color.BLACK, "elephant");
 		JunglePiece bcat = game.getPiece(Color.BLACK, "cat");
-		game.makeMove(belephant, game.getTile(2, 5));
+		game.makeMove(belephant.getColor(), belephant.getID(), 2, 5);
 		assertEquals(2, belephant.getCurrentRow());
 		assertEquals(5, belephant.getCurrentCol());
-		game.makeMove(bcat, game.getTile(1, 6));
-		game.makeMove(bcat, game.getTile(2, 6));
-		game.makeMove(bcat, game.getTile(3, 6));
-		game.makeMove(bcat, game.getTile(4, 6));
+		game.makeMove(bcat.getColor(), bcat.getID(), 1, 6);
+		game.makeMove(bcat.getColor(), bcat.getID(), 2, 6);
+		game.makeMove(bcat.getColor(), bcat.getID(), 3, 6);
+		game.makeMove(bcat.getColor(), bcat.getID(), 4, 6);
 		assertEquals(4, bcat.getCurrentRow());
 		assertEquals(6, bcat.getCurrentCol());
-		game.makeMove(bcat, game.getTile(5, 6));
+		game.makeMove(bcat.getColor(), bcat.getID(), 5, 6);
 		assertEquals(5, bcat.getCurrentRow());
 		assertEquals(6, bcat.getCurrentCol());
-		game.makeMove(bcat, game.getTile(6, 6));
+		game.makeMove(bcat.getColor(), bcat.getID(), 6, 6);
 		assertEquals(6, bcat.getCurrentRow());
 		assertEquals(6, bcat.getCurrentCol());
 		assertEquals(null, game.getBoard().getPiece(Color.WHITE, "rat"));
@@ -120,14 +120,15 @@ public class JungleGameTest {
 	@Test
 	public void testLegalRiverJump(){
 		JunglePiece btiger = game.getPiece(Color.BLACK, "tiger");
-		game.makeMove(game.getPiece(Color.BLACK, "cat"), game.getTile(1, 4));
-		game.makeMove(btiger, game.getTile(0, 5));
-		game.makeMove(btiger, game.getTile(1, 5));
-		game.makeMove(btiger, game.getTile(2, 5));
-		game.makeMove(btiger, game.getTile(3, 5));
+		String id = "tiger";
+		game.makeMove(Color.BLACK, "cat", 1, 4);
+		game.makeMove(Color.BLACK, id, 0, 5);
+		game.makeMove(Color.BLACK, id, 1, 5);
+		game.makeMove(Color.BLACK, id, 2, 5);
+		game.makeMove(Color.BLACK, id, 3, 5);
 		assertEquals(2, btiger.getCurrentRow());
 		assertEquals(5, btiger.getCurrentCol());
-		game.makeMove(btiger, game.getTile(6, 5));
+		game.makeMove(Color.BLACK, id, 6, 5);
 		assertEquals(6, btiger.getCurrentRow());
 		assertEquals(5, btiger.getCurrentCol());
 	}
@@ -137,10 +138,10 @@ public class JungleGameTest {
 		JunglePiece wwolf = game.getPiece(Color.WHITE, "wolf");
 		assertEquals(6, wwolf.getCurrentRow());
 		assertEquals(2, wwolf.getCurrentCol());
-		game.makeMove(wwolf, game.getTile(5, 2));
+		game.makeMove(Color.WHITE, "wolf", 5, 2);
 		assertEquals(6, wwolf.getCurrentRow());
 		assertEquals(2, wwolf.getCurrentCol());
-		game.makeMove(wwolf, game.getTile(2, 2));
+		game.makeMove(Color.WHITE, "wolf", 2, 2);
 		assertEquals(6, wwolf.getCurrentRow());
 		assertEquals(2, wwolf.getCurrentCol());
 	}

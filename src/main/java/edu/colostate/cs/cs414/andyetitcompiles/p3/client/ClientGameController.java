@@ -81,9 +81,8 @@ public class ClientGameController implements Runnable{
 	// Handles when the client receives a move from the server, representing the other players move
 	private void handleMakeMove(GameMessage message) {
 		JunglePiece piece = game.getPiece(message.getPieceColor(), message.getPieceID());
-		JungleTile tile = game.getTile(message.getTileRow(), message.getTileCol());
 		// No need to check the turn, since this is the other players turn
-		game.makeMove(piece, tile);
+		game.makeMove(piece.getColor(), piece.getID(), message.getTileRow(), message.getTileCol());
 		gameConsole.updateConsole(boardRepresentation());
 	} 
 	
@@ -122,32 +121,34 @@ public class ClientGameController implements Runnable{
 		}
 	}
 
-	public void makeMove(String piece, String move) {
-		JunglePiece jPiece = game.getPiece(color, piece);
+	public void makeMove(String id, String move) {
+		JunglePiece jPiece = game.getPiece(color, id);
 		JungleTile jTile;
+		int currentRow = jPiece.getCurrentRow();
+		int currentCol = jPiece.getCurrentCol();
 		if(move.equals("up")) {
 			jTile = game.getTile(jPiece.getCurrentRow()+1, jPiece.getCurrentCol());
-			makeMove(jPiece, jTile);
+			makeMove(jPiece, currentRow + 1, currentCol);
 		}
 		else if(move.equals("down")) {
 			jTile = game.getTile(jPiece.getCurrentRow()-1, jPiece.getCurrentCol());
-			makeMove(jPiece, jTile);
+			makeMove(jPiece, currentRow - 1, currentCol);
 		}
 		else if(move.equals("right")) {
 			jTile = game.getTile(jPiece.getCurrentRow(), jPiece.getCurrentCol()+1);
-			makeMove(jPiece, jTile);
+			makeMove(jPiece, currentRow, currentCol + 1);
 		}
 		else if(move.equals("left")) {
 			jTile = game.getTile(jPiece.getCurrentRow(), jPiece.getCurrentCol()-1);
-			makeMove(jPiece, jTile);
+			makeMove(jPiece, currentRow, currentCol - 1);
 		}
 	}
-	public void makeMove(JunglePiece piece, JungleTile tile) {
+	public void makeMove(JunglePiece piece, int row, int col) {
 		if(piece.getColor() == color) {
 			if(turn) {
-				if(game.makeMove(piece, tile)) {
+				if(game.makeMove(piece.getColor(), piece.getID(), row, col)) {
 					gameConsole.updateConsole("Move successful");
-					GameMessage move = new GameMessage(gameID, GameMessageType.MAKE_MOVE, piece.getColor(), piece.getID(), tile.getRow(), tile.getCol(), self);
+					GameMessage move = new GameMessage(gameID, GameMessageType.MAKE_MOVE, piece.getColor(), piece.getID(), row, col, self);
 					client.sendTCP(move);
 					gameConsole.updateConsole(boardRepresentation());
 				}

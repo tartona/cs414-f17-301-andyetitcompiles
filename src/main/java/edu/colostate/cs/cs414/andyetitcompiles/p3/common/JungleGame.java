@@ -17,7 +17,6 @@ public class JungleGame implements GameInterface{
 
 	public static void main(String[] args){
 		Scanner scnr = new Scanner(System.in);
-		System.out.println("Initializing board...");
 		JungleGame game = new JungleGame(new User("Player1", null, null), new User("Player2", null, null));
 		game.board.printBoard();
 		while(scnr.hasNext()){
@@ -42,13 +41,15 @@ public class JungleGame implements GameInterface{
 				col++;
 			}
 			System.out.println(game.getTile(row, col).getType());
-			game.makeMove(piece, game.getTile(row, col));
+			game.makeMove(piece.getColor(), piece.getID(), row, col);
 			game.board.printBoard();
 		}
 	}
 	
-	public boolean makeMove(JunglePiece piece, JungleTile tile) {
-		if(!getValidMoves(piece).contains(tile))
+	public boolean makeMove(Color color, String id, int row, int col) {
+		JunglePiece piece = board.getPiece(color, id);
+		JungleTile tile = board.getTile(row, col);
+		if(!getValidMoves(color, id).contains(tile))
 			return false;
 		if(tile.getCurrentPiece() != null){
 			if(capturePiece(piece, tile.getCurrentPiece())){
@@ -80,7 +81,8 @@ public class JungleGame implements GameInterface{
 		return board.getPiece(color, id);
 	}
 	
-	public ArrayList<JungleTile> getValidMoves(JunglePiece piece) {
+	public ArrayList<JungleTile> getValidMoves(Color color, String id) {
+		JunglePiece piece = getPiece(color, id);
 		ArrayList<JungleTile> moves = new ArrayList<JungleTile>();
 		JungleTile up = board.getTile(piece.getCurrentTile().row - 1, piece.getCurrentTile().col);
 		JungleTile down = board.getTile(piece.getCurrentTile().row + 1, piece.getCurrentTile().col);

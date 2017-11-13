@@ -100,7 +100,7 @@ public class JungleBoard {
 		pieces.add(elephant);
 	}
 	
-	public void initializePieces(){
+	private void initializePieces(){
 		initializeWhiteTeam();
 		initializeBlackTeam();
 	}
@@ -114,7 +114,7 @@ public class JungleBoard {
 		return null;
 	}
 	
-	public void initializeBoard(){
+	private void initializeBoard(){
 		TileType type;
 		for(int i = 0; i < ROWS; i++){
 			for(int j = 0; j < COLS; j++){
