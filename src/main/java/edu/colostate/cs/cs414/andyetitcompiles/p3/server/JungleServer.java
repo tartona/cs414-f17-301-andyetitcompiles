@@ -51,6 +51,23 @@ public class JungleServer {
 		networkSetup();
 	}
 
+	public JungleServer(String dbLocation, String dbUsername, String dbPassword) throws IOException {
+		server = new Server() {
+			protected Connection newConnection() {
+				return new JungleClientConnection();
+			}
+		};
+		
+		//try to connect to database, if this fails use temp database
+		try {
+			this.database = new DatabaseManagerSQL(dbLocation,dbUsername,dbPassword);
+		} catch (ClassNotFoundException | SQLException e) {
+			e.printStackTrace();
+			this.database = new DatabaseManagerSets();
+		}
+		networkSetup();
+	}
+
 	private void networkSetup() throws IOException {
 		Network.register(server);
 		JungleServer jServer = this;
@@ -200,7 +217,11 @@ public class JungleServer {
 
 	public static void main(String args[]) {
 		try {
-			new JungleServer();
+			if(args.length == 3) {
+				new JungleServer(args[0],args[1],args[3]);
+			} else {
+				new JungleServer();
+			}
 		} catch (IOException e) {
 			System.out.println("Exception in server: "+e.getMessage());
 		}
