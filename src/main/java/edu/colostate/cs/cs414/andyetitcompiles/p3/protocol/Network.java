@@ -1,7 +1,8 @@
 package edu.colostate.cs.cs414.andyetitcompiles.p3.protocol;
 
 import edu.colostate.cs.cs414.andyetitcompiles.p3.common.Color;
-import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.EndPoint;
@@ -28,7 +29,9 @@ public class Network {
 		kryo.register(UserResponse.class);
 		kryo.register(InviteRequest.class);
 		kryo.register(InviteResponse.class);
+		kryo.register(Set.class);
 		kryo.register(User.class);
+		kryo.register(HashSet.class);
 		kryo.register(UserStatus.class);
 		kryo.register(GameMessage.class);
 		kryo.register(GameMessageType.class);
