@@ -3,6 +3,7 @@ package edu.colostate.cs.cs414.andyetitcompiles.p3.protocol;
 import edu.colostate.cs.cs414.andyetitcompiles.p3.common.Color;
 
 import java.sql.Timestamp;
+
 import java.util.HashSet;
 import java.util.Set;
 
