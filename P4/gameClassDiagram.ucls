@@ -126,7 +126,7 @@
     project="cs414-f17-301-andyetitcompiles" 
     file="/cs414-f17-301-andyetitcompiles/src/main/java/edu/colostate/cs/cs414/andyetitcompiles/p3/common/JunglePiece.java" 
     binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="1333" y="904"/>    
+    <position height="-1" width="-1" x="1157" y="714"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="false" protected="true" private="false" static="true"/>      
@@ -156,88 +156,112 @@
     </display>  
   </class>  
   <generalization id="15">    
-    <end type="SOURCE" refId="10"/>    
+    <end type="SOURCE" refId="9"/>    
     <end type="TARGET" refId="12"/>  
   </generalization>  
-  <association id="16">    
-    <end type="SOURCE" refId="6" navigable="false">      
-      <attribute id="17" name="pieces"/>      
-      <multiplicity id="18" minimum="0" maximum="2147483647"/>    
-    </end>    
-    <end type="TARGET" refId="12" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <realization id="19">    
-    <end type="SOURCE" refId="8"/>    
-    <end type="TARGET" refId="5"/>  
-  </realization>  
-  <generalization id="20">    
-    <end type="SOURCE" refId="14"/>    
-    <end type="TARGET" refId="12"/>  
-  </generalization>  
-  <generalization id="21">    
-    <end type="SOURCE" refId="13"/>    
-    <end type="TARGET" refId="12"/>  
-  </generalization>  
-  <generalization id="22">    
+  <generalization id="16">    
     <end type="SOURCE" refId="2"/>    
     <end type="TARGET" refId="12"/>  
   </generalization>  
-  <generalization id="23">    
-    <end type="SOURCE" refId="1"/>    
+  <association id="17">    
+    <end type="SOURCE" refId="11" navigable="false">      
+      <attribute id="18" name="type">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="19" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="7" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <generalization id="20">    
+    <end type="SOURCE" refId="4"/>    
     <end type="TARGET" refId="12"/>  
   </generalization>  
-  <generalization id="24">    
+  <generalization id="21">    
     <end type="SOURCE" refId="3"/>    
     <end type="TARGET" refId="12"/>  
   </generalization>  
-  <association id="25">    
+  <realization id="22">    
+    <end type="SOURCE" refId="8"/>    
+    <end type="TARGET" refId="5"/>  
+  </realization>  
+  <association id="23">    
     <bendpoint x="357" y="747"/>    
     <end type="SOURCE" refId="6" navigable="false">      
-      <attribute id="26" name="tiles"/>      
-      <multiplicity id="27" minimum="0" maximum="2147483647"/>    
+      <attribute id="24" name="tiles">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="25" minimum="0" maximum="2147483647">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
     </end>    
     <end type="TARGET" refId="11" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <association id="28">    
-    <end type="SOURCE" refId="12" navigable="false">      
-      <attribute id="29" name="currentTile"/>      
-      <multiplicity id="30" minimum="0" maximum="1"/>    
-    </end>    
-    <end type="TARGET" refId="11" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <association id="31">    
+  <association id="26">    
     <end type="SOURCE" refId="8" navigable="false">      
-      <attribute id="32" name="board"/>      
-      <multiplicity id="33" minimum="0" maximum="1"/>    
+      <attribute id="27" name="board">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="28" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
     </end>    
     <end type="TARGET" refId="6" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
+  <generalization id="29">    
+    <end type="SOURCE" refId="14"/>    
+    <end type="TARGET" refId="12"/>  
+  </generalization>  
+  <association id="30">    
+    <end type="SOURCE" refId="12" navigable="false">      
+      <attribute id="31" name="currentTile">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="32" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="11" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <generalization id="33">    
+    <end type="SOURCE" refId="13"/>    
+    <end type="TARGET" refId="12"/>  
+  </generalization>  
   <generalization id="34">    
-    <end type="SOURCE" refId="4"/>    
+    <end type="SOURCE" refId="10"/>    
     <end type="TARGET" refId="12"/>  
   </generalization>  
   <generalization id="35">    
-    <end type="SOURCE" refId="9"/>    
+    <end type="SOURCE" refId="1"/>    
     <end type="TARGET" refId="12"/>  
   </generalization>  
   <association id="36">    
     <end type="SOURCE" refId="11" navigable="false">      
-      <attribute id="37" name="currentPiece"/>      
-      <multiplicity id="38" minimum="0" maximum="1"/>    
+      <attribute id="37" name="currentPiece">        
+        <position height="0" width="0" x="-176" y="-190"/>      
+      </attribute>      
+      <multiplicity id="38" minimum="0" maximum="1">        
+        <position height="0" width="0" x="-176" y="-190"/>      
+      </multiplicity>    
     </end>    
     <end type="TARGET" refId="12" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
   <association id="39">    
-    <end type="SOURCE" refId="11" navigable="false">      
-      <attribute id="40" name="type"/>      
-      <multiplicity id="41" minimum="0" maximum="1"/>    
+    <end type="SOURCE" refId="6" navigable="false">      
+      <attribute id="40" name="pieces">        
+        <position height="0" width="0" x="-176" y="-190"/>      
+      </attribute>      
+      <multiplicity id="41" minimum="0" maximum="2147483647">        
+        <position height="0" width="0" x="-176" y="-190"/>      
+      </multiplicity>    
     </end>    
-    <end type="TARGET" refId="7" navigable="true"/>    
+    <end type="TARGET" refId="12" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
   <classifier-display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
