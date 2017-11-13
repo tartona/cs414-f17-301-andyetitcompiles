@@ -20,7 +20,8 @@ public class JungleClient {
 	User clientUser;
 	String host;
 	User requestedUser;
-	ClientGameController gameController;
+	// Collection of active games the client is playing
+	Map<Integer, ClientGameController> activeGames;
 	// Queue for incoming messages from the ui
 	BlockingQueue<String> inQueue;
 	// Queue for outgoing messages to the ui
@@ -29,7 +30,7 @@ public class JungleClient {
 	public JungleClient() {
 		loggedIn = false;
 		kryoClient = new Client(8192, 4096);
-		gameController = null;
+		activeGames = new HashMap<Integer, ClientGameController>();
 		inQueue = new LinkedBlockingQueue<String>();
 		outQueue = new LinkedBlockingQueue<String>();
 		initializeKryoClient();
@@ -102,12 +103,7 @@ public class JungleClient {
 				}
 				// Sent by the server for game communications
 				if(o instanceof GameMessage) {
-					GameMessage message = (GameMessage)o;
-					// IMPORTANT TODO: Make it so we can have multiple games
-					if(gameController == null) {
-						return;
-					}
-					gameController.handleMessage(message);
+					handleGameMessage((GameMessage)o);
 				}
 			}
 			// Called whenever the client is disconnected from the server
@@ -138,7 +134,19 @@ public class JungleClient {
 	private void handleGameInstance(GameInstance game) {
 		// Create a new game controller
 		pushUpdate("Game with " + game.getOpponent().getNickname() + " is starting");
-		gameController = new ClientGameController(game.getGameID(), clientUser, game.getOpponent(), game.getColor(), kryoClient);
+		ClientGameController newGame = new ClientGameController(game.getGameID(), clientUser, game.getOpponent(), game.getColor(), kryoClient);
+		activeGames.put(game.getGameID(), newGame);
+	}
+	
+	// Called when the client receives a message for an existing game
+	private void handleGameMessage(GameMessage message) {
+		int id = message.getGameID();
+		if(activeGames.containsKey(id)) {
+			activeGames.get(id).handleMessage(message);
+		}
+		else {
+			System.out.println("GameMessage received for game that is not in the list of active games for this client");
+		}
 	}
 	
 	// Called when the client receives an invite request from another player
@@ -285,8 +293,8 @@ public class JungleClient {
 	}
 
 	// For testing. 
-	public ClientGameController getController() {
-		return gameController;
+	public ClientGameController getController(int gameID) {
+		return activeGames.get(gameID);
 	}
 
 

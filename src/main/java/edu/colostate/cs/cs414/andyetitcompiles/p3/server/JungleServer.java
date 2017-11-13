@@ -2,19 +2,24 @@ package edu.colostate.cs.cs414.andyetitcompiles.p3.server;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 
 import edu.colostate.cs.cs414.andyetitcompiles.p3.common.Color;
+import edu.colostate.cs.cs414.andyetitcompiles.p3.common.GameRecord;
 import edu.colostate.cs.cs414.andyetitcompiles.p3.common.User;
 import edu.colostate.cs.cs414.andyetitcompiles.p3.protocol.*;
 
 public class JungleServer {
 	Server server;
 	DatabaseManager database;
-	ServerGameController gameController;
+	Map<Integer, ServerGameController> games;
+	int gameCounter;
 
 	public JungleServer(DatabaseManager database) throws IOException {
 		server = new Server() {
@@ -28,6 +33,8 @@ public class JungleServer {
 	}
 
 	public JungleServer() throws IOException {
+		games = new HashMap<Integer, ServerGameController>();
+		gameCounter = 0;
 		server = new Server() {
 			protected Connection newConnection() {
 				return new JungleClientConnection();
@@ -60,10 +67,10 @@ public class JungleServer {
 		}
 		networkSetup();
 	}
-
+	
 	private void networkSetup() throws IOException {
 		Network.register(server);
-
+		JungleServer jServer = this;
 		server.addListener(new Listener() {
 			public void received(Connection c, Object object) {
 				// We know every connection is a JungleClientConnection
@@ -120,7 +127,6 @@ public class JungleServer {
 					}
 				}
 				// Invite response received from a client
-				// IMPORTANT TODO: the server can only handle 1 game right now for the demo, so don't try and create more than one game
 				if (object instanceof InviteResponse) {
 					InviteResponse inviteResp = (InviteResponse)object;
 					// If the response is accepted, forward it to the other user, and create a game instance for them to play on
@@ -139,13 +145,15 @@ public class JungleServer {
 							// send the response
 							inviter.sendTCP(inviteResp);
 							// Create the server game instance
-							gameController = new ServerGameController(1, inviter, invitee);
+							ServerGameController newGame = new ServerGameController(gameCounter, inviter, invitee, jServer);
+							games.put(gameCounter, newGame);
 							// Send the game info to the clients
-							GameInstance inviterMessage = new GameInstance(1, invitee.getUser(), Color.WHITE);
-							GameInstance inviteeMessage = new GameInstance(1, inviter.getUser(), Color.BLACK);
+							GameInstance inviterMessage = new GameInstance(gameCounter, invitee.getUser(), Color.WHITE);
+							GameInstance inviteeMessage = new GameInstance(gameCounter, inviter.getUser(), Color.BLACK);
 							inviter.sendTCP(inviterMessage);
 							invitee.sendTCP(inviteeMessage);
-							gameController.startGame();
+							gameCounter++;
+							newGame.startGame();
 						}
 					}
 					// The invite response was not accepted, forward to inviter
@@ -158,10 +166,15 @@ public class JungleServer {
 						}
 					}
 				}
-				// Game communication received, pass it off to the game controller
-				// IMPORTANT TODO: again, this assumes only one game will be created. We will need to check the game id and pass it to the correct controller in the future
+				// Game communication received, pass it off to the correct game controller
 				if(object instanceof GameMessage) {
-					gameController.handleMessage((GameMessage)object);
+					GameMessage message = (GameMessage)object;
+					if(games.containsKey(message.getGameID())) {
+						games.get(message.getGameID()).handleMessage(message);
+					}
+					else {
+						System.out.println("GameMessage received for game that does not exist on the server");
+					}
 				}
 			}
 			public void disconnected (Connection c) {
@@ -174,6 +187,12 @@ public class JungleServer {
 		});
 		server.bind(Network.port);
 		server.start();
+	}
+	
+	public void gameOver(int gameID, User winner, User loser, boolean abandoned, Timestamp start, Timestamp end) {
+		database.addGame(new GameRecord(winner.getId(), loser.getNickname(), start, end, true, abandoned), 
+				new GameRecord(loser.getId(), winner.getNickname(), start, end, false, abandoned));
+		games.remove(gameID);
 	}
 
 	public void stop() {
@@ -189,17 +208,13 @@ public class JungleServer {
 		if (email.contains("@")) {
 			return email.substring(Math.max(email.length() - 6, 0)).contains(".");// should be improved
 		}
-
 		return false;
-
-	}
-
-	// for testing
-	public ServerGameController getController() {
-		return gameController;
 	}
 	
-	
+	public ServerGameController getController(int gameID) {
+		return games.get(gameID);
+	}
+
 	public static void main(String args[]) {
 		try {
 			if(args.length == 3) {

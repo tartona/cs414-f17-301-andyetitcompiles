@@ -76,8 +76,7 @@ public class JungleCLI implements Runnable {
 		while(true) {
 			String message = takeUpdate();
 			if(message.split(":")[0].equals("User found")) {
-				print("User " + client.getRequestedUser().getNickname() + " exists, sending invite");
-				client.invite(client.getRequestedUser());
+				print("User " + client.getRequestedUser().getNickname() + " exists. Invite or view profile?");
 			}
 			else if(message.split(":")[0].equals("User not found")) {
 				print(message.split(":")[1]);
@@ -103,9 +102,16 @@ public class JungleCLI implements Runnable {
 					while(true) {
 						if(input.hasNextLine()) {
 							String message = input.nextLine();
-							if(message.split(" ")[0].equals("invite")) {
+							if(message.split(" ")[0].equals("find")) {
 								print("Searching for user");
 								client.findUser(message.split(" ")[1]);
+							}
+							if(message.equals("profile")) {
+								System.out.print(client.getRequestedUser());
+							}
+							else if(message.equals("invite")) {
+								client.invite(client.getRequestedUser());
+								print("Invite sent");
 							}
 							else if(message.split(" ")[0].equals("Y")) {
 								pushUpdate("Accept");
