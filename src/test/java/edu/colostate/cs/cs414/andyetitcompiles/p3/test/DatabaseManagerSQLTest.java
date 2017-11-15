@@ -147,8 +147,8 @@ public class DatabaseManagerSQLTest {
 		db.addGame(new GameRecord(user1.getId(), user2.getNickname(), new Timestamp(40000), new Timestamp(50005), true, true),
 				   new GameRecord(user2.getId(), user1.getNickname(), new Timestamp(40000), new Timestamp(50005), false, true));
 
-		db.addGame(new GameRecord(user1.getId(), user2.getNickname(), new Timestamp(80000), new Timestamp(88888), true, false),
-				   new GameRecord(user2.getId(), user1.getNickname(), new Timestamp(80000), new Timestamp(88888), false, false));
+		db.addGame(new GameRecord(user1.getId(), user2.getNickname(), new Timestamp(System.currentTimeMillis()-10000000), new Timestamp(System.currentTimeMillis()), true, false),
+				   new GameRecord(user2.getId(), user1.getNickname(), new Timestamp(System.currentTimeMillis()-10000000), new Timestamp(System.currentTimeMillis()), false, false));
 
 		//get user information including updated user history
 		user1 = db.findUser(user1.getNickname()).getUser();

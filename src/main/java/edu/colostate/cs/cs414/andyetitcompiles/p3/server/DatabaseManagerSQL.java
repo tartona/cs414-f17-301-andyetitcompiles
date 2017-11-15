@@ -20,6 +20,7 @@ public class DatabaseManagerSQL extends DatabaseManager {
 
 	private String dbLocation = "~/jungleDB";
 //									  + "?verifyServerCertificate=true"
+	//TODO discuss invites table?
 
 	private String dbUsername = "Admin";
 	private String useSSL = "&useSSL=true";
@@ -93,6 +94,19 @@ public class DatabaseManagerSQL extends DatabaseManager {
 //				"  INDEX `fk_UserHistory_UserProfile_idx` (`idUser` ASC),\r\n" + 
 //				"  PRIMARY KEY (`idUser`),\r\n" + 
 //				"  CONSTRAINT `fk_UserHistory_UserProfile`\r\n" + 
+				"    FOREIGN KEY (`idUser`)\r\n" + 
+				"    REFERENCES `userprofile` (`idUser`)\r\n" + 
+				"    ON DELETE CASCADE\r\n" + 
+				"    ON UPDATE NO ACTION)\r\n" + 
+				"ENGINE = InnoDB;";
+		connection.prepareStatement(sql).executeUpdate();
+			
+
+		//setup user invite table
+		sql = "CREATE TABLE IF NOT EXISTS `userInvites` (\r\n" + 
+				"  `idUser` INT(11) NOT NULL,\r\n" + 
+				"  `opponent` INT(11) NOT NULL,\r\n" + 
+				"  UNIQUE INDEX opponent_UNIQUE (opponent ASC),\r\n" + 
 				"    FOREIGN KEY (`idUser`)\r\n" + 
 				"    REFERENCES `userprofile` (`idUser`)\r\n" + 
 				"    ON DELETE CASCADE\r\n" + 
@@ -233,7 +247,7 @@ public class DatabaseManagerSQL extends DatabaseManager {
 			while (rtnSet.next()) {
 				n++; // should never be more than 1
 				idUser = rtnSet.getInt("idUser");
-				tempUser = new User(idUser,rtnSet.getString("Email"),rtnSet.getString("nickname"),"", UserStatus.ONLINE,gameHistory(idUser)); 
+				tempUser = new User(idUser,rtnSet.getString("Email"),rtnSet.getString("nickname"),"", UserStatus.ONLINE,gameHistory(idUser),invites(idUser)); 
 			}
 			// found 1 user
 			if (n == 1) {
@@ -285,9 +299,9 @@ public class DatabaseManagerSQL extends DatabaseManager {
 				boolean online = rtnSet.getBoolean("Online");
 				int idUser = rtnSet.getInt("idUser");
 				if(online) {
-					tempUser = new User(idUser,rtnSet.getString("Email"),rtnSet.getString("nickname"),"", UserStatus.ONLINE,gameHistory(idUser)); //user online
+					tempUser = new User(idUser,rtnSet.getString("Email"),rtnSet.getString("nickname"),"", UserStatus.ONLINE,gameHistory(idUser),invites(idUser)); //user online
 				}else {
-					tempUser = new User(idUser,rtnSet.getString("Email"),rtnSet.getString("nickname"),"", UserStatus.OFFLINE,gameHistory(idUser)); //user offline
+					tempUser = new User(idUser,rtnSet.getString("Email"),rtnSet.getString("nickname"),"", UserStatus.OFFLINE,gameHistory(idUser),invites(idUser)); //user offline
 				}
 			}
 			// found 1 user
@@ -372,6 +386,22 @@ public class DatabaseManagerSQL extends DatabaseManager {
 		return record;
 	}
 	
+	private Set<String> invites(int idUser){
+		Set<String> record = new HashSet<>();
+		
+		String sql = "SELECT * FROM userInvites WHERE idUser = '" + idUser +"'";
+			try {
+				ResultSet rtnSet = connection.prepareStatement(sql).executeQuery();
+				while (rtnSet.next()) {
+					record.add(findUser(rtnSet.getString("opponent")).getUser().getNickname());
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		
+		return record;	
+	}
+	
 	/**
 	 * 
 	 * @param idUser user identification number
@@ -388,6 +418,25 @@ public class DatabaseManagerSQL extends DatabaseManager {
 			e.printStackTrace();
 		}	
 		return "User Not Found";
+	}
+	
+	/**
+	 * 
+	 * @param inviter id of user sending invitation
+	 * @param invitee id of user receiving invitation
+	 * @return whether it was successfully added to database
+	 */
+	public boolean addInvite(int inviter, int invitee) {
+		String query = "INSERT INTO userInvites (idUser, opponent) "
+				+ "VALUES('" + invitee + "', '" + inviter + "', );" ;
+		try {
+			connection.prepareStatement(query).executeUpdate();
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+		
 	}
 	
 	public static void main(String[] argv) {
