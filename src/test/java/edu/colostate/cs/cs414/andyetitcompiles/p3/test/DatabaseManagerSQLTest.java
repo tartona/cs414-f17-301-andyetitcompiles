@@ -95,14 +95,22 @@ public class DatabaseManagerSQLTest {
 		loginResp = db.authenticateUser(user.getEmail(), "PassWOrD");//test case sensitivity
 		assertFalse(loginResp.getMessage(), loginResp.successful());
 		
+		//make sure user is not online
+		assertTrue(db.onlineUsers().size()==0);
+
 		//test success
 		loginResp = db.authenticateUser(user.getEmail(), user.getPassword());
 		assertTrue(loginResp.getMessage(), loginResp.successful());
 		assertTrue(loginResp.getUser().getStatus().compareTo(UserStatus.ONLINE) == 0); //assure user is logged in
+		//make sure 1 user is online
+		assertTrue(db.onlineUsers().size()==1);
 
 		db.logout(user);
 		UserResponse userResp = db.findUser(user.getNickname());
 		assertTrue(new String(userResp.getUser().getStatus()+""),userResp.getUser().getStatus().compareTo(UserStatus.OFFLINE) == 0); //assure user is logged in
+
+		//make sure user is not online after logging out
+		assertTrue(db.onlineUsers().size()==0);
 		
 		loginResp = db.authenticateUser(user.getEmail().toUpperCase(), user.getPassword());//test case insensitivity
 		assertTrue(loginResp.getMessage(), loginResp.successful());
