@@ -16,7 +16,7 @@ import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
 
-public class DatabaseManagerSQL extends DatabaseManager {
+public class DatabaseManagerSQL {
 
 	private String dbLocation = "~/jungleDB";
 //									  + "?verifyServerCertificate=true"
@@ -285,6 +285,24 @@ public class DatabaseManagerSQL extends DatabaseManager {
 		}
 	}
 
+	public Set<User> onlineUsers(){
+		Set<User> onlineUsers = new HashSet<>();
+		
+		String sql = "SELECT * FROM userProfile WHERE online=1";
+		try {
+			ResultSet rtnSet = connection.prepareStatement(sql).executeQuery();
+			while (rtnSet.next()) {
+				int idUser = rtnSet.getInt("idUser");
+				onlineUsers.add(new User(idUser,rtnSet.getString("Email"),rtnSet.getString("nickname"),"", UserStatus.ONLINE,gameHistory(idUser),invites(idUser)));
+			}
+			// found 1 user
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return onlineUsers;
+	}
+	
 	/**
 	 * Search for user profile and game history in database. 
 	 */
@@ -439,23 +457,29 @@ public class DatabaseManagerSQL extends DatabaseManager {
 		
 	}
 	
-	public static void main(String[] argv) {
-			DatabaseManagerSQL db = null;
-		try {
-			db = new DatabaseManagerSQL();
-			db.resetTable();
-		} catch (ClassNotFoundException | SQLException e) {
-			e.printStackTrace();
-		}
-		
-		RegisterResponse regResp = db.registerUser( "Email@email", "Nickname", "Password");
-		System.out.println(regResp.getMessage());
-		regResp = db.registerUser( "Email2@email", "Nickname2", "Password");
-		System.out.println(regResp.getMessage());
-		
-		//db.addGame(new GameRecord(1, "nickname2", new Timestamp(5), new Timestamp(55), true, false), new GameRecord(2, "nickname", new Timestamp(5), new Timestamp(55), false, false));
-		
-		UserResponse uResp = db.findUser("Nickname");
-		System.out.println(uResp.getMessage());
-	}
+//	public static void main(String[] argv) {
+//			DatabaseManagerSQL db = null;
+//		try {
+//			db = new DatabaseManagerSQL();
+//			db.resetTable();
+//		} catch (ClassNotFoundException | SQLException e) {
+//			e.printStackTrace();
+//		}
+//		
+//		RegisterResponse regResp = db.registerUser( "Email@email", "Nickname", "Password");
+//		System.out.println(regResp.getMessage());
+//		regResp = db.registerUser( "Email2@email", "Nickname2", "Password");
+//		System.out.println(regResp.getMessage());
+//		
+//		//db.addGame(new GameRecord(1, "nickname2", new Timestamp(5), new Timestamp(55), true, false), new GameRecord(2, "nickname", new Timestamp(5), new Timestamp(55), false, false));
+//		
+//		UserResponse uResp = db.findUser("Nickname");
+//		System.out.println(uResp.getMessage());
+//		System.out.println(uResp.getUser().getStatus());
+//		System.out.println(db.onlineUsers().size());
+//		LoginResponse lResp = db.authenticateUser("email@email", "Password");
+//		System.out.println(lResp.getMessage());
+//		System.out.println(db.onlineUsers().size());
+//
+//	}
 }
