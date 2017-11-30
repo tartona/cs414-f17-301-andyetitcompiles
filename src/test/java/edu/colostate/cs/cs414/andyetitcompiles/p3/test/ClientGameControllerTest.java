@@ -94,10 +94,10 @@ public class ClientGameControllerTest {
 		// figure out a valid move
 		JungleGame game = controller.getGame();
 		JunglePiece piece = game.getPiece(Color.WHITE, "rat");
-		JungleTile tile = game.getValidMoves(Color.WHITE, "rat").get(0);
+		int[] move = game.getValidMoves(Color.WHITE, "rat").get(0);
 		// Set the turn and make the move, then wait for a response
 		controller.setTurn(true);
-		controller.makeMove(piece, tile.getRow(), tile.getCol());
+		controller.makeMove(piece, move[0], move[1]);
 		Thread.sleep(500);
 		Object serverReceived = server.getLastReceived();
 		if(serverReceived instanceof GameMessage) {
@@ -105,8 +105,8 @@ public class ClientGameControllerTest {
 			assertEquals(GameMessageType.MAKE_MOVE, message.getType());
 			assertEquals(Color.WHITE, message.getPieceColor());
 			assertEquals("rat", message.getPieceID());
-			assertEquals(tile.getRow(), message.getTileRow());
-			assertEquals(tile.getCol(), message.getTileCol());
+			assertEquals(move[0], message.getTileRow());
+			assertEquals(move[1], message.getTileCol());
 		}
 		else
 			fail("Incorrect object received by server");
@@ -145,15 +145,15 @@ public class ClientGameControllerTest {
 		// figure out a valid move
 		JungleGame game = controller.getGame();
 		JunglePiece piece = game.getPiece(Color.BLACK, "rat");
-		JungleTile tile = game.getValidMoves(piece.getColor(), piece.getID()).get(0);
-		GameMessage gameUpdate = new GameMessage(gameID, GameMessageType.MAKE_MOVE, piece.getColor(), piece.getID(), tile.getRow(), tile.getCol(), player2);
+		int[] nextMove = game.getValidMoves(piece.getColor(), piece.getID()).get(0);
+		GameMessage gameUpdate = new GameMessage(gameID, GameMessageType.MAKE_MOVE, piece.getColor(), piece.getID(), nextMove[0], nextMove[1], player2);
 		client.sendTCP(gameUpdate);
 		Thread.sleep(500);
 		if(lastReceived instanceof GameMessage) {
 			GameMessage received = (GameMessage)lastReceived;
 			// Maybe there should be a way to check if the board state has changed easier than this, like equals override for jungleboard.
 			// I am checking to see if the black rats first valid move has changed
-			assertNotEquals(tile, game.getValidMoves(piece.getColor(), piece.getID()).get(0));
+			assertNotEquals(nextMove, game.getValidMoves(piece.getColor(), piece.getID()).get(0));
 		}
 		else
 			fail("incorrect object received by client");

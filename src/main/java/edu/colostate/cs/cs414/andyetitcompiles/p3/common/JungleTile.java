@@ -13,6 +13,10 @@ public class JungleTile {
 		this.col = col;
 	}
 	
+	public boolean isEmpty(){
+		return this.currentPiece == null;
+	}
+	
 	public int getRow() {
 		return row;
 	}

@@ -38,9 +38,9 @@ public interface GameInterface {
 	/**
 	 * Checks for all valid moves available to a specific piece, given the game's current state
 	 * @param piece
-	 * @return array holding 0 to 4 permissable moves from the piece's current location
+	 * @return array holding 0 to 4 permissable moves [expressed in (row, col) format] from the piece's current location
 	 */
-	public ArrayList<JungleTile> getValidMoves(Color color, String id);
+	public ArrayList<int[]> getValidMoves(Color color, String id);
 	
 	/**
 	 * Restarts the game and resets board to initial state with the same users as before.

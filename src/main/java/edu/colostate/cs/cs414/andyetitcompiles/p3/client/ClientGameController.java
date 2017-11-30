@@ -173,6 +173,8 @@ public class ClientGameController {
 	
 	
 	public void makeMove(JunglePiece piece, int row, int col) {
+		if(piece == null)
+			return;
 		if(piece.getColor() == color) {
 			if(turn) {
 				if(game.makeMove(piece.getColor(), piece.getID(), row, col)) {
