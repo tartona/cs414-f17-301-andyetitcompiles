@@ -11,6 +11,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 
 import com.esotericsoftware.kryonet.Connection;
 
@@ -22,7 +23,7 @@ import edu.colostate.cs.cs414.andyetitcompiles.p3.common.User;
 import edu.colostate.cs.cs414.andyetitcompiles.p3.protocol.GameMessage;
 import edu.colostate.cs.cs414.andyetitcompiles.p3.protocol.GameMessageType;
 
-public class ClientGameController {
+public class ClientGameController extends JPanel {
 	Connection client;
 	int gameID;
 	JungleGame game;
@@ -50,10 +51,8 @@ public class ClientGameController {
 		// Default to false so the client can't make a move until the server sets their turn
 		this.turn = false;
 		// Construct the ui
-		frame = new JFrame();
-		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		frame.setTitle("Playing Jungle against " + opponent.getNickname());
-		JPanel panel = new JPanel(new BorderLayout());
+		this.setLayout(new BorderLayout());
+		this.setName("Game with " + opponent.getNickname());
 		// Create quit button
 		JButton quitBtn = new JButton();
 		quitBtn.setText("Quit");
@@ -62,17 +61,14 @@ public class ClientGameController {
 				quitGame();
 			}
 		});
-		panel.add(quitBtn, BorderLayout.PAGE_END);
+		this.add(quitBtn, BorderLayout.PAGE_END);
 		// Create a label to display messages
 		this.message = new JLabel();
 		message.setText("Game starting...");
-		panel.add(message, BorderLayout.PAGE_START);
+		this.add(message, BorderLayout.PAGE_START);
 		// Finally, add the game board
 		gameBoardUI = new BoardUI(game.getJungleTiles(), this);
-		panel.add(gameBoardUI, BorderLayout.CENTER);
-		frame.getContentPane().add(panel);
-		frame.setSize(panel.getPreferredSize());
-		frame.setVisible(true);
+		this.add(gameBoardUI, BorderLayout.CENTER);
 	}
 	
 	// Used for the demo CLI game
@@ -134,7 +130,6 @@ public class ClientGameController {
 		else {
 			this.message.setText("You lost the game");
 		}
-		// Let the client know it can get rid of this instance
 	}
 
 	private void handleSetTurn(GameMessage message) {
