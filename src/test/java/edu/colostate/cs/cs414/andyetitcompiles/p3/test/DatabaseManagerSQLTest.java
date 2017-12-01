@@ -146,16 +146,16 @@ public class DatabaseManagerSQLTest {
 		assertTrue(regResp.successful());
 		user2 = db.findUser(user2.getNickname()).getUser();
 
-		db.addGame(new GameRecord(user1.getId(), user2.getNickname(), new Timestamp(10000), new Timestamp(10005), true, false),
+		db.addGameRecord(new GameRecord(user1.getId(), user2.getNickname(), new Timestamp(10000), new Timestamp(10005), true, false),
 				   new GameRecord(user2.getId(), user1.getNickname(), new Timestamp(10000), new Timestamp(10005), false, false));
 
-		db.addGame(new GameRecord(user1.getId(), user2.getNickname(), new Timestamp(10500), new Timestamp(10505), false, false),
+		db.addGameRecord(new GameRecord(user1.getId(), user2.getNickname(), new Timestamp(10500), new Timestamp(10505), false, false),
 				   new GameRecord(user2.getId(), user1.getNickname(), new Timestamp(10500), new Timestamp(10505), true, false));
 
-		db.addGame(new GameRecord(user1.getId(), user2.getNickname(), new Timestamp(40000), new Timestamp(50005), true, true),
+		db.addGameRecord(new GameRecord(user1.getId(), user2.getNickname(), new Timestamp(40000), new Timestamp(50005), true, true),
 				   new GameRecord(user2.getId(), user1.getNickname(), new Timestamp(40000), new Timestamp(50005), false, true));
 
-		db.addGame(new GameRecord(user1.getId(), user2.getNickname(), new Timestamp(System.currentTimeMillis()-10000000), new Timestamp(System.currentTimeMillis()), true, false),
+		db.addGameRecord(new GameRecord(user1.getId(), user2.getNickname(), new Timestamp(System.currentTimeMillis()-10000000), new Timestamp(System.currentTimeMillis()), true, false),
 				   new GameRecord(user2.getId(), user1.getNickname(), new Timestamp(System.currentTimeMillis()-10000000), new Timestamp(System.currentTimeMillis()), false, false));
 
 		//get user information including updated user history

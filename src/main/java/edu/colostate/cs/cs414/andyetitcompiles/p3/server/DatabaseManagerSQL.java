@@ -91,9 +91,6 @@ public class DatabaseManagerSQL {
 				"  `endTimestamp` TIMESTAMP NULL DEFAULT NULL,\r\n" + 
 				"  `won` TINYINT(1) NULL DEFAULT NULL,\r\n" + 
 				"  `abandoned` TINYINT(1) NULL DEFAULT NULL,\r\n" + 
-//				"  INDEX `fk_UserHistory_UserProfile_idx` (`idUser` ASC),\r\n" + 
-//				"  PRIMARY KEY (`idUser`),\r\n" + 
-//				"  CONSTRAINT `fk_UserHistory_UserProfile`\r\n" + 
 				"    FOREIGN KEY (`idUser`)\r\n" + 
 				"    REFERENCES `userprofile` (`idUser`)\r\n" + 
 				"    ON DELETE CASCADE\r\n" + 
@@ -101,7 +98,25 @@ public class DatabaseManagerSQL {
 				"ENGINE = InnoDB;";
 		connection.prepareStatement(sql).executeUpdate();
 			
-
+		//setup gameList table
+		sql = "CREATE TABLE IF NOT EXISTS `gameList` (\r\n" + 
+				"  `gameID` INT(11) NOT NULL,\r\n" + 
+				"  `user1` INT(11) NOT NULL,\r\n" + 
+				"  `user2` INT(11) NOT NULL,\r\n" + 
+				"  `startTimestamp` TIMESTAMP NULL DEFAULT NULL,\r\n" + 
+				"  `lastTurnTime` TIMESTAMP NULL DEFAULT NULL,\r\n" + 
+				"  `playerTurn` TINYINT(1) NULL DEFAULT NULL,\r\n" + //who's turn it should is currently. (1 or 2)
+				"  `gameConfig` VARCHAR(63) NOT NULL,\r\n" +
+				"  UNIQUE INDEX gameID_UNIQUE (user2 ASC),\r\n" +
+				"    FOREIGN KEY (`user1`)\r\n" + 
+				"    REFERENCES `userprofile` (`idUser`),\r\n" + 
+				"    FOREIGN KEY (`user2`)\r\n" + //TODO make sure deleted games are set as abandoned in gameHistory. do this by searching for userID before deleting user
+				"    REFERENCES `userprofile` (`idUser`)\r\n" + 
+				"    ON DELETE CASCADE\r\n" + 
+				"    ON UPDATE NO ACTION)\r\n" + 
+				"ENGINE = InnoDB;";
+		connection.prepareStatement(sql).executeUpdate();
+	
 		//setup user invite table
 		sql = "CREATE TABLE IF NOT EXISTS `userInvites` (\r\n" + 
 				"  `idUser` INT(11) NOT NULL,\r\n" + 
@@ -125,6 +140,8 @@ public class DatabaseManagerSQL {
 		System.out.println("-------- Database tables deleted -------");
 		connection.prepareStatement("DROP TABLE IF EXISTS userHistory").execute();
 		connection.prepareStatement("DROP TABLE IF EXISTS userProfile").execute();
+		connection.prepareStatement("DROP TABLE IF EXISTS gameList"   ).execute();
+		connection.prepareStatement("DROP TABLE IF EXISTS userInvites").execute();
 		
 		setupTables();
 	}
@@ -210,7 +227,14 @@ public class DatabaseManagerSQL {
 			}
 			//found 1 user
 			if(n==1) {
+				sql = "SELECT * FROM gameList"
+				    + " WHERE user1 = '" + idUser + "'";
 
+			while(rtnSet.next()) {
+				int opponent = rtnSet.getInt("user2");
+				//addGameRecord(new GameRecord(idUser, opponent, startTime, endTime, won, abandoned), record2)
+				//TODO add new game to history.
+			}
 				//remove user
 				sql = "DELETE FROM userProfile WHERE idUser = " + idUser;
 				connection.prepareStatement(sql).executeUpdate();
@@ -341,12 +365,51 @@ public class DatabaseManagerSQL {
 	}
 	
 	/**
+	 * add stored game in database. 
+	 * call when a game is started.
+	 * 
+	 * @param gameId
+	 * @param user1
+	 * @param user2
+	 * @param gameConfig String that can be used to represent game board. 
+	 * @return whether or not successful
+	 */
+	public boolean addGame(int gameId, int user1, int user2, Timestamp startTime, String gameConfig) {
+		//TODO implement function
+		return false;
+	}
+	/**
+	 * add stored game in database. 
+	 * call when a move is made.
+	 * 
+	 * @param gameId
+	 * @param user1
+	 * @param user2
+	 * @param gameConfig String that can be used to represent game board. 
+	 * @return whether or not successful
+	 */
+	public boolean updateGame(int gameId, String gameConfig) {
+		//TODO implement function
+		return false;
+	}
+
+	/**
+	 * returns game configuration for a given user
+	 * @param idUser
+	 * @return 63 character string representing the game board
+	 */
+	public String updateGame(int idUser) {
+		//TODO implement function
+		return null;
+	}
+	
+	/**
 	 * Adds game records of both users in a game to the database. 
 	 * @param record1 
 	 * @param record2
 	 * @return true for successfully added to database, false when unsuccessful. 
 	 */
-	public boolean addGame(GameRecord record1, GameRecord record2) {
+	public boolean addGameRecord(GameRecord record1, GameRecord record2) {
 
 		try {
 			int idUser1 = record1.getIdUser();
@@ -457,29 +520,29 @@ public class DatabaseManagerSQL {
 		
 	}
 	
-//	public static void main(String[] argv) {
-//			DatabaseManagerSQL db = null;
-//		try {
-//			db = new DatabaseManagerSQL();
-//			db.resetTable();
-//		} catch (ClassNotFoundException | SQLException e) {
-//			e.printStackTrace();
-//		}
-//		
-//		RegisterResponse regResp = db.registerUser( "Email@email", "Nickname", "Password");
-//		System.out.println(regResp.getMessage());
-//		regResp = db.registerUser( "Email2@email", "Nickname2", "Password");
-//		System.out.println(regResp.getMessage());
-//		
-//		//db.addGame(new GameRecord(1, "nickname2", new Timestamp(5), new Timestamp(55), true, false), new GameRecord(2, "nickname", new Timestamp(5), new Timestamp(55), false, false));
-//		
-//		UserResponse uResp = db.findUser("Nickname");
-//		System.out.println(uResp.getMessage());
-//		System.out.println(uResp.getUser().getStatus());
-//		System.out.println(db.onlineUsers().size());
-//		LoginResponse lResp = db.authenticateUser("email@email", "Password");
-//		System.out.println(lResp.getMessage());
-//		System.out.println(db.onlineUsers().size());
-//
-//	}
+	public static void main(String[] argv) {
+			DatabaseManagerSQL db = null;
+		try {
+			db = new DatabaseManagerSQL();
+			db.resetTable();
+		} catch (ClassNotFoundException | SQLException e) {
+			e.printStackTrace();
+		}
+		
+		RegisterResponse regResp = db.registerUser( "Email@email", "Nickname", "Password");
+		System.out.println(regResp.getMessage());
+		regResp = db.registerUser( "Email2@email", "Nickname2", "Password");
+		System.out.println(regResp.getMessage());
+		
+		//db.addGame(new GameRecord(1, "nickname2", new Timestamp(5), new Timestamp(55), true, false), new GameRecord(2, "nickname", new Timestamp(5), new Timestamp(55), false, false));
+		
+		UserResponse uResp = db.findUser("Nickname");
+		System.out.println(uResp.getMessage());
+		System.out.println(uResp.getUser().getStatus());
+		System.out.println(db.onlineUsers().size());
+		LoginResponse lResp = db.authenticateUser("email@email", "Password");
+		System.out.println(lResp.getMessage());
+		System.out.println(db.onlineUsers().size());
+
+	}
 }
