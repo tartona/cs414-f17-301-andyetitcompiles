@@ -398,7 +398,7 @@ public class DatabaseManagerSQL {
 	 * @param idUser
 	 * @return 63 character string representing the game board
 	 */
-	public String updateGame(int idUser) {
+	public String findGame(int idUser) {
 		//TODO implement function
 		return null;
 	}
