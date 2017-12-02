@@ -209,7 +209,7 @@ public class JungleServer {
 	}
 	
 	public void gameOver(int gameID, User winner, User loser, boolean abandoned, Timestamp start, Timestamp end) {
-		database.addGameRecord(new GameRecord(winner.getId(), loser.getNickname(), start, end, true, abandoned), 
+		database.addGameRecord(gameID, new GameRecord(winner.getId(), loser.getNickname(), start, end, true, abandoned), 
 				new GameRecord(loser.getId(), winner.getNickname(), start, end, false, abandoned));
 		games.remove(gameID);
 	}

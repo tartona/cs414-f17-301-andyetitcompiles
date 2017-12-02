@@ -145,17 +145,23 @@ public class DatabaseManagerSQLTest {
 		regResp = db.registerUser(user2);
 		assertTrue(regResp.successful());
 		user2 = db.findUser(user2.getNickname()).getUser();
+		
+		//make sure gameIDs are in database when record is added.
+		db.addGame(0, user1.getId(), user2.getId(), new Timestamp(10000), 1, "");
+		db.addGame(1, user1.getId(), user2.getId(), new Timestamp(10500), 2, "");
+		db.addGame(2, user1.getId(), user2.getId(), new Timestamp(40000), 1, "");
+		db.addGame(3, user1.getId(), user2.getId(), new Timestamp(System.currentTimeMillis()-10000000), 4, "");
 
-		db.addGameRecord(new GameRecord(user1.getId(), user2.getNickname(), new Timestamp(10000), new Timestamp(10005), true, false),
+		db.addGameRecord(0, new GameRecord(user1.getId(), user2.getNickname(), new Timestamp(10000), new Timestamp(10005), true, false),
 				   new GameRecord(user2.getId(), user1.getNickname(), new Timestamp(10000), new Timestamp(10005), false, false));
 
-		db.addGameRecord(new GameRecord(user1.getId(), user2.getNickname(), new Timestamp(10500), new Timestamp(10505), false, false),
+		db.addGameRecord(1, new GameRecord(user1.getId(), user2.getNickname(), new Timestamp(10500), new Timestamp(10505), false, false),
 				   new GameRecord(user2.getId(), user1.getNickname(), new Timestamp(10500), new Timestamp(10505), true, false));
 
-		db.addGameRecord(new GameRecord(user1.getId(), user2.getNickname(), new Timestamp(40000), new Timestamp(50005), true, true),
+		db.addGameRecord(2, new GameRecord(user1.getId(), user2.getNickname(), new Timestamp(40000), new Timestamp(50005), true, true),
 				   new GameRecord(user2.getId(), user1.getNickname(), new Timestamp(40000), new Timestamp(50005), false, true));
 
-		db.addGameRecord(new GameRecord(user1.getId(), user2.getNickname(), new Timestamp(System.currentTimeMillis()-10000000), new Timestamp(System.currentTimeMillis()), true, false),
+		db.addGameRecord(3, new GameRecord(user1.getId(), user2.getNickname(), new Timestamp(System.currentTimeMillis()-10000000), new Timestamp(System.currentTimeMillis()), true, false),
 				   new GameRecord(user2.getId(), user1.getNickname(), new Timestamp(System.currentTimeMillis()-10000000), new Timestamp(System.currentTimeMillis()), false, false));
 
 		//get user information including updated user history
@@ -213,12 +219,16 @@ public class DatabaseManagerSQLTest {
 		//test new game
 		String board = "Not an accurate repressentation of a game board but should work";
 		assertTrue(db.addGame(1, user1.getId(), user2.getId(), new Timestamp(System.currentTimeMillis()), 1, board));
-		assertTrue(db.findGame(1).equals(board));
+		assertTrue(db.findGame(1).getGameConfig().equals(board));
 
 		//test board update
 		String newBoard = "Not an accurate haaay look I changed some letters! i  work";
 		assertTrue(db.updateGame(1, newBoard));
-		assertTrue(db.findGame(1).equals(newBoard));
+		assertTrue(db.findGame(1).getGameConfig().equals(newBoard));
 		
+		//test games removed when user unregisteres. 
+		db.unRegisterUser("email2@email.com", "password");
+		//make sure game was removed
+		assertTrue(db.findGame(1)==null);
 	}
 }

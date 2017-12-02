@@ -218,28 +218,29 @@ public class DatabaseManagerSQL {
 		ResultSet rtnSet = null;
 		try {
 			rtnSet = connection.prepareStatement(sql).executeQuery();
-			int n=0;
-			String idUser = null;
-			while(rtnSet.next()) {
-				n++; //should never be more than 1
-				idUser = rtnSet.getString("idUser");
+			int n = 0;
+			int idUser = -1;
+			while (rtnSet.next()) {
+				n++; // should never be more than 1
+				idUser = rtnSet.getInt("idUser");
 			}
-			//found 1 user
-			if(n==1) {
-				sql = "SELECT * FROM gameList"
-				    + " WHERE user1 = '" + idUser + "'";
+			// found 1 user
+			if (n == 1) {
+				sql = "SELECT * FROM gameList" + " WHERE user1 = '" + idUser + "'";
 
-			while(rtnSet.next()) {
-				int opponent = rtnSet.getInt("user2");
-//				addGameRecord(new GameRecord(idUser, opponent, startTime, new Timestamp(System.currentTimeMillis()), 1, 1), record2)
-//				TODO add new game to history.
-			}
-				//remove user
+				// find all current games and end them.
+				while (rtnSet.next()) {
+					String opponent = searchNickname(rtnSet.getInt("user2"));
+					Timestamp startTime = rtnSet.getTimestamp("startTimeStamp");
+					int gameID = rtnSet.getInt("gameID");
+					addGameRecord(gameID, new GameRecord(idUser, opponent, startTime, new Timestamp(System.currentTimeMillis()),true, true), null);
+				}
+				// remove user
 				sql = "DELETE FROM userProfile WHERE idUser = " + idUser;
 				connection.prepareStatement(sql).executeUpdate();
 				return new UnregisterResponse(true, "Account Deleted");
 			}
-			if(n==0) {
+			if (n == 0) {
 				return new UnregisterResponse(false, "Account not found");
 			}
 			if(n>1) {
@@ -445,23 +446,23 @@ String sql = "SELECT * FROM gameList WHERE gameID = '" + gameId +"'";
 	 * @param idUser
 	 * @return 63 character string representing the game board
 	 */
-	public String findGame(int gameId) {
-		String sql = "SELECT * FROM gameList WHERE gameID = '" + gameId +"'";
-		String rtnString = null;
+	public gameInfo findGame(int gameID) {
+		String sql = "SELECT * FROM gameList WHERE gameID = '" + gameID +"'";
+		gameInfo rtnGame = null;
 		try {
 			ResultSet rtnSet = connection.prepareStatement(sql).executeQuery();
 			int n = 0;
 
 			while (rtnSet.next()) {
 				n++;
-				rtnString = rtnSet.getString("gameConfig");
+				rtnGame = new gameInfo(gameID, rtnSet.getShort("user1"),rtnSet.getInt("user2"),rtnSet.getTimestamp("startTimeStamp"),rtnSet.getInt("playerTurn"),rtnSet.getString("gameConfig")); rtnSet.getString("gameConfig");
 			}
 			// found 1 user
 			if (n == 0) {
 				return null;
 			}
 			if (n == 1) {
-				return rtnString;
+				return rtnGame;
 			}
 			if (n > 1) {
 				System.err.println("SERIOUS DATABASE ERROR OCCURED!");
@@ -478,7 +479,7 @@ String sql = "SELECT * FROM gameList WHERE gameID = '" + gameId +"'";
 	 * @param record2
 	 * @return true for successfully added to database, false when unsuccessful. 
 	 */
-	public boolean addGameRecord(GameRecord record1, GameRecord record2) {
+	public boolean addGameRecord(int gameID, GameRecord record1, GameRecord record2) {
 
 		try {
 			int idUser1 = record1.getIdUser();
@@ -507,6 +508,32 @@ String sql = "SELECT * FROM gameList WHERE gameID = '" + gameId +"'";
 			query = "INSERT INTO userHistory (idUser, opponent, startTimestamp, endTimeStamp, won, abandoned) "
 					+ "VALUES('" + idUser2 + "', '" + idUser1 + "', '"+startTime2+"', '"+endTime2+"', '"+won2+"', '"+abandoned+"' );";
 			connection.prepareStatement(query).executeUpdate();
+			
+			//remove from gamelist
+			String sql = "SELECT * FROM gameList WHERE gameID = '" + gameID +"'";
+			String rtnString = null;
+			try {
+				ResultSet rtnSet = connection.prepareStatement(sql).executeQuery();
+				int n = 0;
+
+				while (rtnSet.next()) {
+					n++;
+					rtnString = rtnSet.getString("gameConfig");
+				}
+				// found 1 user
+				if (n == 0) {
+					System.err.println("Game " + gameID + " not found!");
+				}
+				if (n == 1) {
+					sql="DELETE FROM gameList WHERE gameID = " + gameID;
+					connection.prepareStatement(sql).executeUpdate();
+				}
+				if (n > 1) {
+					System.err.println("SERIOUS DATABASE ERROR OCCURED!");
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}	
 			return true;
 		} catch (SQLException e) {
 			e.printStackTrace();
