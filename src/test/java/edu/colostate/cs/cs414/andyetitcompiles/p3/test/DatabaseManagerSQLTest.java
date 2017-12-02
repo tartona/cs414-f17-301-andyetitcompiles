@@ -192,4 +192,33 @@ public class DatabaseManagerSQLTest {
 		assertEquals(3, winCount);//user1 should have 3 wins
 
 	}
+	
+	@Test
+	public void testGameStorage() {	
+		//setup 2 users
+		User user1 = new User("Email@Email.com", "nickname", "password");
+		RegisterResponse regResp1 = db.registerUser(user1);
+		assertTrue(regResp1.successful());
+		LoginResponse loginResp1 = db.authenticateUser(user1.getEmail(), user1.getPassword());//test case sensitivity
+		assertTrue(loginResp1.getMessage(), loginResp1.successful());
+		user1 = loginResp1.getUser();
+		
+		User user2 = new User("Email2@Email.com", "nickname2", "password");
+		RegisterResponse regResp2 = db.registerUser(user2);
+		assertTrue(regResp2.successful());
+		LoginResponse loginResp2 = db.authenticateUser(user2.getEmail(), user2.getPassword());//test case sensitivity
+		assertTrue(loginResp2.getMessage(), loginResp2.successful());
+		user2 = loginResp2.getUser();
+		
+		//test new game
+		String board = "Not an accurate repressentation of a game board but should work";
+		assertTrue(db.addGame(1, user1.getId(), user2.getId(), new Timestamp(System.currentTimeMillis()), 1, board));
+		assertTrue(db.findGame(1).equals(board));
+
+		//test board update
+		String newBoard = "Not an accurate haaay look I changed some letters! i  work";
+		assertTrue(db.updateGame(1, newBoard));
+		assertTrue(db.findGame(1).equals(newBoard));
+		
+	}
 }
