@@ -187,15 +187,18 @@ public class DatabaseManagerSQLTest {
 		assertEquals(1, winCount);//user2 should have 1 wins
 
 		//Additional code coverage, include path where user played against is missing. 
-		db.unRegisterUser(user2.getEmail(), "password");
+		db.addGame(4, user1.getId(), user2.getId(), new Timestamp(10000), 1, "");
+
+		assertTrue(db.unRegisterUser(user2.getEmail(), "password").successful());
 		user1 = db.findUser(user1.getNickname()).getUser();
+		System.out.println(user1.toString());
 		winCount=0;
 		for(GameRecord temp:user1.getRecords()) {
 			if(temp.isWon()) {
 				winCount++;
 			}
 		}
-		assertEquals(3, winCount);//user1 should have 3 wins
+		assertEquals(4, winCount);//user1 should have 4 wins
 
 	}
 	

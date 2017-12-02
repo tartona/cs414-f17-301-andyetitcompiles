@@ -227,14 +227,27 @@ public class DatabaseManagerSQL {
 			// found 1 user
 			if (n == 1) {
 				sql = "SELECT * FROM gameList" + " WHERE user1 = '" + idUser + "'";
-
+				rtnSet = connection.prepareStatement(sql).executeQuery();
 				// find all current games and end them.
 				while (rtnSet.next()) {
-					String opponent = searchNickname(rtnSet.getInt("user2"));
+					int opponent = rtnSet.getInt("user2");
 					Timestamp startTime = rtnSet.getTimestamp("startTimeStamp");
 					int gameID = rtnSet.getInt("gameID");
-					addGameRecord(gameID, new GameRecord(idUser, opponent, startTime, new Timestamp(System.currentTimeMillis()),true, true), null);
+					addGameRecord(gameID, new GameRecord(opponent, searchNickname(idUser), startTime, new Timestamp(System.currentTimeMillis()),true, true),
+							 			  new GameRecord(idUser, searchNickname(opponent), startTime, new Timestamp(System.currentTimeMillis()),false, true));
 				}
+				
+				sql = "SELECT * FROM gameList" + " WHERE user2 = '" + idUser + "'";
+				rtnSet = connection.prepareStatement(sql).executeQuery();
+				// find all current games and end them.
+				while (rtnSet.next()) {
+					int opponent = rtnSet.getInt("user1");
+					Timestamp startTime = rtnSet.getTimestamp("startTimeStamp");
+					int gameID = rtnSet.getInt("gameID");
+					addGameRecord(gameID, new GameRecord(opponent, searchNickname(idUser), startTime, new Timestamp(System.currentTimeMillis()),true, true),
+							 			  new GameRecord(idUser, searchNickname(opponent), startTime, new Timestamp(System.currentTimeMillis()),false, true));
+				}	
+				
 				// remove user
 				sql = "DELETE FROM userProfile WHERE idUser = " + idUser;
 				connection.prepareStatement(sql).executeUpdate();
