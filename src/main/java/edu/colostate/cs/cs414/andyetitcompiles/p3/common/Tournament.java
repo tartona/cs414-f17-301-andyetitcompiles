@@ -137,7 +137,7 @@ public class Tournament implements TournamentInterface{
 
 	public int start() {
 		if(round==0 && players.size()>1) {
-			//Collections.shuffle(players);
+			Collections.shuffle(players);
 			round = 1;
 			generatePlacement();
 			return round;
