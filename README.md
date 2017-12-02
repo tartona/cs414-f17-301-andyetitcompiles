@@ -11,6 +11,6 @@ Second iteration - Domain Model Analysis > ./P2/
 
 Third iteration - First Implementation Iteration > ./P3/ and ./src/
 
-Fourth iteration - TBD
+Fourth iteration - Refactoring > ./P4/ and ./src/
 
 Fifth iteratnion - TBD

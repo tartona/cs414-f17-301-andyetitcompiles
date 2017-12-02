@@ -2,9 +2,15 @@ package edu.colostate.cs.cs414.andyetitcompiles.p3.client;
 
 import edu.colostate.cs.cs414.andyetitcompiles.p3.common.Color;
 
+import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.concurrent.BlockingQueue;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 import com.esotericsoftware.kryonet.Connection;
 
@@ -16,7 +22,7 @@ import edu.colostate.cs.cs414.andyetitcompiles.p3.common.User;
 import edu.colostate.cs.cs414.andyetitcompiles.p3.protocol.GameMessage;
 import edu.colostate.cs.cs414.andyetitcompiles.p3.protocol.GameMessageType;
 
-public class ClientGameController implements Runnable{
+public class ClientGameController {
 	Connection client;
 	int gameID;
 	JungleGame game;
@@ -27,8 +33,9 @@ public class ClientGameController implements Runnable{
 	// Message queue
 	BlockingQueue<GameMessage> messageQueue;
 	// UI objects
-	GameConsoleUI gameConsole;
+	BoardUI gameBoardUI;
 	JFrame frame;
+	JLabel message;
 	
 	public ClientGameController(int gameID, User self, User opponent, Color color, Connection client) {
 		this.client = client;
@@ -42,15 +49,33 @@ public class ClientGameController implements Runnable{
 			this.game = new JungleGame(opponent, self);
 		// Default to false so the client can't make a move until the server sets their turn
 		this.turn = false;
-		gameConsole = new GameConsoleUI(this);
+		// Construct the ui
 		frame = new JFrame();
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		frame.getContentPane().add(gameConsole);
-		frame.setSize(700, 500);
+		frame.setTitle("Playing Jungle against " + opponent.getNickname());
+		JPanel panel = new JPanel(new BorderLayout());
+		// Create quit button
+		JButton quitBtn = new JButton();
+		quitBtn.setText("Quit");
+		quitBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				quitGame();
+			}
+		});
+		panel.add(quitBtn, BorderLayout.PAGE_END);
+		// Create a label to display messages
+		this.message = new JLabel();
+		message.setText("Game starting...");
+		panel.add(message, BorderLayout.PAGE_START);
+		// Finally, add the game board
+		gameBoardUI = new BoardUI(game.getJungleTiles(), this);
+		panel.add(gameBoardUI, BorderLayout.CENTER);
+		frame.getContentPane().add(panel);
+		frame.setSize(panel.getPreferredSize());
 		frame.setVisible(true);
-		gameConsole.updateConsole(boardRepresentation());
 	}
 	
+	// Used for the demo CLI game
 	public void handleUserInput(String message) {
 		if(message.equals("quit")) {
 			quitGame();
@@ -62,6 +87,7 @@ public class ClientGameController implements Runnable{
 		}
 	}
 	
+	// Used by the client to notify the controller of game events
 	public void handleMessage(GameMessage message) {
 		if(message.getGameID() != gameID)
 			throw new IllegalArgumentException("Message for wrong game " + message.getGameID() + " received. Should be " + gameID);
@@ -81,11 +107,10 @@ public class ClientGameController implements Runnable{
 	// Handles when the client receives a move from the server, representing the other players move
 	private void handleMakeMove(GameMessage message) {
 		JunglePiece piece = game.getPiece(message.getPieceColor(), message.getPieceID());
-		JungleTile tile = game.getTile(message.getTileRow(), message.getTileCol());
 		// No need to check the turn, since this is the other players turn
-		game.makeMove(piece, tile);
-		gameConsole.updateConsole(boardRepresentation());
-	}
+		game.makeMove(piece.getColor(), piece.getID(), message.getTileRow(), message.getTileCol());
+		gameBoardUI.update(game.getJungleTiles());
+	} 
 	
 	private String boardRepresentation() {
 		String board = "";
@@ -104,10 +129,10 @@ public class ClientGameController implements Runnable{
 
 	private void handleGameOver(GameMessage message) {
 		if(message.getWinner().equals(self)) {
-			gameConsole.updateConsole("You won the game!");
+			this.message.setText("You won the game!");
 		}
 		else {
-			gameConsole.updateConsole("You lost the game");
+			this.message.setText("You lost the game");
 		}
 		// Let the client know it can get rid of this instance
 	}
@@ -115,60 +140,63 @@ public class ClientGameController implements Runnable{
 	private void handleSetTurn(GameMessage message) {
 		turn = message.isTurn();
 		if(turn) {
-			gameConsole.updateConsole("It is now your turn");
+			this.message.setText("It is now your turn");
 		}
 		else {
-			gameConsole.updateConsole("It is now the opponents turn");
+			this.message.setText("It is now the opponents turn");
 		}
 	}
 
-	public void makeMove(String piece, String move) {
-		JunglePiece jPiece = game.getPiece(color, piece);
+	// Used by the demo CLI version of the game
+	public void makeMove(String id, String move) {
+		JunglePiece jPiece = game.getPiece(color, id);
 		JungleTile jTile;
+		int currentRow = jPiece.getCurrentRow();
+		int currentCol = jPiece.getCurrentCol();
 		if(move.equals("up")) {
 			jTile = game.getTile(jPiece.getCurrentRow()+1, jPiece.getCurrentCol());
-			makeMove(jPiece, jTile);
+			makeMove(jPiece, currentRow + 1, currentCol);
 		}
 		else if(move.equals("down")) {
 			jTile = game.getTile(jPiece.getCurrentRow()-1, jPiece.getCurrentCol());
-			makeMove(jPiece, jTile);
+			makeMove(jPiece, currentRow - 1, currentCol);
 		}
 		else if(move.equals("right")) {
 			jTile = game.getTile(jPiece.getCurrentRow(), jPiece.getCurrentCol()+1);
-			makeMove(jPiece, jTile);
+			makeMove(jPiece, currentRow, currentCol + 1);
 		}
 		else if(move.equals("left")) {
 			jTile = game.getTile(jPiece.getCurrentRow(), jPiece.getCurrentCol()-1);
-			makeMove(jPiece, jTile);
-		}
+			makeMove(jPiece, currentRow, currentCol - 1);
+		} 
 	}
-	public void makeMove(JunglePiece piece, JungleTile tile) {
+	
+	
+	public void makeMove(JunglePiece piece, int row, int col) {
 		if(piece.getColor() == color) {
 			if(turn) {
-				if(game.makeMove(piece, tile)) {
-					gameConsole.updateConsole("Move successful");
-					GameMessage move = new GameMessage(gameID, GameMessageType.MAKE_MOVE, piece.getColor(), piece.getID(), tile.getRow(), tile.getCol(), self);
+				if(game.makeMove(piece.getColor(), piece.getID(), row, col)) {
+					GameMessage move = new GameMessage(gameID, GameMessageType.MAKE_MOVE, piece.getColor(), piece.getID(), row, col, self);
 					client.sendTCP(move);
-					gameConsole.updateConsole(boardRepresentation());
+					gameBoardUI.update(game.getJungleTiles());
 				}
 				else {
-					gameConsole.updateConsole("Your move was invalid, try again");
+					this.message.setText("Your move was invalid, try again");
 					// notify ui
 				}
 			}
 			else {
-				gameConsole.updateConsole("It's not your turn");
+				this.message.setText("It's not your turn");
 				// notify ui
 			}
 		}
 		else {
-			gameConsole.updateConsole("You can only move" + color + " peices");
+			this.message.setText("You can only move " + color + " pieces");
 			// notify ui
 		}
 	}
 	
 	public void quitGame() {
-		gameConsole.updateConsole("Quitting game...");
 		GameMessage quit = new GameMessage(gameID, GameMessageType.QUIT_GAME, self);
 		client.sendTCP(quit);
 	}
@@ -191,10 +219,8 @@ public class ClientGameController implements Runnable{
 		return game.getBoard();
 	}
 
-	// Run the game instance in a JFrame
-	@Override
-	public void run() {
-		
+	public static void main(String args[]) {
+
 	}
 }
 

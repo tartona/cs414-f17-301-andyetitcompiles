@@ -10,6 +10,9 @@ public class GameRecord {
 	private boolean won;
 	private boolean abandoned;
 	
+	// For kryo
+	public GameRecord() {}
+	
 	public GameRecord(int idUser, String opponent, Timestamp startTime, Timestamp endTime, boolean won, boolean abandoned) {
 		this.iduser = idUser;
 		this.opponent = opponent;
@@ -47,5 +50,4 @@ public class GameRecord {
 		
 		return rtnRecord;
 	}
-	
 }

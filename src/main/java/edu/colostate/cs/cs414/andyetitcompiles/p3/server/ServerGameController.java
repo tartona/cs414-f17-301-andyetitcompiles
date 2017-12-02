@@ -1,5 +1,7 @@
 package edu.colostate.cs.cs414.andyetitcompiles.p3.server;
 
+import java.sql.Timestamp;
+
 import edu.colostate.cs.cs414.andyetitcompiles.p3.common.Color;
 
 import edu.colostate.cs.cs414.andyetitcompiles.p3.common.JungleGame;
@@ -17,15 +19,20 @@ public class ServerGameController {
 	User player1User; // White
 	User player2User; // Black
 	Color turn;
+	JungleServer server;
+	Timestamp start;
+	Timestamp end;
 	
 	// All code in this class assumes that player1 is white and player2 is black, also player/white always goes first (so the person who invited the other player is player1)
-	public ServerGameController(int gameID, JungleClientConnection player1, JungleClientConnection player2) {
+	public ServerGameController(int gameID, JungleClientConnection player1, JungleClientConnection player2, JungleServer server) {
 		this.gameID = gameID;
 		this.player1 = player1;
 		this.player2 = player2;
 		this.player1User = player1.getUser();
 		this.player2User = player2.getUser();
 		this.game = new JungleGame(player1User, player2User);
+		this.server = server;
+		start = new Timestamp(System.currentTimeMillis());
 	}
 	
 	// Sends the turn notifications to the users. Maybe in the future this could be used to check if
@@ -50,13 +57,15 @@ public class ServerGameController {
 	}
 
 	private void handleMove(GameMessage move) {
-		JunglePiece piece = game.getPiece(move.getPieceColor(), move.getPieceID());
-		JungleTile tile = game.getTile(move.getTileRow(), move.getTileCol());
+		Color color = move.getPieceColor();
+		String id = move.getPieceID();
+		int row = move.getTileRow();
+		int col = move.getTileCol();
 		// Check to see if it is that colors turn
-		if(piece.getColor() == turn) {
+		if(color == turn) {
 			// Currently, we are expecting the client to make sure the move is valid.
 			// If the move isn't successful, do nothing to notify the client, and don't pass the move on to the other client
-			if(game.makeMove(piece, tile)) {
+			if(game.makeMove(color, id, row, col)) {
 				// Set the turn to the next player
 				if(turn == Color.WHITE) turn = Color.BLACK;
 				else turn = Color.WHITE;
@@ -65,7 +74,7 @@ public class ServerGameController {
 				// Someone won the game!
 				User winner = game.getWinner();
 				if(winner != null) {
-					gameOver(winner);
+					gameOver(winner, false);
 				}
 			}
 		}
@@ -73,9 +82,9 @@ public class ServerGameController {
 	
 	private void handleQuitGame(GameMessage message) {
 		if(message.getQuiter().equals(player1User))
-			gameOver(player2User);
+			gameOver(player2User, true);
 		else
-			gameOver(player1User);
+			gameOver(player1User, true);
 	}
 	
 	// Sends turn notifications to the players
@@ -96,10 +105,15 @@ public class ServerGameController {
 	}
 
 	// Sends a game over notification to the players, and notifies the server that the game has ended
-	private void gameOver(User winner) {
+	private void gameOver(User winner, boolean abandoned) {
 		GameMessage gameOver = new GameMessage(gameID, GameMessageType.GAME_OVER, winner);
 		player1.sendTCP(gameOver);
 		player2.sendTCP(gameOver);
-		// Now we have to tell the server that the game is over, so it can remove the game instance and create game records for each user
+		// Notify the server that the game is over
+		end = new Timestamp(System.currentTimeMillis());
+		if(winner.equals(player1User))
+			server.gameOver(gameID, player1User, player2User, abandoned, start, end);
+		else
+			server.gameOver(gameID, player2User, player1User, abandoned, start, end);
 	}
 }
