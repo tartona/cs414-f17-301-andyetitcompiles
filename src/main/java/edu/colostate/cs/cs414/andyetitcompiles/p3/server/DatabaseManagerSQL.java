@@ -284,7 +284,7 @@ public class DatabaseManagerSQL {
 			while (rtnSet.next()) {
 				n++; // should never be more than 1
 				idUser = rtnSet.getInt("idUser");
-				tempUser = new User(idUser,rtnSet.getString("Email"),rtnSet.getString("nickname"),"", UserStatus.ONLINE,gameHistory(idUser),invites(idUser)); 
+				tempUser = new User(idUser,rtnSet.getString("Email"),rtnSet.getString("nickname"),"", UserStatus.ONLINE,gameHistory(idUser),invites(idUser),gameIDs(idUser)); 
 			}
 			// found 1 user
 			if (n == 1) {
@@ -330,7 +330,7 @@ public class DatabaseManagerSQL {
 			ResultSet rtnSet = connection.prepareStatement(sql).executeQuery();
 			while (rtnSet.next()) {
 				int idUser = rtnSet.getInt("idUser");
-				onlineUsers.add(new User(idUser,rtnSet.getString("Email"),rtnSet.getString("nickname"),"", UserStatus.ONLINE,gameHistory(idUser),invites(idUser)));
+				onlineUsers.add(new User(idUser,rtnSet.getString("Email"),rtnSet.getString("nickname"),"", UserStatus.ONLINE,gameHistory(idUser),invites(idUser),gameIDs(idUser)));
 			}
 			// found 1 user
 		} catch (SQLException e) {
@@ -354,9 +354,9 @@ public class DatabaseManagerSQL {
 				boolean online = rtnSet.getBoolean("Online");
 				int idUser = rtnSet.getInt("idUser");
 				if(online) {
-					tempUser = new User(idUser,rtnSet.getString("Email"),rtnSet.getString("nickname"),"", UserStatus.ONLINE,gameHistory(idUser),invites(idUser)); //user online
+					tempUser = new User(idUser,rtnSet.getString("Email"),rtnSet.getString("nickname"),"", UserStatus.ONLINE,gameHistory(idUser),invites(idUser),gameIDs(idUser)); //user online
 				}else {
-					tempUser = new User(idUser,rtnSet.getString("Email"),rtnSet.getString("nickname"),"", UserStatus.OFFLINE,gameHistory(idUser),invites(idUser)); //user offline
+					tempUser = new User(idUser,rtnSet.getString("Email"),rtnSet.getString("nickname"),"", UserStatus.OFFLINE,gameHistory(idUser),invites(idUser),gameIDs(idUser)); //user offline
 				}
 			}
 			// found 1 user
@@ -487,7 +487,7 @@ String sql = "SELECT * FROM gameList WHERE gameID = '" + gameId +"'";
 	}
 	
 	/**
-	 * Adds game records of both users in a game to the database. 
+	 * Adds game records of both users in a game to the database. Also removes game from running games table. 
 	 * @param record1 
 	 * @param record2
 	 * @return true for successfully added to database, false when unsuccessful. 
@@ -584,6 +584,24 @@ String sql = "SELECT * FROM gameList WHERE gameID = '" + gameId +"'";
 				ResultSet rtnSet = connection.prepareStatement(sql).executeQuery();
 				while (rtnSet.next()) {
 					record.add(findUser(rtnSet.getString("opponent")).getUser().getNickname());
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		
+		return record;	
+	}
+	
+	private Set<Integer> gameIDs(int idUser){
+		Set<Integer> record = new HashSet<>();
+		
+		String sql = "SELECT * FROM gameList WHERE "
+				   + "user1 = '" + idUser +"' "
+				   + "OR user2 = '" + idUser + "'";//TODO finish command
+			try {
+				ResultSet rtnSet = connection.prepareStatement(sql).executeQuery();
+				while (rtnSet.next()) {
+					record.add(rtnSet.getInt("gameID"));
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();

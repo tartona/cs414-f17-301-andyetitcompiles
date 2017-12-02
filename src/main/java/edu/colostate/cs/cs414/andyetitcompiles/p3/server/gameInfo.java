@@ -2,6 +2,11 @@ package edu.colostate.cs.cs414.andyetitcompiles.p3.server;
 
 import java.sql.Timestamp;
 
+/**\
+ * @author Brian Larson
+ * 
+ * Contains required information to start a game previously started. 
+ */
 public class gameInfo {
 	private int gameID;
 	private int user1;
