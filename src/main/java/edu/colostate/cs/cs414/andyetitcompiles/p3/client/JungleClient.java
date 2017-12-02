@@ -26,6 +26,21 @@ public class JungleClient {
 	BlockingQueue<String> inQueue;
 	// Queue for outgoing messages to the ui
 	BlockingQueue<String> outQueue;
+	// The ui class
+	private JungleCLI jungleUI;
+	
+	public JungleClient(String host, int port) {
+		loggedIn = false;
+		kryoClient = new Client(8192, 4096);
+		activeGames = new HashMap<Integer, ClientGameController>();
+		inQueue = new LinkedBlockingQueue<String>();
+		outQueue = new LinkedBlockingQueue<String>();
+		initializeKryoClient(host, port);
+		// I am implementing the CLI interface on its own thread, and the ideas used there could probably be extended to the actual ui
+		jungleUI = new JungleCLI(this, outQueue, inQueue);
+		Thread UI = new Thread(jungleUI);
+		UI.start();
+	}
 	
 	public JungleClient() {
 		loggedIn = false;
@@ -33,14 +48,15 @@ public class JungleClient {
 		activeGames = new HashMap<Integer, ClientGameController>();
 		inQueue = new LinkedBlockingQueue<String>();
 		outQueue = new LinkedBlockingQueue<String>();
-		initializeKryoClient();
+		initializeKryoClient(Network.host, Network.port);
 		// I am implementing the CLI interface on its own thread, and the ideas used there could probably be extended to the actual ui
-		Thread UI = new Thread(new JungleCLI(this, outQueue, inQueue));
-		UI.start();
+		jungleUI = new JungleCLI(this, outQueue, inQueue);
+		Thread UI = new Thread(jungleUI);
+		UI.start();	
 	}
 
 	public static void main(String[] args) {
-		JungleClient client = new JungleClient();
+		new JungleClient(args[0], Integer.parseInt(args[1]));
 	}
 	
 	private void pushUpdate(String message) {
@@ -60,7 +76,7 @@ public class JungleClient {
 	}
 	
 	// This contains all the code for setting up the kryo client
-	public void initializeKryoClient() {
+	public void initializeKryoClient(String host, int port) {
 		kryoClient.start();
 		// Register the client with the Network class
 		Network.register(kryoClient);
@@ -117,7 +133,7 @@ public class JungleClient {
 		new Thread("Connect") {
 			public void run () {
 				try {
-					kryoClient.connect(5000, Network.host, Network.port);
+					kryoClient.connect(5000, host, port);
 				} catch (IOException ex) {
 					System.out.println("Something went wrong while connecting to the server: " + ex.getMessage());
 				}
@@ -136,6 +152,7 @@ public class JungleClient {
 		pushUpdate("Game with " + game.getOpponent().getNickname() + " is starting");
 		ClientGameController newGame = new ClientGameController(game.getGameID(), clientUser, game.getOpponent(), game.getColor(), kryoClient);
 		activeGames.put(game.getGameID(), newGame);
+		jungleUI.addGame(newGame);
 	}
 	
 	// Called when the client receives a message for an existing game
