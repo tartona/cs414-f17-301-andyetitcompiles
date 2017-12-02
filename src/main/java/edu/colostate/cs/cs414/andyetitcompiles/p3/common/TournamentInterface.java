@@ -44,12 +44,14 @@ public interface TournamentInterface {
 	 * @param player's nickname
 	 * @return 1 if the player has successfully added to the tournament
 	 * it automatically starts the tournament when the pool reaches the max num of players
+	 * a player can be added only when round is 0
 	 */
 	public int addPlayer(String nickname);
 
 	/**
 	 * @param player's nickname
 	 * @return 1 if the player has successfully removed to the tournament
+	 * a player can be removed only when round is 0
 	 */
 	public int removePlayer(String nickname);
 
