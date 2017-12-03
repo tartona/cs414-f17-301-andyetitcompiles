@@ -575,6 +575,19 @@ String sql = "SELECT * FROM gameList WHERE gameID = '" + gameId +"'";
 		
 		return record;
 	}
+	public boolean removeInvite(int idUser, int opponent) {
+		
+		String sql = "DELETE FROM userInvites WHERE idUser = " + idUser + " AND opponent = " + opponent;
+		try {
+			connection.prepareStatement(sql).executeUpdate();
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		
+		return false;
+	}
 	
 	private Set<String> invites(int idUser){
 		Set<String> record = new HashSet<>();
@@ -679,6 +692,8 @@ String sql = "SELECT * FROM gameList WHERE gameID = '" + gameId +"'";
 		System.out.println("game added:" + db.updateGame(1, "new Config", 1));
 		System.out.println("game added:" + db.updateGame(4, "new Config", 2));
 		System.out.println(db.findGame(1));
+		db.addInvite(user1.getId(), user1.getId());
+		db.removeInvite(user1.getId(), user1.getId());
 
 	}
 }
