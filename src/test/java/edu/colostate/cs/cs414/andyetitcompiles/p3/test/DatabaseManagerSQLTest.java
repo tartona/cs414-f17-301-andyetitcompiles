@@ -226,7 +226,7 @@ public class DatabaseManagerSQLTest {
 
 		//test board update
 		String newBoard = "Not an accurate haaay look I changed some letters! i  work";
-		assertTrue(db.updateGame(1, newBoard));
+		assertTrue(db.updateGame(1, newBoard, 2));
 		assertTrue(db.findGame(1).getGameConfig().equals(newBoard));
 		
 		//test games removed when user unregisteres. 

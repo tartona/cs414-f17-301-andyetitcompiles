@@ -248,7 +248,7 @@ public class JungleServer {
 				new JungleServer();
 			}
 		} catch (IOException e) {
-			System.out.println("Exception in server: "+e.getMessage());
+			System.err.println("Exception in server: "+e.getMessage());
 		}
 	}
 }

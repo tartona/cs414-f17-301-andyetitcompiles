@@ -425,7 +425,7 @@ String sql = "SELECT * FROM gameList WHERE gameID = '" + gameId +"'";
 	 * @param gameConfig String that can be used to represent game board. 
 	 * @return whether or not successful
 	 */
-	public boolean updateGame(int gameId, String gameConfig) {
+	public boolean updateGame(int gameId, String gameConfig, int playerTurn) {
 String sql = "SELECT * FROM gameList WHERE gameID = '" + gameId +"'";
 		try {
 			ResultSet rtnSet = connection.prepareStatement(sql).executeQuery();
@@ -439,7 +439,7 @@ String sql = "SELECT * FROM gameList WHERE gameID = '" + gameId +"'";
 			}
 			if (n == 1) {
 				sql = "UPDATE gameList "
-						+ "SET gameConfig = '" + gameConfig +"' "
+						+ "SET gameConfig = '" + gameConfig +"', " + "playerTurn = '" + playerTurn + "' "
 						+ "WHERE gameID = '" + gameId + "'"; 
 				connection.prepareStatement(sql).executeUpdate(); 
 				
@@ -676,8 +676,8 @@ String sql = "SELECT * FROM gameList WHERE gameID = '" + gameId +"'";
 		System.out.println("game added:" + db.addGame(3, user1.getId(), user1.getId(), new Timestamp(3342342), 1, "gameConfig"));
 		System.out.println("game added:" + db.addGame(1, user1.getId(), user1.getId(), new Timestamp(3342342), 1, "gameConfig"));
 		System.out.println("game added:" + db.addGame(1, user1.getId(), user1.getId(), new Timestamp(3342342), 1, "gameConfig"));
-		System.out.println("game added:" + db.updateGame(1, "new Config"));
-		System.out.println("game added:" + db.updateGame(4, "new Config"));
+		System.out.println("game added:" + db.updateGame(1, "new Config", 1));
+		System.out.println("game added:" + db.updateGame(4, "new Config", 2));
 		System.out.println(db.findGame(1));
 
 	}
