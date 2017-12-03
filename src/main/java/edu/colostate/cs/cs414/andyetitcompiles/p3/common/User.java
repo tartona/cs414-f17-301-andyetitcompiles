@@ -10,6 +10,8 @@ public class User {
 	private String nickname;
 	private String password;
 	private Set<GameRecord> gameRecords;
+	private Set<Integer> gameList;
+	private Set<String> invites;
 	private UserStatus status ;
 	private JunglePiece piece;
 		
@@ -25,12 +27,14 @@ public class User {
 		this.piece = null;
 	}
 	
-	public User(int idUser, String email, String nickname, String password, UserStatus status, Set<GameRecord> gameRecords) {
+	public User(int idUser, String email, String nickname, String password, UserStatus status, Set<GameRecord> gameRecords, Set<String> invites, Set<Integer> gameList) {
 		this.id = idUser;
 		this.email = email;
 		this.nickname = nickname;
 		this.password = password;
 		this.status = status;
+		this.invites = invites;
+		this.gameList = gameList;
 		
 		this.gameRecords = gameRecords;
 
@@ -56,6 +60,8 @@ public class User {
 	public String getEmail() {return this.email;}
 	public String getPassword() {return this.password;}
 	public String getNickname() {return this.nickname;}
+	public Set<String> getInvites(){return this.invites;}
+	public Set<Integer> getGameList(){return this.gameList;}
 	public Set<GameRecord> getRecords(){return this.gameRecords;}
 	public UserStatus getStatus() {return this.status;}
 	public String setEmail(String email) {return this.email = email;}

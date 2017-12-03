@@ -16,7 +16,7 @@ import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
 
-public class DatabaseManagerSQL extends DatabaseManager {
+public class DatabaseManagerSQL {
 
 	private String dbLocation = "~/jungleDB";
 //									  + "?verifyServerCertificate=true"
@@ -90,9 +90,37 @@ public class DatabaseManagerSQL extends DatabaseManager {
 				"  `endTimestamp` TIMESTAMP NULL DEFAULT NULL,\r\n" + 
 				"  `won` TINYINT(1) NULL DEFAULT NULL,\r\n" + 
 				"  `abandoned` TINYINT(1) NULL DEFAULT NULL,\r\n" + 
-//				"  INDEX `fk_UserHistory_UserProfile_idx` (`idUser` ASC),\r\n" + 
-//				"  PRIMARY KEY (`idUser`),\r\n" + 
-//				"  CONSTRAINT `fk_UserHistory_UserProfile`\r\n" + 
+				"    FOREIGN KEY (`idUser`)\r\n" + 
+				"    REFERENCES `userprofile` (`idUser`)\r\n" + 
+				"    ON DELETE CASCADE\r\n" + 
+				"    ON UPDATE NO ACTION)\r\n" + 
+				"ENGINE = InnoDB;";
+		connection.prepareStatement(sql).executeUpdate();
+			
+		//setup gameList table
+		sql = "CREATE TABLE IF NOT EXISTS `gameList` (\r\n" + 
+				"  `gameID` INT(11) NOT NULL,\r\n" + 
+				"  `user1` INT(11) NOT NULL,\r\n" + 
+				"  `user2` INT(11) NOT NULL,\r\n" + 
+				"  `startTimestamp` TIMESTAMP NULL DEFAULT NULL,\r\n" + 
+				"  `lastTurnTime` TIMESTAMP NULL DEFAULT NULL,\r\n" + 
+				"  `playerTurn` TINYINT(1) NULL DEFAULT NULL,\r\n" + //who's turn it should is currently. (1 or 2)
+				"  `gameConfig` VARCHAR(63) NOT NULL,\r\n" +
+				"  UNIQUE INDEX gameID_UNIQUE (gameID ASC),\r\n" +
+				"    FOREIGN KEY (`user1`)\r\n" + 
+				"    REFERENCES `userprofile` (`idUser`),\r\n" + 
+				"    FOREIGN KEY (`user2`)\r\n" + 
+				"    REFERENCES `userprofile` (`idUser`)\r\n" + 
+				"    ON DELETE CASCADE\r\n" + 
+				"    ON UPDATE NO ACTION)\r\n" + 
+				"ENGINE = InnoDB;";
+		connection.prepareStatement(sql).executeUpdate();
+	
+		//setup user invite table
+		sql = "CREATE TABLE IF NOT EXISTS `userInvites` (\r\n" + 
+				"  `idUser` INT(11) NOT NULL,\r\n" + 
+				"  `opponent` INT(11) NOT NULL,\r\n" + 
+				"  UNIQUE INDEX opponent_UNIQUE (opponent ASC),\r\n" + 
 				"    FOREIGN KEY (`idUser`)\r\n" + 
 				"    REFERENCES `userprofile` (`idUser`)\r\n" + 
 				"    ON DELETE CASCADE\r\n" + 
@@ -111,6 +139,8 @@ public class DatabaseManagerSQL extends DatabaseManager {
 		System.out.println("-------- Database tables deleted -------");
 		connection.prepareStatement("DROP TABLE IF EXISTS userHistory").execute();
 		connection.prepareStatement("DROP TABLE IF EXISTS userProfile").execute();
+		connection.prepareStatement("DROP TABLE IF EXISTS gameList"   ).execute();
+		connection.prepareStatement("DROP TABLE IF EXISTS userInvites").execute();
 		
 		setupTables();
 	}
@@ -188,25 +218,46 @@ public class DatabaseManagerSQL extends DatabaseManager {
 		ResultSet rtnSet = null;
 		try {
 			rtnSet = connection.prepareStatement(sql).executeQuery();
-			int n=0;
-			String idUser = null;
-			while(rtnSet.next()) {
-				n++; //should never be more than 1
-				idUser = rtnSet.getString("idUser");
+			int n = 0;
+			int idUser = -1;
+			while (rtnSet.next()) {
+				n++; // should never be more than 1
+				idUser = rtnSet.getInt("idUser");
 			}
-			//found 1 user
-			if(n==1) {
-
-				//remove user
+			// found 1 user
+			if (n == 1) {
+				sql = "SELECT * FROM gameList" + " WHERE user1 = '" + idUser + "'";
+				rtnSet = connection.prepareStatement(sql).executeQuery();
+				// find all current games and end them.
+				while (rtnSet.next()) {
+					int opponent = rtnSet.getInt("user2");
+					Timestamp startTime = rtnSet.getTimestamp("startTimeStamp");
+					int gameID = rtnSet.getInt("gameID");
+					addGameRecord(gameID, new GameRecord(opponent, searchNickname(idUser), startTime, new Timestamp(System.currentTimeMillis()),true, true),
+							 			  new GameRecord(idUser, searchNickname(opponent), startTime, new Timestamp(System.currentTimeMillis()),false, true));
+				}
+				
+				sql = "SELECT * FROM gameList" + " WHERE user2 = '" + idUser + "'";
+				rtnSet = connection.prepareStatement(sql).executeQuery();
+				// find all current games and end them.
+				while (rtnSet.next()) {
+					int opponent = rtnSet.getInt("user1");
+					Timestamp startTime = rtnSet.getTimestamp("startTimeStamp");
+					int gameID = rtnSet.getInt("gameID");
+					addGameRecord(gameID, new GameRecord(opponent, searchNickname(idUser), startTime, new Timestamp(System.currentTimeMillis()),true, true),
+							 			  new GameRecord(idUser, searchNickname(opponent), startTime, new Timestamp(System.currentTimeMillis()),false, true));
+				}	
+				
+				// remove user
 				sql = "DELETE FROM userProfile WHERE idUser = " + idUser;
 				connection.prepareStatement(sql).executeUpdate();
 				return new UnregisterResponse(true, "Account Deleted");
 			}
-			if(n==0) {
+			if (n == 0) {
 				return new UnregisterResponse(false, "Account not found");
 			}
 			if(n>1) {
-				System.out.println("SERIOUS DATABASE ERROR OCCURED!");
+				System.err.println("SERIOUS DATABASE ERROR OCCURED!");
 				return new UnregisterResponse(false, "Serious error occured");
 			}
 			return null;
@@ -233,7 +284,7 @@ public class DatabaseManagerSQL extends DatabaseManager {
 			while (rtnSet.next()) {
 				n++; // should never be more than 1
 				idUser = rtnSet.getInt("idUser");
-				tempUser = new User(idUser,rtnSet.getString("Email"),rtnSet.getString("nickname"),"", UserStatus.ONLINE,gameHistory(idUser)); 
+				tempUser = new User(idUser,rtnSet.getString("Email"),rtnSet.getString("nickname"),"", UserStatus.ONLINE,gameHistory(idUser),invites(idUser),gameIDs(idUser)); 
 			}
 			// found 1 user
 			if (n == 1) {
@@ -248,7 +299,7 @@ public class DatabaseManagerSQL extends DatabaseManager {
 				return new LoginResponse(false, new User(), "User not found.");
 			}
 			if (n > 1) {
-				System.out.println("SERIOUS DATABASE ERROR OCCURED!");
+				System.err.println("SERIOUS DATABASE ERROR OCCURED!");
 				return new LoginResponse(false, new User(), "Serious Error Occured.");
 			}
 		} catch (SQLException e) {
@@ -271,6 +322,24 @@ public class DatabaseManagerSQL extends DatabaseManager {
 		}
 	}
 
+	public Set<User> onlineUsers(){
+		Set<User> onlineUsers = new HashSet<>();
+		
+		String sql = "SELECT * FROM userProfile WHERE online=1";
+		try {
+			ResultSet rtnSet = connection.prepareStatement(sql).executeQuery();
+			while (rtnSet.next()) {
+				int idUser = rtnSet.getInt("idUser");
+				onlineUsers.add(new User(idUser,rtnSet.getString("Email"),rtnSet.getString("nickname"),"", UserStatus.ONLINE,gameHistory(idUser),invites(idUser),gameIDs(idUser)));
+			}
+			// found 1 user
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return onlineUsers;
+	}
+	
 	/**
 	 * Search for user profile and game history in database. 
 	 */
@@ -285,9 +354,9 @@ public class DatabaseManagerSQL extends DatabaseManager {
 				boolean online = rtnSet.getBoolean("Online");
 				int idUser = rtnSet.getInt("idUser");
 				if(online) {
-					tempUser = new User(idUser,rtnSet.getString("Email"),rtnSet.getString("nickname"),"", UserStatus.ONLINE,gameHistory(idUser)); //user online
+					tempUser = new User(idUser,rtnSet.getString("Email"),rtnSet.getString("nickname"),"", UserStatus.ONLINE,gameHistory(idUser),invites(idUser),gameIDs(idUser)); //user online
 				}else {
-					tempUser = new User(idUser,rtnSet.getString("Email"),rtnSet.getString("nickname"),"", UserStatus.OFFLINE,gameHistory(idUser)); //user offline
+					tempUser = new User(idUser,rtnSet.getString("Email"),rtnSet.getString("nickname"),"", UserStatus.OFFLINE,gameHistory(idUser),invites(idUser),gameIDs(idUser)); //user offline
 				}
 			}
 			// found 1 user
@@ -299,7 +368,7 @@ public class DatabaseManagerSQL extends DatabaseManager {
 				return new UserResponse(false, new User(), "User not found.");
 			}
 			if (n > 1) {
-				System.out.println("SERIOUS DATABASE ERROR OCCURED!");
+				System.err.println("SERIOUS DATABASE ERROR OCCURED!");
 				return new UserResponse(false, new User(), "Serious Error Occured.");
 			}
 		} catch (SQLException e) {
@@ -309,12 +378,121 @@ public class DatabaseManagerSQL extends DatabaseManager {
 	}
 	
 	/**
-	 * Adds game records of both users in a game to the database. 
+	 * add stored game in database. 
+	 * call when a game is started.
+	 * @param gameId
+	 * @param user1
+	 * @param user2
+	 * @param startTime
+	 * @param playerTurn must be a 1 or a 2 for user 1 or 2
+	 * @param gameConfig
+	 * @return boolean for success
+	 */
+	public boolean addGame(int gameId, int user1, int user2, Timestamp startTime, int playerTurn, String gameConfig) {
+		
+String sql = "SELECT * FROM gameList WHERE gameID = '" + gameId +"'";
+		try {
+			ResultSet rtnSet = connection.prepareStatement(sql).executeQuery();
+			int n = 0;
+			while (rtnSet.next()) {
+				n++;
+			}
+			// found 1 user
+			if (n == 1) {
+				return false;
+			}
+			if (n == 0) {
+				sql = "INSERT INTO gameList (gameID, user1, user2, startTimestamp, lastTurnTime, playerTurn, gameConfig) "
+				    + "VALUES('" + gameId + "', '" + user1 + "', '" + user2 + "', '" + startTime + "', '" + new Timestamp(System.currentTimeMillis()) + "', '" + playerTurn + "', '" + gameConfig + "');";
+				connection.prepareStatement(sql).executeUpdate(); 
+				
+				return true;// successfully added to database
+			}
+			if (n > 1) {
+				System.err.println("SERIOUS DATABASE ERROR OCCURED!");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return false;
+	}
+
+	/**
+	 * add stored game in database. 
+	 * call when a move is made.
+	 * @param gameId
+	 * @param gameConfig String that can be used to represent game board. 
+	 * @return whether or not successful
+	 */
+	public boolean updateGame(int gameId, String gameConfig, int playerTurn) {
+String sql = "SELECT * FROM gameList WHERE gameID = '" + gameId +"'";
+		try {
+			ResultSet rtnSet = connection.prepareStatement(sql).executeQuery();
+			int n = 0;
+			while (rtnSet.next()) {
+				n++;
+			}
+			// found 1 user
+			if (n == 0) {
+				return false;
+			}
+			if (n == 1) {
+				sql = "UPDATE gameList "
+						+ "SET gameConfig = '" + gameConfig +"', " + "playerTurn = '" + playerTurn + "' "
+						+ "WHERE gameID = '" + gameId + "'"; 
+				connection.prepareStatement(sql).executeUpdate(); 
+				
+				return true;// successfully added to database
+			}
+			if (n > 1) {
+				System.err.println("SERIOUS DATABASE ERROR OCCURED!");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}	
+		return false;
+	}
+
+	/**
+	 * returns game configuration
+	 * @param idUser
+	 * @return 63 character string representing the game board
+	 */
+	public gameInfo findGame(int gameID) {
+		String sql = "SELECT * FROM gameList WHERE gameID = '" + gameID +"'";
+		gameInfo rtnGame = null;
+		try {
+			ResultSet rtnSet = connection.prepareStatement(sql).executeQuery();
+			int n = 0;
+
+			while (rtnSet.next()) {
+				n++;
+				rtnGame = new gameInfo(gameID, rtnSet.getShort("user1"),rtnSet.getInt("user2"),rtnSet.getTimestamp("startTimeStamp"),rtnSet.getInt("playerTurn"),rtnSet.getString("gameConfig")); rtnSet.getString("gameConfig");
+			}
+			// found 1 user
+			if (n == 0) {
+				return null;
+			}
+			if (n == 1) {
+				return rtnGame;
+			}
+			if (n > 1) {
+				System.err.println("SERIOUS DATABASE ERROR OCCURED!");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}	
+		return null;
+	}
+	
+	/**
+	 * Adds game records of both users in a game to the database. Also removes game from running games table. 
 	 * @param record1 
 	 * @param record2
 	 * @return true for successfully added to database, false when unsuccessful. 
 	 */
-	public boolean addGame(GameRecord record1, GameRecord record2) {
+	public boolean addGameRecord(int gameID, GameRecord record1, GameRecord record2) {
 
 		try {
 			int idUser1 = record1.getIdUser();
@@ -343,6 +521,32 @@ public class DatabaseManagerSQL extends DatabaseManager {
 			query = "INSERT INTO userHistory (idUser, opponent, startTimestamp, endTimeStamp, won, abandoned) "
 					+ "VALUES('" + idUser2 + "', '" + idUser1 + "', '"+startTime2+"', '"+endTime2+"', '"+won2+"', '"+abandoned+"' );";
 			connection.prepareStatement(query).executeUpdate();
+			
+			//remove from gamelist
+			String sql = "SELECT * FROM gameList WHERE gameID = '" + gameID +"'";
+			String rtnString = null;
+			try {
+				ResultSet rtnSet = connection.prepareStatement(sql).executeQuery();
+				int n = 0;
+
+				while (rtnSet.next()) {
+					n++;
+					rtnString = rtnSet.getString("gameConfig");
+				}
+				// found 1 user
+				if (n == 0) {
+					System.err.println("Game " + gameID + " not found!");
+				}
+				if (n == 1) {
+					sql="DELETE FROM gameList WHERE gameID = " + gameID;
+					connection.prepareStatement(sql).executeUpdate();
+				}
+				if (n > 1) {
+					System.err.println("SERIOUS DATABASE ERROR OCCURED!");
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}	
 			return true;
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -371,6 +575,53 @@ public class DatabaseManagerSQL extends DatabaseManager {
 		
 		return record;
 	}
+	public boolean removeInvite(int idUser, int opponent) {
+		
+		String sql = "DELETE FROM userInvites WHERE idUser = " + idUser + " AND opponent = " + opponent;
+		try {
+			connection.prepareStatement(sql).executeUpdate();
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		
+		return false;
+	}
+	
+	private Set<String> invites(int idUser){
+		Set<String> record = new HashSet<>();
+		
+		String sql = "SELECT * FROM userInvites WHERE idUser = '" + idUser +"'";
+			try {
+				ResultSet rtnSet = connection.prepareStatement(sql).executeQuery();
+				while (rtnSet.next()) {
+					record.add(findUser(rtnSet.getString("opponent")).getUser().getNickname());
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		
+		return record;	
+	}
+	
+	private Set<Integer> gameIDs(int idUser){
+		Set<Integer> record = new HashSet<>();
+		
+		String sql = "SELECT * FROM gameList WHERE "
+				   + "user1 = '" + idUser +"' "
+				   + "OR user2 = '" + idUser + "'";//TODO finish command
+			try {
+				ResultSet rtnSet = connection.prepareStatement(sql).executeQuery();
+				while (rtnSet.next()) {
+					record.add(rtnSet.getInt("gameID"));
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		
+		return record;	
+	}
 	
 	/**
 	 * 
@@ -390,6 +641,24 @@ public class DatabaseManagerSQL extends DatabaseManager {
 		return "User Not Found";
 	}
 	
+	/**
+	 * 
+	 * @param inviter id of user sending invitation
+	 * @param invitee id of user receiving invitation
+	 * @return whether it was successfully added to database
+	 */
+	public boolean addInvite(int inviter, int invitee) {
+		String query = "INSERT INTO userInvites (idUser, opponent) "
+					 + "VALUES('" + invitee + "', '" + inviter + "', );" ;
+		try {
+			connection.prepareStatement(query).executeUpdate();
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
 	public static void main(String[] argv) {
 			DatabaseManagerSQL db = null;
 		try {
@@ -407,6 +676,24 @@ public class DatabaseManagerSQL extends DatabaseManager {
 		//db.addGame(new GameRecord(1, "nickname2", new Timestamp(5), new Timestamp(55), true, false), new GameRecord(2, "nickname", new Timestamp(5), new Timestamp(55), false, false));
 		
 		UserResponse uResp = db.findUser("Nickname");
+		User user1 = uResp.getUser();
 		System.out.println(uResp.getMessage());
+		System.out.println(uResp.getUser().getStatus());
+		System.out.println(db.onlineUsers().size());
+		LoginResponse lResp = db.authenticateUser("email@email", "Password");
+		System.out.println(lResp.getMessage());
+		System.out.println(db.onlineUsers().size());
+		
+		System.out.println("game added:" + db.addGame(1, user1.getId(), user1.getId(), new Timestamp(3342342), 1, "gameConfig"));
+		System.out.println("game added:" + db.addGame(2, user1.getId(), user1.getId(), new Timestamp(3342342), 1, "gameConfig"));
+		System.out.println("game added:" + db.addGame(3, user1.getId(), user1.getId(), new Timestamp(3342342), 1, "gameConfig"));
+		System.out.println("game added:" + db.addGame(1, user1.getId(), user1.getId(), new Timestamp(3342342), 1, "gameConfig"));
+		System.out.println("game added:" + db.addGame(1, user1.getId(), user1.getId(), new Timestamp(3342342), 1, "gameConfig"));
+		System.out.println("game added:" + db.updateGame(1, "new Config", 1));
+		System.out.println("game added:" + db.updateGame(4, "new Config", 2));
+		System.out.println(db.findGame(1));
+		db.addInvite(user1.getId(), user1.getId());
+		db.removeInvite(user1.getId(), user1.getId());
+
 	}
 }

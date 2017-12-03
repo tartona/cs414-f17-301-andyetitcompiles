@@ -95,14 +95,22 @@ public class DatabaseManagerSQLTest {
 		loginResp = db.authenticateUser(user.getEmail(), "PassWOrD");//test case sensitivity
 		assertFalse(loginResp.getMessage(), loginResp.successful());
 		
+		//make sure user is not online
+		assertTrue(db.onlineUsers().size()==0);
+
 		//test success
 		loginResp = db.authenticateUser(user.getEmail(), user.getPassword());
 		assertTrue(loginResp.getMessage(), loginResp.successful());
 		assertTrue(loginResp.getUser().getStatus().compareTo(UserStatus.ONLINE) == 0); //assure user is logged in
+		//make sure 1 user is online
+		assertTrue(db.onlineUsers().size()==1);
 
 		db.logout(user);
 		UserResponse userResp = db.findUser(user.getNickname());
 		assertTrue(new String(userResp.getUser().getStatus()+""),userResp.getUser().getStatus().compareTo(UserStatus.OFFLINE) == 0); //assure user is logged in
+
+		//make sure user is not online after logging out
+		assertTrue(db.onlineUsers().size()==0);
 		
 		loginResp = db.authenticateUser(user.getEmail().toUpperCase(), user.getPassword());//test case insensitivity
 		assertTrue(loginResp.getMessage(), loginResp.successful());
@@ -137,18 +145,24 @@ public class DatabaseManagerSQLTest {
 		regResp = db.registerUser(user2);
 		assertTrue(regResp.successful());
 		user2 = db.findUser(user2.getNickname()).getUser();
+		
+		//make sure gameIDs are in database when record is added.
+		db.addGame(0, user1.getId(), user2.getId(), new Timestamp(10000), 1, "");
+		db.addGame(1, user1.getId(), user2.getId(), new Timestamp(10500), 2, "");
+		db.addGame(2, user1.getId(), user2.getId(), new Timestamp(40000), 1, "");
+		db.addGame(3, user1.getId(), user2.getId(), new Timestamp(System.currentTimeMillis()-10000000), 4, "");
 
-		db.addGame(new GameRecord(user1.getId(), user2.getNickname(), new Timestamp(10000), new Timestamp(10005), true, false),
+		db.addGameRecord(0, new GameRecord(user1.getId(), user2.getNickname(), new Timestamp(10000), new Timestamp(10005), true, false),
 				   new GameRecord(user2.getId(), user1.getNickname(), new Timestamp(10000), new Timestamp(10005), false, false));
 
-		db.addGame(new GameRecord(user1.getId(), user2.getNickname(), new Timestamp(10500), new Timestamp(10505), false, false),
+		db.addGameRecord(1, new GameRecord(user1.getId(), user2.getNickname(), new Timestamp(10500), new Timestamp(10505), false, false),
 				   new GameRecord(user2.getId(), user1.getNickname(), new Timestamp(10500), new Timestamp(10505), true, false));
 
-		db.addGame(new GameRecord(user1.getId(), user2.getNickname(), new Timestamp(40000), new Timestamp(50005), true, true),
+		db.addGameRecord(2, new GameRecord(user1.getId(), user2.getNickname(), new Timestamp(40000), new Timestamp(50005), true, true),
 				   new GameRecord(user2.getId(), user1.getNickname(), new Timestamp(40000), new Timestamp(50005), false, true));
 
-		db.addGame(new GameRecord(user1.getId(), user2.getNickname(), new Timestamp(80000), new Timestamp(88888), true, false),
-				   new GameRecord(user2.getId(), user1.getNickname(), new Timestamp(80000), new Timestamp(88888), false, false));
+		db.addGameRecord(3, new GameRecord(user1.getId(), user2.getNickname(), new Timestamp(System.currentTimeMillis()-10000000), new Timestamp(System.currentTimeMillis()), true, false),
+				   new GameRecord(user2.getId(), user1.getNickname(), new Timestamp(System.currentTimeMillis()-10000000), new Timestamp(System.currentTimeMillis()), false, false));
 
 		//get user information including updated user history
 		user1 = db.findUser(user1.getNickname()).getUser();
@@ -173,15 +187,51 @@ public class DatabaseManagerSQLTest {
 		assertEquals(1, winCount);//user2 should have 1 wins
 
 		//Additional code coverage, include path where user played against is missing. 
-		db.unRegisterUser(user2.getEmail(), "password");
+		db.addGame(4, user1.getId(), user2.getId(), new Timestamp(10000), 1, "");
+
+		assertTrue(db.unRegisterUser(user2.getEmail(), "password").successful());
 		user1 = db.findUser(user1.getNickname()).getUser();
+		System.out.println(user1.toString());
 		winCount=0;
 		for(GameRecord temp:user1.getRecords()) {
 			if(temp.isWon()) {
 				winCount++;
 			}
 		}
-		assertEquals(3, winCount);//user1 should have 3 wins
+		assertEquals(4, winCount);//user1 should have 4 wins
 
+	}
+	
+	@Test
+	public void testGameStorage() {	
+		//setup 2 users
+		User user1 = new User("Email@Email.com", "nickname", "password");
+		RegisterResponse regResp1 = db.registerUser(user1);
+		assertTrue(regResp1.successful());
+		LoginResponse loginResp1 = db.authenticateUser(user1.getEmail(), user1.getPassword());//test case sensitivity
+		assertTrue(loginResp1.getMessage(), loginResp1.successful());
+		user1 = loginResp1.getUser();
+		
+		User user2 = new User("Email2@Email.com", "nickname2", "password");
+		RegisterResponse regResp2 = db.registerUser(user2);
+		assertTrue(regResp2.successful());
+		LoginResponse loginResp2 = db.authenticateUser(user2.getEmail(), user2.getPassword());//test case sensitivity
+		assertTrue(loginResp2.getMessage(), loginResp2.successful());
+		user2 = loginResp2.getUser();
+		
+		//test new game
+		String board = "Not an accurate repressentation of a game board but should work";
+		assertTrue(db.addGame(1, user1.getId(), user2.getId(), new Timestamp(System.currentTimeMillis()), 1, board));
+		assertTrue(db.findGame(1).getGameConfig().equals(board));
+
+		//test board update
+		String newBoard = "Not an accurate haaay look I changed some letters! i  work";
+		assertTrue(db.updateGame(1, newBoard, 2));
+		assertTrue(db.findGame(1).getGameConfig().equals(newBoard));
+		
+		//test games removed when user unregisteres. 
+		db.unRegisterUser("email2@email.com", "password");
+		//make sure game was removed
+		assertTrue(db.findGame(1)==null);
 	}
 }
