@@ -42,6 +42,7 @@ public class Network {
 		kryo.register(GameRecord.class);
 		kryo.register(Color.class);
 		kryo.register(Timestamp.class);
+		kryo.register(GameInstance[].class);
 		// Add any classes that we want to send as we develop the project
 	}
 }

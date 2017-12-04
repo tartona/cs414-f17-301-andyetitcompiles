@@ -121,6 +121,13 @@ public class JungleClient {
 				if(o instanceof GameMessage) {
 					handleGameMessage((GameMessage)o);
 				}
+				
+				if(o instanceof GameInstance[]) {
+					GameInstance games[] = (GameInstance[])o;
+					for(GameInstance game: games) {
+						handleGameInstance(game);
+					}
+				}
 			}
 			// Called whenever the client is disconnected from the server
 			public void disconnected(Connection c) {

@@ -34,12 +34,29 @@ public class ServerGameController {
 		this.server = server;
 		start = new Timestamp(System.currentTimeMillis());
 	}
+	public ServerGameController(int gameID, User player1, User player2, String board, JungleServer server) {
+		this.gameID = gameID;
+		this.player1User = player1;
+		this.player2User = player2;
+		this.game = new JungleGame(player1User, player2User, board);
+		this.server = server;
+		start = new Timestamp(System.currentTimeMillis());
+	}
 	
 	// Sends the turn notifications to the users. Maybe in the future this could be used to check if
 	// both users are ready to play
 	public void startGame() {
 		// Player 1 (White) goes first
 		this.turn = Color.WHITE;
+		sendTurnUpdate(turn);
+	}
+	
+	public void resumeGame(Color turn) {
+		this.turn = turn;
+		sendTurnUpdate(turn);
+	}
+	
+	public void rejoinGame() {
 		sendTurnUpdate(turn);
 	}
 	
@@ -115,5 +132,37 @@ public class ServerGameController {
 			server.gameOver(gameID, player1User, player2User, abandoned, start, end);
 		else
 			server.gameOver(gameID, player2User, player1User, abandoned, start, end);
+	}
+	
+	public int currentTurn() {
+		if(turn == Color.WHITE)
+			return 1;
+		else
+			return 2;
+	}
+	
+	public String getBoardRepresentation() {
+		return game.getBoard().getBoardRepresentation();
+	}
+	public User getOpponent(User user) {
+		if(user.equals(player1User))
+			return player2User;
+		else
+			return player1User;
+	}
+	
+	public Color getColor(User user) {
+		if(user.equals(player1User))
+			return Color.WHITE;
+		else
+			return Color.BLACK;
+	}
+	
+	public void setPlayer1(JungleClientConnection conn) {
+		player1 = conn;
+	}
+
+	public void setPlayer2(JungleClientConnection conn) {
+		player2 = conn;
 	}
 }
