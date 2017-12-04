@@ -114,6 +114,16 @@ public class JungleBoard {
 		return null;
 	}
 	
+	public ArrayList<JunglePiece> getPieces(Color color){
+		ArrayList<JunglePiece> result = new ArrayList<>();
+		for(JunglePiece piece: pieces){
+			if(piece.getColor() == color){
+				result.add(piece);
+			}
+		}
+		return result;
+	}
+	
 	private void initializeBoard(){
 		TileType type;
 		for(int i = 0; i < ROWS; i++){
