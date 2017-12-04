@@ -13,4 +13,4 @@ Third iteration - First Implementation Iteration > ./P3/ and ./src/
 
 Fourth iteration - Refactoring > ./P4/ and ./src/
 
-Fifth iteratnion - TBD
+Final iteration - > ./P5/ and ./src/
