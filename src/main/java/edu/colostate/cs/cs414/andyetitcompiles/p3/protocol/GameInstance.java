@@ -8,14 +8,16 @@ public class GameInstance {
 	int gameID;
 	User opponent;
 	Color color;
+	String board;
 	
 	// For kryo
 	public GameInstance() {}
 	
-	public GameInstance(int gameID, User opponent, Color color) {
+	public GameInstance(int gameID, User opponent, Color color, String board) {
 		this.gameID = gameID;
 		this.opponent = opponent;
 		this.color = color;
+		this.board = board;
 	}
 
 	public int getGameID() {
@@ -28,6 +30,10 @@ public class GameInstance {
 
 	public Color getColor() {
 		return color;
+	}
+	
+	public String getBoard() {
+		return board;
 	}
 	
 }

@@ -6,6 +6,10 @@ public class Leopard extends JunglePiece{
 	public Leopard(Color color, JungleTile startTile, String id){
 		super(color, startTile, id);
 		this.power = 5;
+		if(color.equals(color.WHITE))
+			this.symbol = 'j';
+		else
+			this.symbol = 'J';
 	}
 
 	@Override

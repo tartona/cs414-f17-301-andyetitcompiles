@@ -79,7 +79,7 @@ public class ClientGameControllerTest {
 			}
 		}.start();
 		Thread.sleep(500);
-		controller = new ClientGameController(gameID, player1, player2, Color.WHITE, client);
+		controller = new ClientGameController(gameID, player1, player2, Color.WHITE, null, client);
 	}
 	
 	@After

@@ -121,6 +121,13 @@ public class JungleClient {
 				if(o instanceof GameMessage) {
 					handleGameMessage((GameMessage)o);
 				}
+				
+				if(o instanceof GameInstance[]) {
+					GameInstance games[] = (GameInstance[])o;
+					for(GameInstance game: games) {
+						handleGameInstance(game);
+					}
+				}
 			}
 			// Called whenever the client is disconnected from the server
 			public void disconnected(Connection c) {
@@ -150,9 +157,16 @@ public class JungleClient {
 	private void handleGameInstance(GameInstance game) {
 		// Create a new game controller
 		pushUpdate("Game with " + game.getOpponent().getNickname() + " is starting");
-		ClientGameController newGame = new ClientGameController(game.getGameID(), clientUser, game.getOpponent(), game.getColor(), kryoClient);
+		ClientGameController newGame = new ClientGameController(game.getGameID(), clientUser, game.getOpponent(), game.getColor(), game.getBoard(), this);
 		activeGames.put(game.getGameID(), newGame);
 		jungleUI.addGame(newGame);
+	}
+	
+	// Called by the UI when a game is over, removes the game instance from the client
+	public void removeGame(int gameID) {
+		System.out.println("Removing game " + gameID);
+		jungleUI.removeGame(activeGames.get(gameID));
+		activeGames.remove(gameID);
 	}
 	
 	// Called when the client receives a message for an existing game

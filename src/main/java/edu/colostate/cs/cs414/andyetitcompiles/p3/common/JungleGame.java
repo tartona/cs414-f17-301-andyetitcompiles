@@ -14,6 +14,12 @@ public class JungleGame implements GameInterface{
 		this.player2 = player2;
 		board = new JungleBoard();
 	}
+	
+	public JungleGame(User player1, User player2, String board) {
+		this.player1 = player1;
+		this.player2 = player2;
+		this.board = new JungleBoard(board);
+	}
 
 	public static void main(String[] args){
 		Scanner scnr = new Scanner(System.in);

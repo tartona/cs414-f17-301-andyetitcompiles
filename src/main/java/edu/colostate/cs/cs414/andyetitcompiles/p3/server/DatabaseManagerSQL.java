@@ -605,7 +605,7 @@ String sql = "SELECT * FROM gameList WHERE gameID = '" + gameId +"'";
 		return record;	
 	}
 	
-	private Set<Integer> gameIDs(int idUser){
+	public Set<Integer> gameIDs(int idUser){
 		Set<Integer> record = new HashSet<>();
 		
 		String sql = "SELECT * FROM gameList WHERE "
@@ -628,7 +628,7 @@ String sql = "SELECT * FROM gameList WHERE gameID = '" + gameId +"'";
 	 * @param idUser user identification number
 	 * @return Matching nickname for given id.
 	 */
-	private String searchNickname(int idUser) {
+	public String searchNickname(int idUser) {
 		String sql = "SELECT * FROM userProfile WHERE idUser = '" + idUser +"'";
 		try {
 			ResultSet rtnSet = connection.prepareStatement(sql).executeQuery();
