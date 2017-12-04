@@ -17,11 +17,11 @@ import edu.colostate.cs.cs414.andyetitcompiles.p3.protocol.*;
 
 public class JungleServer {
 	Server server;
-	DatabaseManager database;
+	DatabaseManagerSQL database;
 	Map<Integer, ServerGameController> games;
 	int gameCounter;
 
-	public JungleServer(DatabaseManager database) throws IOException {
+	public JungleServer(DatabaseManagerSQL database) throws IOException {
 		server = new Server() {
 			// Each time a new connection comes into the server, replace it with a JungleClientConnection (which extends connection)
 			protected Connection newConnection() {
@@ -46,7 +46,25 @@ public class JungleServer {
 			this.database = new DatabaseManagerSQL();
 		} catch (ClassNotFoundException | SQLException e) {
 			e.printStackTrace();
-			this.database = new DatabaseManagerSets();
+			System.out.println("Database not connected");
+			System.exit(2);
+		}
+		networkSetup();
+	}
+	public JungleServer(int port) throws IOException {
+		server = new Server() {
+			protected Connection newConnection() {
+				return new JungleClientConnection();
+			}
+		};
+		
+		//try to connect to database, if this fails use temp database
+		try {
+			this.database = new DatabaseManagerSQL();
+		} catch (ClassNotFoundException | SQLException e) {
+			e.printStackTrace();
+			System.out.println("Database not connected");
+			System.exit(2);
 		}
 		networkSetup();
 	}
@@ -63,7 +81,8 @@ public class JungleServer {
 			this.database = new DatabaseManagerSQL(dbLocation,dbUsername,dbPassword);
 		} catch (ClassNotFoundException | SQLException e) {
 			e.printStackTrace();
-			this.database = new DatabaseManagerSets();
+			System.out.println("Database not connected");
+			System.exit(2);
 		}
 		networkSetup();
 	}
@@ -190,7 +209,7 @@ public class JungleServer {
 	}
 	
 	public void gameOver(int gameID, User winner, User loser, boolean abandoned, Timestamp start, Timestamp end) {
-		database.addGame(new GameRecord(winner.getId(), loser.getNickname(), start, end, true, abandoned), 
+		database.addGameRecord(gameID, new GameRecord(winner.getId(), loser.getNickname(), start, end, true, abandoned), 
 				new GameRecord(loser.getId(), winner.getNickname(), start, end, false, abandoned));
 		games.remove(gameID);
 	}
@@ -217,13 +236,19 @@ public class JungleServer {
 
 	public static void main(String args[]) {
 		try {
+			//pass in port
+			if(args.length == 1) {
+				new JungleServer();
+			}else
+			//pass in database information
 			if(args.length == 3) {
 				new JungleServer(args[0],args[1],args[3]);
-			} else {
+			}
+			else {
 				new JungleServer();
 			}
 		} catch (IOException e) {
-			System.out.println("Exception in server: "+e.getMessage());
+			System.err.println("Exception in server: "+e.getMessage());
 		}
 	}
 }
