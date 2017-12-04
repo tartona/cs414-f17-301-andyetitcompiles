@@ -1,6 +1,5 @@
 package edu.colostate.cs.cs414.andyetitcompiles.p3.client;
 
-import java.io.InputStream;
 import java.util.Scanner;
 import java.util.concurrent.BlockingQueue;
 
@@ -38,6 +37,11 @@ public class JungleCLI implements Runnable {
 	
 	public void addGame(ClientGameController game) {
 		tabs.addTab(game.getName(), game);
+		gamesWindow.pack();
+	}
+	
+	public void removeGame(ClientGameController game) {
+		tabs.remove(game);
 		gamesWindow.pack();
 	}
 
