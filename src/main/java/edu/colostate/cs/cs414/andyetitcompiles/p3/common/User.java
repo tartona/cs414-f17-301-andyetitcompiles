@@ -81,6 +81,8 @@ public class User {
 		else
 			return false;
 	}
+	
+	@Override
 	public String toString() {
 		String userInfo 
 			= "ID: " + id + "\r\n"
@@ -97,11 +99,8 @@ public class User {
 		return userInfo;
 	}
 	
-//	public int hashCode() {
-//		int rtn = 0;
-//		for(char c:nickname.toCharArray()) {
-//			rtn+=c;
-//		}
-//		return rtn;
-//	}
+	@Override
+	public int hashCode() {
+		return nickname.hashCode();
+	}
 }
