@@ -95,6 +95,7 @@ public class ServerGameController {
 				}
 			}
 		}
+		server.updateGameInDB(this);
 	}
 	
 	private void handleQuitGame(GameMessage message) {
@@ -108,24 +109,24 @@ public class ServerGameController {
 	private void sendTurnUpdate(Color turn) {
 		GameMessage p1Turn = new GameMessage(gameID, GameMessageType.SET_TURN, turn == Color.WHITE);
 		GameMessage p2Turn = new GameMessage(gameID, GameMessageType.SET_TURN, turn == Color.BLACK);
-		player1.sendTCP(p1Turn);
-		player2.sendTCP(p2Turn);
+		sendTCP(player1, p1Turn);
+		sendTCP(player2, p2Turn);
 		
 	}
 	
 	// Sends a move to the specified color
 	private void sendMove(Color color, GameMessage move) {
 		if(color == Color.WHITE)
-			player1.sendTCP(move);
+			sendTCP(player1, move);
 		else
-			player2.sendTCP(move);
+			sendTCP(player2, move);
 	}
 
 	// Sends a game over notification to the players, and notifies the server that the game has ended
 	private void gameOver(User winner, boolean abandoned) {
 		GameMessage gameOver = new GameMessage(gameID, GameMessageType.GAME_OVER, winner);
-		player1.sendTCP(gameOver);
-		player2.sendTCP(gameOver);
+		sendTCP(player1, gameOver);
+		sendTCP(player2, gameOver);
 		// Notify the server that the game is over
 		end = new Timestamp(System.currentTimeMillis());
 		if(winner.equals(player1User))
@@ -164,5 +165,10 @@ public class ServerGameController {
 
 	public void setPlayer2(JungleClientConnection conn) {
 		player2 = conn;
+	}
+	
+	private void sendTCP(JungleClientConnection conn, GameMessage message) {
+		if(conn != null)
+			conn.sendTCP(message);
 	}
 }

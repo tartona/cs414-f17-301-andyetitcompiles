@@ -157,7 +157,7 @@ public class JungleClient {
 	private void handleGameInstance(GameInstance game) {
 		// Create a new game controller
 		pushUpdate("Game with " + game.getOpponent().getNickname() + " is starting");
-		ClientGameController newGame = new ClientGameController(game.getGameID(), clientUser, game.getOpponent(), game.getColor(), this);
+		ClientGameController newGame = new ClientGameController(game.getGameID(), clientUser, game.getOpponent(), game.getColor(), game.getBoard(), this);
 		activeGames.put(game.getGameID(), newGame);
 		jungleUI.addGame(newGame);
 	}

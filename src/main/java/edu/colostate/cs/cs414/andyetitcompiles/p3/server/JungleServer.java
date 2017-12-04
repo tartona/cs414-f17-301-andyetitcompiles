@@ -34,7 +34,7 @@ public class JungleServer {
 		networkSetup();
 	}
 
-	public JungleServer() throws IOException, SQLException {
+	public JungleServer() throws IOException {
 		games = new HashMap<Integer, ServerGameController>();
 		gameCounter = 0;
 		server = new Server() {
@@ -221,39 +221,47 @@ public class JungleServer {
 		server.start();
 	}
 	
+	public void updateGameInDB(ServerGameController controller) {
+		database.updateGame(controller.gameID, controller.getBoardRepresentation(), controller.currentTurn());
+	}
+	
 	// Sends all active games the connection has stored in the database
 	// Attempts to find a currently running game controller, otherwise creates a new one for the game
 	private void sendActiveGames(JungleClientConnection jClient) {
 		Set<Integer> gameIDs = database.gameIDs(jClient.getUser().getId());
-		GameInstance games[] = new GameInstance[gameIDs.size()];
-		int index = 0;
 		for(int id: gameIDs) {
 			GameInstance game;
+			ServerGameController controller;
 			// Game already has a controller
 			if(this.games.containsKey(id)) {
-				ServerGameController controller = this.games.get(id);
+				controller = this.games.get(id);
 				if(controller.player1User.equals(jClient.getUser())) 
 					controller.setPlayer1(jClient);
 				else
 					controller.setPlayer2(jClient);
 				game = new GameInstance(controller.gameID, controller.getOpponent(jClient.getUser()), controller.getColor(jClient.getUser()), controller.getBoardRepresentation());
+				jClient.sendTCP(game);
+				controller.rejoinGame();
 			}
 			// Else create a new controller for the game
 			else {
 				gameInfo info = database.findGame(id);
 				User player1 = database.findUser(database.searchNickname(info.getUser1())).getUser();
 				User player2 = database.findUser(database.searchNickname(info.getUser2())).getUser();
-				ServerGameController controller = new ServerGameController(info.getGameID(), player1, player2, info.getGameConfig(), this);
+				controller = new ServerGameController(info.getGameID(), player1, player2, info.getGameConfig(), this);
 				if(player1.equals(jClient.getUser()))
 					controller.setPlayer1(jClient);
 				else
 					controller.setPlayer2(jClient);
 				game = new GameInstance(controller.gameID, controller.getOpponent(jClient.getUser()), controller.getColor(jClient.getUser()), controller.getBoardRepresentation());
 				this.games.put(controller.gameID, controller);
-				games[index++] = game;
+				jClient.sendTCP(game);
+				if(info.getPlayerTurn() == 1)
+					controller.resumeGame(Color.WHITE);
+				else
+					controller.resumeGame(Color.BLACK);
 			}
 		}
-		jClient.sendTCP(games);
 	}
 	
 	public void gameOver(int gameID, User winner, User loser, boolean abandoned, Timestamp start, Timestamp end) {

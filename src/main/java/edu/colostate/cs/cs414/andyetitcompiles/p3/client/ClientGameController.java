@@ -40,7 +40,7 @@ public class ClientGameController extends JPanel {
 	JFrame frame;
 	JLabel message;
 	
-	public ClientGameController(int gameID, User self, User opponent, Color color, JungleClient jClient) {
+	public ClientGameController(int gameID, User self, User opponent, Color color, String board, JungleClient jClient) {
 		this.jClient = jClient;
 		this.client = jClient.kryoClient;
 		this.gameID = gameID;
@@ -48,9 +48,43 @@ public class ClientGameController extends JPanel {
 		this.opponent = opponent;
 		this.color = color;
 		if(color == Color.WHITE)
-			this.game = new JungleGame(self, opponent);
+			this.game = new JungleGame(self, opponent, board);
 		else
-			this.game = new JungleGame(opponent, self);
+			this.game = new JungleGame(opponent, self, board);
+		// Default to false so the client can't make a move until the server sets their turn
+		this.turn = false;
+		// Construct the ui
+		this.setLayout(new BorderLayout());
+		this.setName("Game with " + opponent.getNickname());
+		// Create quit button
+		JButton quitBtn = new JButton();
+		quitBtn.setText("Quit");
+		quitBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				quitGame();
+			}
+		});
+		this.add(quitBtn, BorderLayout.PAGE_END);
+		// Create a label to display messages
+		this.message = new JLabel();
+		message.setText("Game starting...");
+		this.add(message, BorderLayout.PAGE_START);
+		// Finally, add the game board
+		gameBoardUI = new BoardUI(game.getJungleTiles(), this);
+		this.add(gameBoardUI, BorderLayout.CENTER);
+	}
+	
+	// Lazy fix to get rid of a test setup problem
+	public ClientGameController(int gameID, User self, User opponent, Color color, String board, Connection jClient) {
+		this.client = jClient;
+		this.gameID = gameID;
+		this.self = self;
+		this.opponent = opponent;
+		this.color = color;
+		if(color == Color.WHITE)
+			this.game = new JungleGame(self, opponent, board);
+		else
+			this.game = new JungleGame(opponent, self, board);
 		// Default to false so the client can't make a move until the server sets their turn
 		this.turn = false;
 		// Construct the ui
@@ -219,7 +253,7 @@ public class ClientGameController extends JPanel {
 	public JungleBoard getBoard() {
 		return game.getBoard();
 	}
-
+	
 	public static void main(String args[]) {
 
 	}

@@ -21,7 +21,10 @@ public class JungleBoard {
 	// Use this constructor to create a board from a stored configuration
 	public JungleBoard(String board) {
 		initializeBoard();
-		loadPieces(board);
+		if(board != null)
+			loadPieces(board);
+		else
+			initializePieces();
 	}
 	
 	private void initializeWhiteTeam(){
@@ -257,7 +260,7 @@ public class JungleBoard {
 					piece = new Elephant(Color.WHITE, tiles[i][j], "elephant");
 					break;
 				case 'E':
-					piece = new Elephant(Color.WHITE, tiles[i][j], "elephant");
+					piece = new Elephant(Color.BLACK, tiles[i][j], "elephant");
 					break;
 				}
 				if(piece != null) {
