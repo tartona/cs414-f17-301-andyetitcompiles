@@ -168,7 +168,7 @@ public class JungleGameTest {
 		assertEquals(0, game.capturePiece(wrat, wlion));
 		assertEquals(0, game.capturePiece(wrat, blion));
 		assertEquals(0, game.capturePiece(belephant, wrat));
-		assertEquals(0, game.capturePiece(wrat, belephant));
+		assertEquals(8, game.capturePiece(wrat, belephant));
 	}
 	
 }

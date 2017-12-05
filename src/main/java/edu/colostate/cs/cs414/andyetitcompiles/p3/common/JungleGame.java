@@ -55,8 +55,16 @@ public class JungleGame implements GameInterface{
 	public boolean makeMove(Color color, String id, int row, int col) {
 		JunglePiece piece = board.getPiece(color, id);
 		JungleTile tile = board.getTile(row, col);
-		if(!getValidMoves(color, id).contains(tile))
+		ArrayList<int[]> moves = getValidMoves(color, id);
+		boolean good = false;
+		for(int[] arr: moves){
+			if(arr[0] == row && arr[1] == col)
+				good = true;
+		}
+		if(!good)
 			return false;
+	//	if(!getValidMoves(color, id).contains(tile))
+	//		return false;
 		if(tile.getCurrentPiece() != null){
 			if(capturePiece(piece, tile.getCurrentPiece()) != 0){
 				board.movePieceToTile(piece, tile);
@@ -117,23 +125,26 @@ public class JungleGame implements GameInterface{
 				right = board.getTile(currentRow, currentCol + 3);
 			}
 		}
-		int[] move = new int[2];
 		if(isValidMove(piece, up)){
+			int[] move = new int[2];
 			move[0] = up.getRow();
 			move[1] = up.getCol();
 			moves.add(move);
 		}
 		if(isValidMove(piece, down)){
+			int[] move = new int[2];
 			move[0] = down.getRow();
 			move[1] = down.getCol();
 			moves.add(move);
 		}
 		if(isValidMove(piece, left)){
+			int[] move = new int[2];
 			move[0] = left.getRow();
 			move[1] = left.getCol();
 			moves.add(move);
 		}
 		if(isValidMove(piece, right)){
+			int[] move = new int[2];
 			move[0] = right.getRow();
 			move[1] = right.getCol();
 			moves.add(move);
