@@ -6,6 +6,10 @@ public class Rat extends JunglePiece {
 	public Rat(Color color, JungleTile startTile, String id){
 		super(color, startTile, id);
 		this.power = 1;	
+		if(color.equals(color.WHITE))
+			this.symbol = 'r';
+		else
+			this.symbol = 'R';
 	}
 	
 	@Override

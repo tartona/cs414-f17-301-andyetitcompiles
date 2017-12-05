@@ -1,0 +1,620 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<class-diagram version="1.2.2" icons="true" always-add-relationships="false" generalizations="true" realizations="true" 
+  associations="true" dependencies="false" nesting-relationships="true" router="FAN">  
+  <class id="1" language="java" name="edu.colostate.cs.cs414.andyetitcompiles.p3.client.JungleCLI" 
+    project="cs414-f17-301-andyetitcompiles" 
+    file="/cs414-f17-301-andyetitcompiles/src/main/java/edu/colostate/cs/cs414/andyetitcompiles/p3/client/JungleCLI.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="224" y="289"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="true" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="2" language="java" name="edu.colostate.cs.cs414.andyetitcompiles.p3.client.BoardUI" 
+    project="cs414-f17-301-andyetitcompiles" 
+    file="/cs414-f17-301-andyetitcompiles/src/main/java/edu/colostate/cs/cs414/andyetitcompiles/p3/client/BoardUI.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="130" width="234" x="42" y="991"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="true" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="3" language="java" name="edu.colostate.cs.cs414.andyetitcompiles.p3.client.JungleClient" 
+    project="cs414-f17-301-andyetitcompiles" 
+    file="/cs414-f17-301-andyetitcompiles/src/main/java/edu/colostate/cs/cs414/andyetitcompiles/p3/client/JungleClient.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="292" width="219" x="42" y="381"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="true" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="4" language="java" name="edu.colostate.cs.cs414.andyetitcompiles.p3.client.Tile" 
+    project="cs414-f17-301-andyetitcompiles" 
+    file="/cs414-f17-301-andyetitcompiles/src/main/java/edu/colostate/cs/cs414/andyetitcompiles/p3/client/Tile.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="184" width="219" x="42" y="1161"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="true" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="5" language="java" name="edu.colostate.cs.cs414.andyetitcompiles.p3.client.ClientGameController" 
+    project="cs414-f17-301-andyetitcompiles" 
+    file="/cs414-f17-301-andyetitcompiles/src/main/java/edu/colostate/cs/cs414/andyetitcompiles/p3/client/ClientGameController.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="238" width="279" x="42" y="713"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="true" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="6" language="java" name="edu.colostate.cs.cs414.andyetitcompiles.p3.common.Rat" 
+    project="cs414-f17-301-andyetitcompiles" 
+    file="/cs414-f17-301-andyetitcompiles/src/main/java/edu/colostate/cs/cs414/andyetitcompiles/p3/common/Rat.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="112" width="233" x="557" y="1060"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="true" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="7" language="java" name="edu.colostate.cs.cs414.andyetitcompiles.p3.common.GameRecord" 
+    project="cs414-f17-301-andyetitcompiles" 
+    file="/cs414-f17-301-andyetitcompiles/src/main/java/edu/colostate/cs/cs414/andyetitcompiles/p3/common/GameRecord.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="1745" y="713"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="true" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="8" language="java" name="edu.colostate.cs.cs414.andyetitcompiles.p3.common.Elephant" 
+    project="cs414-f17-301-andyetitcompiles" 
+    file="/cs414-f17-301-andyetitcompiles/src/main/java/edu/colostate/cs/cs414/andyetitcompiles/p3/common/Elephant.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="112" width="233" x="830" y="1060"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="true" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="9" language="java" name="edu.colostate.cs.cs414.andyetitcompiles.p3.common.Wolf" 
+    project="cs414-f17-301-andyetitcompiles" 
+    file="/cs414-f17-301-andyetitcompiles/src/main/java/edu/colostate/cs/cs414/andyetitcompiles/p3/common/Wolf.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="112" width="233" x="1103" y="1060"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="true" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="10" language="java" name="edu.colostate.cs.cs414.andyetitcompiles.p3.common.Lion" 
+    project="cs414-f17-301-andyetitcompiles" 
+    file="/cs414-f17-301-andyetitcompiles/src/main/java/edu/colostate/cs/cs414/andyetitcompiles/p3/common/Lion.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="112" width="233" x="1376" y="1060"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="true" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <interface id="11" language="java" name="edu.colostate.cs.cs414.andyetitcompiles.p3.common.GameInterface" 
+    project="cs414-f17-301-andyetitcompiles" 
+    file="/cs414-f17-301-andyetitcompiles/src/main/java/edu/colostate/cs/cs414/andyetitcompiles/p3/common/GameInterface.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="184" width="266" x="648" y="360"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="true" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </interface>  
+  <class id="12" language="java" name="edu.colostate.cs.cs414.andyetitcompiles.p3.common.JungleBoard" 
+    project="cs414-f17-301-andyetitcompiles" 
+    file="/cs414-f17-301-andyetitcompiles/src/main/java/edu/colostate/cs/cs414/andyetitcompiles/p3/common/JungleBoard.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="238" width="243" x="954" y="360"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="true" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="13" language="java" name="edu.colostate.cs.cs414.andyetitcompiles.p3.common.JungleGame" 
+    project="cs414-f17-301-andyetitcompiles" 
+    file="/cs414-f17-301-andyetitcompiles/src/main/java/edu/colostate/cs/cs414/andyetitcompiles/p3/common/JungleGame.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="274" width="266" x="1019" y="46"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="true" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="14" language="java" name="edu.colostate.cs.cs414.andyetitcompiles.p3.common.Tiger" 
+    project="cs414-f17-301-andyetitcompiles" 
+    file="/cs414-f17-301-andyetitcompiles/src/main/java/edu/colostate/cs/cs414/andyetitcompiles/p3/common/Tiger.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="112" width="233" x="1649" y="1060"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="true" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="15" language="java" name="edu.colostate.cs.cs414.andyetitcompiles.p3.common.Cat" 
+    project="cs414-f17-301-andyetitcompiles" 
+    file="/cs414-f17-301-andyetitcompiles/src/main/java/edu/colostate/cs/cs414/andyetitcompiles/p3/common/Cat.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="112" width="233" x="1922" y="1060"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="true" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="16" language="java" name="edu.colostate.cs.cs414.andyetitcompiles.p3.common.JungleTile" 
+    project="cs414-f17-301-andyetitcompiles" 
+    file="/cs414-f17-301-andyetitcompiles/src/main/java/edu/colostate/cs/cs414/andyetitcompiles/p3/common/JungleTile.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="871" y="848"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="true" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="17" language="java" name="edu.colostate.cs.cs414.andyetitcompiles.p3.common.JunglePiece" 
+    project="cs414-f17-301-andyetitcompiles" 
+    file="/cs414-f17-301-andyetitcompiles/src/main/java/edu/colostate/cs/cs414/andyetitcompiles/p3/common/JunglePiece.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="274" width="233" x="1103" y="746"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="true" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <enumeration id="18" language="java" name="edu.colostate.cs.cs414.andyetitcompiles.p3.common.UserStatus" 
+    project="cs414-f17-301-andyetitcompiles" 
+    file="/cs414-f17-301-andyetitcompiles/src/main/java/edu/colostate/cs/cs414/andyetitcompiles/p3/common/UserStatus.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="1695" y="336"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="true" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </enumeration>  
+  <class id="19" language="java" name="edu.colostate.cs.cs414.andyetitcompiles.p3.common.Dog" 
+    project="cs414-f17-301-andyetitcompiles" 
+    file="/cs414-f17-301-andyetitcompiles/src/main/java/edu/colostate/cs/cs414/andyetitcompiles/p3/common/Dog.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="2312" y="1117"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="true" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="20" language="java" name="edu.colostate.cs.cs414.andyetitcompiles.p3.common.Leopard" 
+    project="cs414-f17-301-andyetitcompiles" 
+    file="/cs414-f17-301-andyetitcompiles/src/main/java/edu/colostate/cs/cs414/andyetitcompiles/p3/common/Leopard.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="2585" y="1117"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="true" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="21" language="java" name="edu.colostate.cs.cs414.andyetitcompiles.p3.common.User" 
+    project="cs414-f17-301-andyetitcompiles" 
+    file="/cs414-f17-301-andyetitcompiles/src/main/java/edu/colostate/cs/cs414/andyetitcompiles/p3/common/User.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="346" width="312" x="1237" y="360"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="true" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="22" language="java" name="edu.colostate.cs.cs414.andyetitcompiles.p3.server.DatabaseManagerSets" 
+    project="cs414-f17-301-andyetitcompiles" 
+    file="/cs414-f17-301-andyetitcompiles/src/main/java/edu/colostate/cs/cs414/andyetitcompiles/p3/server/DatabaseManagerSets.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="2442" y="626"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="true" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="23" language="java" name="edu.colostate.cs.cs414.andyetitcompiles.p3.server.ServerGameController" 
+    project="cs414-f17-301-andyetitcompiles" 
+    file="/cs414-f17-301-andyetitcompiles/src/main/java/edu/colostate/cs/cs414/andyetitcompiles/p3/server/ServerGameController.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="2183" y="343"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="true" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="24" language="java" name="edu.colostate.cs.cs414.andyetitcompiles.p3.server.JungleClientConnection" 
+    project="cs414-f17-301-andyetitcompiles" 
+    file="/cs414-f17-301-andyetitcompiles/src/main/java/edu/colostate/cs/cs414/andyetitcompiles/p3/server/JungleClientConnection.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="1805" y="129"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="true" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="25" language="java" name="edu.colostate.cs.cs414.andyetitcompiles.p3.server.JungleServer" 
+    project="cs414-f17-301-andyetitcompiles" 
+    file="/cs414-f17-301-andyetitcompiles/src/main/java/edu/colostate/cs/cs414/andyetitcompiles/p3/server/JungleServer.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="2198" y="124"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="true" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="26" language="java" name="edu.colostate.cs.cs414.andyetitcompiles.p3.server.DatabaseManagerSQL" 
+    project="cs414-f17-301-andyetitcompiles" 
+    file="/cs414-f17-301-andyetitcompiles/src/main/java/edu/colostate/cs/cs414/andyetitcompiles/p3/server/DatabaseManagerSQL.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="2758" y="644"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="true" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="27" language="java" name="edu.colostate.cs.cs414.andyetitcompiles.p3.server.DatabaseManager" 
+    project="cs414-f17-301-andyetitcompiles" 
+    file="/cs414-f17-301-andyetitcompiles/src/main/java/edu/colostate/cs/cs414/andyetitcompiles/p3/server/DatabaseManager.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="2668" y="366"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="true" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <generalization id="28">    
+    <end type="SOURCE" refId="14"/>    
+    <end type="TARGET" refId="17"/>  
+  </generalization>  
+  <association id="29">    
+    <end type="SOURCE" refId="25" navigable="false">      
+      <attribute id="30" name="games"/>      
+      <multiplicity id="31" minimum="0" maximum="2147483647"/>    
+    </end>    
+    <end type="TARGET" refId="23" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="32">    
+    <end type="SOURCE" refId="12" navigable="false">      
+      <attribute id="33" name="pieces"/>      
+      <multiplicity id="34" minimum="0" maximum="2147483647"/>    
+    </end>    
+    <end type="TARGET" refId="17" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="35">    
+    <end type="SOURCE" refId="3" navigable="false">      
+      <attribute id="36" name="clientUser"/>      
+      <multiplicity id="37" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="21" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="38">    
+    <end type="SOURCE" refId="23" navigable="false">      
+      <attribute id="39" name="player1"/>      
+      <multiplicity id="40" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="24" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="41">    
+    <end type="SOURCE" refId="24" navigable="false">      
+      <attribute id="42" name="user"/>      
+      <multiplicity id="43" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="21" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="44">    
+    <end type="SOURCE" refId="5" navigable="false">      
+      <attribute id="45" name="self"/>      
+      <multiplicity id="46" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="21" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <generalization id="47">    
+    <end type="SOURCE" refId="26"/>    
+    <end type="TARGET" refId="27"/>  
+  </generalization>  
+  <association id="48">    
+    <end type="SOURCE" refId="21" navigable="false">      
+      <attribute id="49" name="gameRecords"/>      
+      <multiplicity id="50" minimum="0" maximum="2147483647"/>    
+    </end>    
+    <end type="TARGET" refId="7" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="51">    
+    <bendpoint x="628" y="746"/>    
+    <end type="SOURCE" refId="12" navigable="false">      
+      <attribute id="52" name="tiles"/>      
+      <multiplicity id="53" minimum="0" maximum="2147483647"/>    
+    </end>    
+    <end type="TARGET" refId="16" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="54">    
+    <end type="SOURCE" refId="5" navigable="false">      
+      <attribute id="55" name="opponent"/>      
+      <multiplicity id="56" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="21" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="57">    
+    <end type="SOURCE" refId="22" navigable="false">      
+      <attribute id="58" name="onlineUsers"/>      
+      <multiplicity id="59" minimum="0" maximum="2147483647"/>    
+    </end>    
+    <end type="TARGET" refId="21" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <realization id="60">    
+    <end type="SOURCE" refId="13"/>    
+    <end type="TARGET" refId="11"/>  
+  </realization>  
+  <association id="61">    
+    <end type="SOURCE" refId="22" navigable="false">      
+      <attribute id="62" name="registeredUsers"/>      
+      <multiplicity id="63" minimum="0" maximum="2147483647"/>    
+    </end>    
+    <end type="TARGET" refId="21" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="64">    
+    <end type="SOURCE" refId="3" navigable="false">      
+      <attribute id="65" name="requestedUser"/>      
+      <multiplicity id="66" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="21" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <generalization id="67">    
+    <end type="SOURCE" refId="9"/>    
+    <end type="TARGET" refId="17"/>  
+  </generalization>  
+  <association id="68">    
+    <end type="SOURCE" refId="21" navigable="false">      
+      <attribute id="69" name="status"/>      
+      <multiplicity id="70" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="18" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="71">    
+    <end type="SOURCE" refId="1" navigable="false">      
+      <attribute id="72" name="client"/>      
+      <multiplicity id="73" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="3" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="74">    
+    <end type="SOURCE" refId="21" navigable="false">      
+      <attribute id="75" name="piece"/>      
+      <multiplicity id="76" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="17" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <dependency id="77">    
+    <end type="SOURCE" refId="25"/>    
+    <end type="TARGET" refId="24"/>  
+  </dependency>  
+  <generalization id="78">    
+    <end type="SOURCE" refId="20"/>    
+    <end type="TARGET" refId="17"/>  
+  </generalization>  
+  <association id="79">    
+    <end type="SOURCE" refId="23" navigable="false">      
+      <attribute id="80" name="player2"/>      
+      <multiplicity id="81" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="24" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <generalization id="82">    
+    <end type="SOURCE" refId="8"/>    
+    <end type="TARGET" refId="17"/>  
+  </generalization>  
+  <association id="83">    
+    <end type="SOURCE" refId="2" navigable="false">      
+      <attribute id="84" name="selectedTile"/>      
+      <multiplicity id="85" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="4" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="86">    
+    <end type="SOURCE" refId="17" navigable="false">      
+      <attribute id="87" name="currentTile"/>      
+      <multiplicity id="88" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="16" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="89">    
+    <end type="SOURCE" refId="23" navigable="false">      
+      <attribute id="90" name="server"/>      
+      <multiplicity id="91" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="25" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="92">    
+    <end type="SOURCE" refId="13" navigable="false">      
+      <attribute id="93" name="player1"/>      
+      <multiplicity id="94" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="21" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="95">    
+    <end type="SOURCE" refId="2" navigable="false">      
+      <attribute id="96" name="controller"/>      
+      <multiplicity id="97" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="5" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="98">    
+    <end type="SOURCE" refId="5" navigable="false">      
+      <attribute id="99" name="gameBoardUI"/>      
+      <multiplicity id="100" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="2" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <generalization id="101">    
+    <end type="SOURCE" refId="15"/>    
+    <end type="TARGET" refId="17"/>  
+  </generalization>  
+  <association id="102">    
+    <end type="SOURCE" refId="23" navigable="false">      
+      <attribute id="103" name="player2User"/>      
+      <multiplicity id="104" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="21" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="105">    
+    <end type="SOURCE" refId="23" navigable="false">      
+      <attribute id="106" name="player1User"/>      
+      <multiplicity id="107" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="21" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="108">    
+    <end type="SOURCE" refId="5" navigable="false">      
+      <attribute id="109" name="game"/>      
+      <multiplicity id="110" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="13" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <generalization id="111">    
+    <end type="SOURCE" refId="10"/>    
+    <end type="TARGET" refId="17"/>  
+  </generalization>  
+  <generalization id="112">    
+    <end type="SOURCE" refId="22"/>    
+    <end type="TARGET" refId="27"/>  
+  </generalization>  
+  <association id="113">    
+    <end type="SOURCE" refId="3" navigable="false">      
+      <attribute id="114" name="activeGames"/>      
+      <multiplicity id="115" minimum="0" maximum="2147483647"/>    
+    </end>    
+    <end type="TARGET" refId="5" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="116">    
+    <end type="SOURCE" refId="16" navigable="false">      
+      <attribute id="117" name="currentPiece"/>      
+      <multiplicity id="118" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="17" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="119">    
+    <end type="SOURCE" refId="13" navigable="false">      
+      <attribute id="120" name="player2"/>      
+      <multiplicity id="121" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="21" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="122">    
+    <end type="SOURCE" refId="23" navigable="false">      
+      <attribute id="123" name="game"/>      
+      <multiplicity id="124" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="13" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="125">    
+    <end type="SOURCE" refId="25" navigable="false">      
+      <attribute id="126" name="database"/>      
+      <multiplicity id="127" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="27" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="128">    
+    <end type="SOURCE" refId="2" navigable="false">      
+      <attribute id="129" name="tiles"/>      
+      <multiplicity id="130" minimum="0" maximum="2147483647"/>    
+    </end>    
+    <end type="TARGET" refId="4" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="131">    
+    <end type="SOURCE" refId="13" navigable="false">      
+      <attribute id="132" name="board"/>      
+      <multiplicity id="133" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="12" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <generalization id="134">    
+    <end type="SOURCE" refId="6"/>    
+    <end type="TARGET" refId="17"/>  
+  </generalization>  
+  <generalization id="135">    
+    <end type="SOURCE" refId="19"/>    
+    <end type="TARGET" refId="17"/>  
+  </generalization>  
+  <association id="136">    
+    <end type="SOURCE" refId="2" navigable="false">      
+      <attribute id="137" name="move"/>      
+      <multiplicity id="138" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="4" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <classifier-display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+    sort-features="false" accessors="true" visibility="true">    
+    <attributes public="false" package="false" protected="false" private="false" static="false"/>    
+    <operations public="true" package="false" protected="false" private="false" static="false"/>  
+  </classifier-display>  
+  <association-display labels="true" multiplicity="true"/>
+</class-diagram>

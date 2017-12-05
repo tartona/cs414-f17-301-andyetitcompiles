@@ -14,6 +14,12 @@ public class JungleGame implements GameInterface{
 		this.player2 = player2;
 		board = new JungleBoard();
 	}
+	
+	public JungleGame(User player1, User player2, String board) {
+		this.player1 = player1;
+		this.player2 = player2;
+		this.board = new JungleBoard(board);
+	}
 
 	public static void main(String[] args){
 		Scanner scnr = new Scanner(System.in);
@@ -52,7 +58,7 @@ public class JungleGame implements GameInterface{
 		if(!getValidMoves(color, id).contains(tile))
 			return false;
 		if(tile.getCurrentPiece() != null){
-			if(capturePiece(piece, tile.getCurrentPiece())){
+			if(capturePiece(piece, tile.getCurrentPiece()) != 0){
 				board.movePieceToTile(piece, tile);
 				return true;
 			}
@@ -65,51 +71,73 @@ public class JungleGame implements GameInterface{
 		return board.getTiles();
 	}
 
-	public boolean capturePiece(JunglePiece attacker, JunglePiece victim){
+	public int capturePiece(JunglePiece attacker, JunglePiece victim){
 		if(attacker.getColor() == victim.getColor())	//pieces cannot attack their teammates
-			return false;	
+			return 0;	
 		if(attacker instanceof Elephant && victim instanceof Rat)
-			return false;
+			return 0;
 		if((attacker.getPower() > victim.getPower()) || (attacker instanceof Rat && victim instanceof Elephant)){
+			if(victim.getPower() == 0){
+				victim.restorePower();
+			}
 			board.removePiece(victim);
-			return true;
+			return victim.getPower();
 		}
-		return false;
+		return 0;
 	}
 	
 	public JunglePiece getPiece(Color color, String id){
 		return board.getPiece(color, id);
 	}
 	
-	public ArrayList<JungleTile> getValidMoves(Color color, String id) {
+	public ArrayList<JunglePiece> getPieces(Color color){
+		return board.getPieces(color);
+	}
+	
+	public ArrayList<int[]> getValidMoves(Color color, String id) {
 		JunglePiece piece = getPiece(color, id);
-		ArrayList<JungleTile> moves = new ArrayList<JungleTile>();
-		JungleTile up = board.getTile(piece.getCurrentTile().row - 1, piece.getCurrentTile().col);
-		JungleTile down = board.getTile(piece.getCurrentTile().row + 1, piece.getCurrentTile().col);
-		JungleTile left = board.getTile(piece.getCurrentTile().row, piece.getCurrentTile().col - 1);
-		JungleTile right = board.getTile(piece.getCurrentTile().row, piece.getCurrentTile().col + 1);
+		ArrayList<int[]> moves = new ArrayList<int[]>();
+		int currentRow = piece.getCurrentRow();
+		int currentCol = piece.getCurrentCol();
+		JungleTile up = board.getTile(currentRow - 1, currentCol);
+		JungleTile down = board.getTile(currentRow + 1, currentCol);
+		JungleTile left = board.getTile(currentRow, currentCol - 1);
+		JungleTile right = board.getTile(currentRow, currentCol + 1);
 		if(piece.getID().equals("lion") || piece.getID().equals("tiger")){	//lion and tiger can both jump across river tiles.
 			if(up != null && up.getType() == TileType.RIVER){
-				up = board.getTile(piece.getCurrentTile().row - 4, piece.getCurrentTile().col);
+				up = board.getTile(currentRow - 4, currentCol);
 			}
 			if(down != null && down.getType() == TileType.RIVER){
-				down = board.getTile(piece.getCurrentTile().row + 4, piece.getCurrentTile().col);
+				down = board.getTile(currentRow + 4, currentCol);
 			}
 			if(left != null && left.getType() == TileType.RIVER){
-				left = board.getTile(piece.getCurrentTile().row, piece.getCurrentTile().col - 3);
+				left = board.getTile(currentRow, currentCol - 3);
 			}
 			if(right != null && right.getType() == TileType.RIVER){
-				right = board.getTile(piece.getCurrentTile().row, piece.getCurrentTile().col + 3);
+				right = board.getTile(currentRow, currentCol + 3);
 			}
 		}
-		if(isValidMove(piece, up))
-			moves.add(up);
-		if(isValidMove(piece, down))
-			moves.add(down);
-		if(isValidMove(piece, left))
-			moves.add(left);
-		if(isValidMove(piece, right))
-			moves.add(right);
+		int[] move = new int[2];
+		if(isValidMove(piece, up)){
+			move[0] = up.getRow();
+			move[1] = up.getCol();
+			moves.add(move);
+		}
+		if(isValidMove(piece, down)){
+			move[0] = down.getRow();
+			move[1] = down.getCol();
+			moves.add(move);
+		}
+		if(isValidMove(piece, left)){
+			move[0] = left.getRow();
+			move[1] = left.getCol();
+			moves.add(move);
+		}
+		if(isValidMove(piece, right)){
+			move[0] = right.getRow();
+			move[1] = right.getCol();
+			moves.add(move);
+		}
 		return moves;
 	}
 	

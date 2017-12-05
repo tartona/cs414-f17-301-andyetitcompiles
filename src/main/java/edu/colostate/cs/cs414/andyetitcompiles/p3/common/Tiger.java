@@ -6,6 +6,10 @@ public class Tiger extends JunglePiece{
 	public Tiger(Color color, JungleTile startTile, String id){
 		super(color, startTile, id);
 		this.power = 6;
+		if(color.equals(color.WHITE))
+			this.symbol = 't';
+		else
+			this.symbol = 'T';
 	}
 
 	@Override
