@@ -389,8 +389,11 @@ public class DatabaseManagerSQL {
 	 * @return boolean for success
 	 */
 	public boolean addGame(int gameId, int user1, int user2, Timestamp startTime, int playerTurn, String gameConfig) {
+		if(gameConfig.length()!=63) {
+			return false;
+		}
 		
-String sql = "SELECT * FROM gameList WHERE gameID = '" + gameId +"'";
+		String sql = "SELECT * FROM gameList WHERE gameID = '" + gameId +"'";
 		try {
 			ResultSet rtnSet = connection.prepareStatement(sql).executeQuery();
 			int n = 0;
@@ -426,7 +429,10 @@ String sql = "SELECT * FROM gameList WHERE gameID = '" + gameId +"'";
 	 * @return whether or not successful
 	 */
 	public boolean updateGame(int gameId, String gameConfig, int playerTurn) {
-String sql = "SELECT * FROM gameList WHERE gameID = '" + gameId +"'";
+		if(gameConfig.length()!=63) {
+			return false;
+		}
+		String sql = "SELECT * FROM gameList WHERE gameID = '" + gameId +"'";
 		try {
 			ResultSet rtnSet = connection.prepareStatement(sql).executeQuery();
 			int n = 0;
@@ -524,14 +530,12 @@ String sql = "SELECT * FROM gameList WHERE gameID = '" + gameId +"'";
 			
 			//remove from gamelist
 			String sql = "SELECT * FROM gameList WHERE gameID = '" + gameID +"'";
-			String rtnString = null;
 			try {
 				ResultSet rtnSet = connection.prepareStatement(sql).executeQuery();
 				int n = 0;
 
 				while (rtnSet.next()) {
 					n++;
-					rtnString = rtnSet.getString("gameConfig");
 				}
 				// found 1 user
 				if (n == 0) {
@@ -575,6 +579,13 @@ String sql = "SELECT * FROM gameList WHERE gameID = '" + gameId +"'";
 		
 		return record;
 	}
+	
+	/**
+	 * Removes invite for idUser, from opponent
+	 * @param idUser
+	 * @param opponent
+	 * @return
+	 */
 	public boolean removeInvite(int idUser, int opponent) {
 		
 		String sql = "DELETE FROM userInvites WHERE idUser = " + idUser + " AND opponent = " + opponent;
@@ -584,8 +595,24 @@ String sql = "SELECT * FROM gameList WHERE gameID = '" + gameId +"'";
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		return false;
+	}
+	
+	/**
+	 * Removes all invites for a user. 
+	 * One option is to use this after logging in. The user should have already received all invites, so they may be deleted. 
+	 * @param idUser
+	 * @return
+	 */
+	public boolean removeAllInvites(int idUser) {
 		
-		
+		String sql = "DELETE FROM userInvites WHERE idUser = " + idUser;
+		try {
+			connection.prepareStatement(sql).executeUpdate();
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return false;
 	}
 	
@@ -624,7 +651,6 @@ String sql = "SELECT * FROM gameList WHERE gameID = '" + gameId +"'";
 	}
 	
 	/**
-	 * 
 	 * @param idUser user identification number
 	 * @return Matching nickname for given id.
 	 */
@@ -657,43 +683,5 @@ String sql = "SELECT * FROM gameList WHERE gameID = '" + gameId +"'";
 			e.printStackTrace();
 			return false;
 		}
-	}
-	
-	public static void main(String[] argv) {
-			DatabaseManagerSQL db = null;
-		try {
-			db = new DatabaseManagerSQL();
-			db.resetTable();
-		} catch (ClassNotFoundException | SQLException e) {
-			e.printStackTrace();
-		}
-		
-		RegisterResponse regResp = db.registerUser( "Email@email", "Nickname", "Password");
-		System.out.println(regResp.getMessage());
-		regResp = db.registerUser( "Email2@email", "Nickname2", "Password");
-		System.out.println(regResp.getMessage());
-		
-		//db.addGame(new GameRecord(1, "nickname2", new Timestamp(5), new Timestamp(55), true, false), new GameRecord(2, "nickname", new Timestamp(5), new Timestamp(55), false, false));
-		
-		UserResponse uResp = db.findUser("Nickname");
-		User user1 = uResp.getUser();
-		System.out.println(uResp.getMessage());
-		System.out.println(uResp.getUser().getStatus());
-		System.out.println(db.onlineUsers().size());
-		LoginResponse lResp = db.authenticateUser("email@email", "Password");
-		System.out.println(lResp.getMessage());
-		System.out.println(db.onlineUsers().size());
-		
-		System.out.println("game added:" + db.addGame(1, user1.getId(), user1.getId(), new Timestamp(3342342), 1, "gameConfig"));
-		System.out.println("game added:" + db.addGame(2, user1.getId(), user1.getId(), new Timestamp(3342342), 1, "gameConfig"));
-		System.out.println("game added:" + db.addGame(3, user1.getId(), user1.getId(), new Timestamp(3342342), 1, "gameConfig"));
-		System.out.println("game added:" + db.addGame(1, user1.getId(), user1.getId(), new Timestamp(3342342), 1, "gameConfig"));
-		System.out.println("game added:" + db.addGame(1, user1.getId(), user1.getId(), new Timestamp(3342342), 1, "gameConfig"));
-		System.out.println("game added:" + db.updateGame(1, "new Config", 1));
-		System.out.println("game added:" + db.updateGame(4, "new Config", 2));
-		System.out.println(db.findGame(1));
-		db.addInvite(user1.getId(), user1.getId());
-		db.removeInvite(user1.getId(), user1.getId());
-
 	}
 }
