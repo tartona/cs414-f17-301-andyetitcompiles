@@ -10,7 +10,9 @@ import java.util.concurrent.BlockingQueue;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 
 import com.esotericsoftware.kryonet.Connection;
 
@@ -22,8 +24,9 @@ import edu.colostate.cs.cs414.andyetitcompiles.p3.common.User;
 import edu.colostate.cs.cs414.andyetitcompiles.p3.protocol.GameMessage;
 import edu.colostate.cs.cs414.andyetitcompiles.p3.protocol.GameMessageType;
 
-public class ClientGameController {
+public class ClientGameController extends JPanel {
 	Connection client;
+	JungleClient jClient;
 	int gameID;
 	JungleGame game;
 	User self;
@@ -37,23 +40,22 @@ public class ClientGameController {
 	JFrame frame;
 	JLabel message;
 	
-	public ClientGameController(int gameID, User self, User opponent, Color color, Connection client) {
-		this.client = client;
+	public ClientGameController(int gameID, User self, User opponent, Color color, String board, JungleClient jClient) {
+		this.jClient = jClient;
+		this.client = jClient.kryoClient;
 		this.gameID = gameID;
 		this.self = self;
 		this.opponent = opponent;
 		this.color = color;
 		if(color == Color.WHITE)
-			this.game = new JungleGame(self, opponent);
+			this.game = new JungleGame(self, opponent, board);
 		else
-			this.game = new JungleGame(opponent, self);
+			this.game = new JungleGame(opponent, self, board);
 		// Default to false so the client can't make a move until the server sets their turn
 		this.turn = false;
 		// Construct the ui
-		frame = new JFrame();
-		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		frame.setTitle("Playing Jungle against " + opponent.getNickname());
-		JPanel panel = new JPanel(new BorderLayout());
+		this.setLayout(new BorderLayout());
+		this.setName("Game with " + opponent.getNickname());
 		// Create quit button
 		JButton quitBtn = new JButton();
 		quitBtn.setText("Quit");
@@ -62,17 +64,48 @@ public class ClientGameController {
 				quitGame();
 			}
 		});
-		panel.add(quitBtn, BorderLayout.PAGE_END);
+		this.add(quitBtn, BorderLayout.PAGE_END);
 		// Create a label to display messages
 		this.message = new JLabel();
 		message.setText("Game starting...");
-		panel.add(message, BorderLayout.PAGE_START);
+		this.add(message, BorderLayout.PAGE_START);
 		// Finally, add the game board
 		gameBoardUI = new BoardUI(game.getJungleTiles(), this);
-		panel.add(gameBoardUI, BorderLayout.CENTER);
-		frame.getContentPane().add(panel);
-		frame.setSize(panel.getPreferredSize());
-		frame.setVisible(true);
+		this.add(gameBoardUI, BorderLayout.CENTER);
+	}
+	
+	// Lazy fix to get rid of a test setup problem
+	public ClientGameController(int gameID, User self, User opponent, Color color, String board, Connection jClient) {
+		this.client = jClient;
+		this.gameID = gameID;
+		this.self = self;
+		this.opponent = opponent;
+		this.color = color;
+		if(color == Color.WHITE)
+			this.game = new JungleGame(self, opponent, board);
+		else
+			this.game = new JungleGame(opponent, self, board);
+		// Default to false so the client can't make a move until the server sets their turn
+		this.turn = false;
+		// Construct the ui
+		this.setLayout(new BorderLayout());
+		this.setName("Game with " + opponent.getNickname());
+		// Create quit button
+		JButton quitBtn = new JButton();
+		quitBtn.setText("Quit");
+		quitBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				quitGame();
+			}
+		});
+		this.add(quitBtn, BorderLayout.PAGE_END);
+		// Create a label to display messages
+		this.message = new JLabel();
+		message.setText("Game starting...");
+		this.add(message, BorderLayout.PAGE_START);
+		// Finally, add the game board
+		gameBoardUI = new BoardUI(game.getJungleTiles(), this);
+		this.add(gameBoardUI, BorderLayout.CENTER);
 	}
 	
 	// Used for the demo CLI game
@@ -130,11 +163,13 @@ public class ClientGameController {
 	private void handleGameOver(GameMessage message) {
 		if(message.getWinner().equals(self)) {
 			this.message.setText("You won the game!");
+			JOptionPane.showMessageDialog(frame, "You have won the game");
 		}
 		else {
 			this.message.setText("You lost the game");
+			JOptionPane.showMessageDialog(frame, "You have lost the game");
 		}
-		// Let the client know it can get rid of this instance
+		jClient.removeGame(gameID);
 	}
 
 	private void handleSetTurn(GameMessage message) {
@@ -173,6 +208,8 @@ public class ClientGameController {
 	
 	
 	public void makeMove(JunglePiece piece, int row, int col) {
+		if(piece == null)
+			return;
 		if(piece.getColor() == color) {
 			if(turn) {
 				if(game.makeMove(piece.getColor(), piece.getID(), row, col)) {
@@ -218,7 +255,7 @@ public class ClientGameController {
 	public JungleBoard getBoard() {
 		return game.getBoard();
 	}
-
+	
 	public static void main(String args[]) {
 
 	}

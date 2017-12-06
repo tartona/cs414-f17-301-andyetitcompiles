@@ -6,6 +6,10 @@ public class Elephant extends JunglePiece{
 	public Elephant(Color color, JungleTile startTile, String id){
 		super(color, startTile, id);
 		this.power = 8;
+		if(color.equals(color.WHITE))
+			this.symbol = 'e';
+		else
+			this.symbol = 'E';
 	}
 	
 	@Override

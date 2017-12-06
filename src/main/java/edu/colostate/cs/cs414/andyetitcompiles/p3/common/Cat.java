@@ -6,6 +6,10 @@ public class Cat extends JunglePiece{
 	public Cat(Color color, JungleTile startTile, String id){
 		super(color, startTile, id);
 		this.power = 2;
+		if(color == color.WHITE)
+			this.symbol = 'c';
+		else
+			this.symbol = 'C';
 	}
 
 	@Override

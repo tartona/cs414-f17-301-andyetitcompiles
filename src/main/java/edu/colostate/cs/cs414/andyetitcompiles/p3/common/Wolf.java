@@ -6,6 +6,10 @@ public class Wolf extends JunglePiece{
 	public Wolf(Color color, JungleTile startTile, String id){
 		super(color, startTile, id);
 		this.power = 4;
+		if(color.equals(color.WHITE))
+			this.symbol = 'w';
+		else
+			this.symbol = 'W';
 	}
 	
 	@Override

@@ -1,8 +1,10 @@
 package edu.colostate.cs.cs414.andyetitcompiles.p3.client;
 
-import java.io.InputStream;
 import java.util.Scanner;
 import java.util.concurrent.BlockingQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JTabbedPane;
 
 public class JungleCLI implements Runnable {
 	private BlockingQueue<String> inQueue;
@@ -10,6 +12,8 @@ public class JungleCLI implements Runnable {
 	private JungleClient client;
 	private String nickname;
 	private Thread userInputThread = null;
+	private JFrame gamesWindow;
+	private JTabbedPane tabs;
 
 	public JungleCLI(JungleClient client, BlockingQueue<String> inQueue, BlockingQueue<String> outQueue) {
 		// Queue for incoming messages from client
@@ -17,6 +21,28 @@ public class JungleCLI implements Runnable {
 		// Queue for outgoing messages to client
 		this.outQueue = outQueue;
 		this.client = client;
+		// Create a the gamesWindow
+		createAndShowUI();
+	}
+	
+	private void createAndShowUI() {
+		gamesWindow = new JFrame();
+		tabs = new JTabbedPane(JTabbedPane.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
+		gamesWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		gamesWindow.setTitle("XGame: Jungle");
+		gamesWindow.add(tabs);
+		gamesWindow.pack();
+		gamesWindow.setVisible(true);
+	}
+	
+	public void addGame(ClientGameController game) {
+		tabs.addTab(game.getName(), game);
+		gamesWindow.pack();
+	}
+	
+	public void removeGame(ClientGameController game) {
+		tabs.remove(game);
+		gamesWindow.pack();
 	}
 
 	@Override

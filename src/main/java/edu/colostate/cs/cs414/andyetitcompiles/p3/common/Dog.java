@@ -6,6 +6,10 @@ public class Dog extends JunglePiece{
 	public Dog(Color color, JungleTile startTile, String id){
 		super(color, startTile, id);
 		this.power = 3;
+		if(color.equals(color.WHITE))
+			this.symbol = 'd';
+		else
+			this.symbol = 'D';
 	}
 
 	@Override

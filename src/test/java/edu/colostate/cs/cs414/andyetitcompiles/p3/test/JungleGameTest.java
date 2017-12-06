@@ -165,10 +165,10 @@ public class JungleGameTest {
 		JunglePiece blion = game.getPiece(Color.BLACK, "lion");
 		JunglePiece belephant = game.getPiece(Color.BLACK, "elephant");
 
-		assertFalse(game.capturePiece(wrat, wlion));
-		assertFalse(game.capturePiece(wrat, blion));
-		assertFalse(game.capturePiece(belephant, wrat));
-		assertTrue(game.capturePiece(wrat, belephant));
+		assertEquals(0, game.capturePiece(wrat, wlion));
+		assertEquals(0, game.capturePiece(wrat, blion));
+		assertEquals(0, game.capturePiece(belephant, wrat));
+		assertEquals(8, game.capturePiece(wrat, belephant));
 	}
 	
 }

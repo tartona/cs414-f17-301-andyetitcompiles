@@ -9,6 +9,9 @@ public abstract class JunglePiece {
 	protected Color color;
 	protected JungleTile currentTile;
 	protected String id;
+	// Represents a piece when it is stored in a string in the database. Lowercase is white, uppercase is black
+	// R = rat, C = cat, D = dog, W = wolf, J = leopard(jaguar), T = tiger, L = lion, E = elephant
+	protected char symbol;
 	
 	public JunglePiece(Color color, JungleTile startTile, String id){
 		this.color = color;
@@ -38,10 +41,14 @@ public abstract class JunglePiece {
 		return this.id;
 	}
 	
+	public char getSymbol() {
+		return symbol;
+	}
+	
 	public int getPower() {
 		return power;
 	}
-
+	
 	public void setPower(int power) {
 		this.power = power;
 	}

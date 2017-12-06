@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
@@ -17,11 +19,11 @@ import edu.colostate.cs.cs414.andyetitcompiles.p3.protocol.*;
 
 public class JungleServer {
 	Server server;
-	DatabaseManager database;
+	DatabaseManagerSQL database;
 	Map<Integer, ServerGameController> games;
 	int gameCounter;
 
-	public JungleServer(DatabaseManager database) throws IOException {
+	public JungleServer(DatabaseManagerSQL database) throws IOException {
 		server = new Server() {
 			// Each time a new connection comes into the server, replace it with a JungleClientConnection (which extends connection)
 			protected Connection newConnection() {
@@ -46,7 +48,25 @@ public class JungleServer {
 			this.database = new DatabaseManagerSQL();
 		} catch (ClassNotFoundException | SQLException e) {
 			e.printStackTrace();
-			this.database = new DatabaseManagerSets();
+			System.out.println("Database not connected");
+			System.exit(2);
+		}
+		networkSetup();
+	}
+	public JungleServer(int port) throws IOException {
+		server = new Server() {
+			protected Connection newConnection() {
+				return new JungleClientConnection();
+			}
+		};
+		
+		//try to connect to database, if this fails use temp database
+		try {
+			this.database = new DatabaseManagerSQL();
+		} catch (ClassNotFoundException | SQLException e) {
+			e.printStackTrace();
+			System.out.println("Database not connected");
+			System.exit(2);
 		}
 		networkSetup();
 	}
@@ -63,7 +83,8 @@ public class JungleServer {
 			this.database = new DatabaseManagerSQL(dbLocation,dbUsername,dbPassword);
 		} catch (ClassNotFoundException | SQLException e) {
 			e.printStackTrace();
-			this.database = new DatabaseManagerSets();
+			System.out.println("Database not connected");
+			System.exit(2);
 		}
 		networkSetup();
 	}
@@ -82,6 +103,7 @@ public class JungleServer {
 					// If the login was successful, set the user of the JungleClientConnection that logged in
 					if(loginResp.successful()) {
 						jClient.setUser(loginResp.getUser()); // Set that connection to a User
+						sendActiveGames(jClient); // Send all the active games the user was playing
 					}
 				}
 				if (object instanceof RegisterRequest) {
@@ -147,9 +169,10 @@ public class JungleServer {
 							// Create the server game instance
 							ServerGameController newGame = new ServerGameController(gameCounter, inviter, invitee, jServer);
 							games.put(gameCounter, newGame);
+							database.addGame(gameCounter, inviter.getUser().getId(), invitee.getUser().getId(), new Timestamp(System.currentTimeMillis()), 1, null);
 							// Send the game info to the clients
-							GameInstance inviterMessage = new GameInstance(gameCounter, invitee.getUser(), Color.WHITE);
-							GameInstance inviteeMessage = new GameInstance(gameCounter, inviter.getUser(), Color.BLACK);
+							GameInstance inviterMessage = new GameInstance(gameCounter, invitee.getUser(), Color.WHITE, null);
+							GameInstance inviteeMessage = new GameInstance(gameCounter, inviter.getUser(), Color.BLACK, null);
 							inviter.sendTCP(inviterMessage);
 							invitee.sendTCP(inviteeMessage);
 							gameCounter++;
@@ -182,6 +205,15 @@ public class JungleServer {
 				// If the disconnected connection has an associated user, log them out in the database. Otherwise, do nothing, kryo gets rid of the connection
 				if(conn.getUser() != null) {
 					database.logout(conn.getUser());
+					// Store any active games the user was playing before they disconnected
+					User user = conn.getUser();
+					Set<Integer> gameIDs = database.gameIDs(user.getId());
+					for(int id: gameIDs) {
+						if(games.containsKey(id)) {
+							ServerGameController controller = games.get(id);
+							database.updateGame(controller.gameID, controller.getBoardRepresentation(), controller.currentTurn());
+						}
+					}
 				}
 			}
 		});
@@ -189,8 +221,51 @@ public class JungleServer {
 		server.start();
 	}
 	
+	public void updateGameInDB(ServerGameController controller) {
+		database.updateGame(controller.gameID, controller.getBoardRepresentation(), controller.currentTurn());
+	}
+	
+	// Sends all active games the connection has stored in the database
+	// Attempts to find a currently running game controller, otherwise creates a new one for the game
+	private void sendActiveGames(JungleClientConnection jClient) {
+		Set<Integer> gameIDs = database.gameIDs(jClient.getUser().getId());
+		for(int id: gameIDs) {
+			GameInstance game;
+			ServerGameController controller;
+			// Game already has a controller
+			if(this.games.containsKey(id)) {
+				controller = this.games.get(id);
+				if(controller.player1User.equals(jClient.getUser())) 
+					controller.setPlayer1(jClient);
+				else
+					controller.setPlayer2(jClient);
+				game = new GameInstance(controller.gameID, controller.getOpponent(jClient.getUser()), controller.getColor(jClient.getUser()), controller.getBoardRepresentation());
+				jClient.sendTCP(game);
+				controller.rejoinGame();
+			}
+			// Else create a new controller for the game
+			else {
+				gameInfo info = database.findGame(id);
+				User player1 = database.findUser(database.searchNickname(info.getUser1())).getUser();
+				User player2 = database.findUser(database.searchNickname(info.getUser2())).getUser();
+				controller = new ServerGameController(info.getGameID(), player1, player2, info.getGameConfig(), this);
+				if(player1.equals(jClient.getUser()))
+					controller.setPlayer1(jClient);
+				else
+					controller.setPlayer2(jClient);
+				game = new GameInstance(controller.gameID, controller.getOpponent(jClient.getUser()), controller.getColor(jClient.getUser()), controller.getBoardRepresentation());
+				this.games.put(controller.gameID, controller);
+				jClient.sendTCP(game);
+				if(info.getPlayerTurn() == 1)
+					controller.resumeGame(Color.WHITE);
+				else
+					controller.resumeGame(Color.BLACK);
+			}
+		}
+	}
+	
 	public void gameOver(int gameID, User winner, User loser, boolean abandoned, Timestamp start, Timestamp end) {
-		database.addGame(new GameRecord(winner.getId(), loser.getNickname(), start, end, true, abandoned), 
+		database.addGameRecord(gameID, new GameRecord(winner.getId(), loser.getNickname(), start, end, true, abandoned), 
 				new GameRecord(loser.getId(), winner.getNickname(), start, end, false, abandoned));
 		games.remove(gameID);
 	}
@@ -217,13 +292,19 @@ public class JungleServer {
 
 	public static void main(String args[]) {
 		try {
+			//pass in port
+			if(args.length == 1) {
+				new JungleServer();
+			}else
+			//pass in database information
 			if(args.length == 3) {
 				new JungleServer(args[0],args[1],args[3]);
-			} else {
+			}
+			else {
 				new JungleServer();
 			}
 		} catch (IOException e) {
-			System.out.println("Exception in server: "+e.getMessage());
+			System.err.println("Exception in server: "+e.getMessage());
 		}
 	}
 }
