@@ -2,6 +2,8 @@ package edu.colostate.cs.cs414.andyetitcompiles.p3.common;
 
 import java.util.ArrayList;
 
+import edu.colostate.cs.cs414.andyetitcompiles.p3.server.JungleClientConnection;
+
 public interface TournamentInterface {
 
 
@@ -38,7 +40,7 @@ public interface TournamentInterface {
 	 * @param nicknamer of winner of the match
 	 * @return 1 if the winner has successfully reported
 	 */
-	public int reportWinner(String nickname);
+	public int reportWinner(JungleClientConnection player);
 
 	/**
 	 * @param player's nickname
@@ -46,14 +48,14 @@ public interface TournamentInterface {
 	 * it automatically starts the tournament when the pool reaches the max num of players
 	 * a player can be added only when round is 0
 	 */
-	public int addPlayer(String nickname);
+	public int addPlayer(JungleClientConnection player);
 
 	/**
 	 * @param player's nickname
 	 * @return 1 if the player has successfully removed to the tournament
 	 * a player can be removed only when round is 0
 	 */
-	public int removePlayer(String nickname);
+	public int removePlayer(JungleClientConnection player);
 
 	/**
 	 * requires at least 2 players to start the tournament
