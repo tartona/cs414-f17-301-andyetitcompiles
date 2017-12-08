@@ -244,7 +244,7 @@ public class JungleServer {
 								tmntResponse = new TournamentMessage(tournamentMsg.getTournamentID(), TournamentMessageType.RESULT, "You've started the tournament "+tournamentMsg.getTournamentID());
 								c.sendTCP(tmntResponse);
 								for(JungleClientConnection conn : tournaments.get(tournamentMsg.getTournamentID()).getPlayerConnections()) {
-									tmntResponse = new TournamentMessage(tournamentMsg.getTournamentID(), TournamentMessageType.RESULT, tournaments.get(tournamentMsg.getTournamentID()).getTournamentHistory());
+									tmntResponse = new TournamentMessage(tournamentMsg.getTournamentID(), TournamentMessageType.RESULT, "New round of Tournament("+tournamentMsg.getTournamentID()+") has begun\n"+tournaments.get(tournamentMsg.getTournamentID()).getTournamentHistory());
 									conn.sendTCP(tmntResponse);
 								}
 								createTournamentGames(tournamentMsg.getTournamentID());
@@ -394,7 +394,7 @@ public class JungleServer {
 			}else {
 				if(prevRound!=currentRound){
 					for(JungleClientConnection c : tmnt.getPlayerConnections()) {
-						TournamentMessage tmntResponse = new TournamentMessage(tmnt.getTournamentID(), TournamentMessageType.RESULT, tmnt.getTournamentHistory());
+						TournamentMessage tmntResponse = new TournamentMessage(tmnt.getTournamentID(), TournamentMessageType.RESULT, "New round of Tournament("+tmnt.getTournamentID()+") has begun\n"+tmnt.getTournamentHistory().split("\n")[0]);
 						c.sendTCP(tmntResponse);
 					}
 					createTournamentGames(tmnt.getTournamentID());
