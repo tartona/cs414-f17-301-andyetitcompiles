@@ -187,7 +187,7 @@ public class DatabaseManagerSQLTest {
 		assertEquals(1, winCount);//user2 should have 1 wins
 
 		//Additional code coverage, include path where user played against is missing. 
-		db.addGame(4, user1.getId(), user2.getId(), new Timestamp(10000), 1, "");
+		db.addGame(4, user1.getId(), user2.getId(), new Timestamp(10000), 1, "                                                               ");
 
 		assertTrue(db.unRegisterUser(user2.getEmail(), "password").successful());
 		user1 = db.findUser(user1.getNickname()).getUser();
@@ -225,7 +225,8 @@ public class DatabaseManagerSQLTest {
 		assertTrue(db.findGame(1).getGameConfig().equals(board));
 
 		//test board update
-		String newBoard = "Not an accurate haaay look I changed some letters! i  work";
+		String newBoard = "Not an accurate haaay look I changed some letters! i  work     ";
+		System.out.println(newBoard.length());
 		assertTrue(db.updateGame(1, newBoard, 2));
 		assertTrue(db.findGame(1).getGameConfig().equals(newBoard));
 		
