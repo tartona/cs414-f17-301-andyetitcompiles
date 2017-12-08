@@ -56,6 +56,7 @@ public class JungleCLI implements Runnable {
 		takeUpdate();
 		// Ask for registration
 		String input;
+		Console console = System.console();
 		do {
 			print("Register new account? Y/N");
 			input = iStream.next();
@@ -69,7 +70,7 @@ public class JungleCLI implements Runnable {
 				print("Email:");
 				email = iStream.next();
 				print("Password:");
-				password = iStream.next();
+				password = new String(console.readPassword("Password:"));
 				print("Nickname:");
 				nickname = iStream.next();
 				client.register(email, nickname, password);
@@ -81,7 +82,6 @@ public class JungleCLI implements Runnable {
 			}
 		}
 		// Ask for login
-		Console console = System.console();
 		print("Please log in to play jungle");
 		while(!Thread.interrupted()) {
 			String email;
