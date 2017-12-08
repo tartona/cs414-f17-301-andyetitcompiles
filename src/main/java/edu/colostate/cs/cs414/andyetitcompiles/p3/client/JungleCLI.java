@@ -7,6 +7,8 @@ import java.util.concurrent.BlockingQueue;
 import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 
+import edu.colostate.cs.cs414.andyetitcompiles.p3.protocol.TournamentMessageType;
+
 public class JungleCLI implements Runnable {
 	private BlockingQueue<String> inQueue;
 	private BlockingQueue<String> outQueue;
@@ -25,7 +27,7 @@ public class JungleCLI implements Runnable {
 		// Create a the gamesWindow
 		createAndShowUI();
 	}
-	
+
 	private void createAndShowUI() {
 		gamesWindow = new JFrame();
 		tabs = new JTabbedPane(JTabbedPane.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
@@ -35,12 +37,12 @@ public class JungleCLI implements Runnable {
 		gamesWindow.pack();
 		gamesWindow.setVisible(true);
 	}
-	
+
 	public void addGame(ClientGameController game) {
 		tabs.addTab(game.getName(), game);
 		gamesWindow.pack();
 	}
-	
+
 	public void removeGame(ClientGameController game) {
 		tabs.remove(game);
 		gamesWindow.pack();
@@ -54,6 +56,7 @@ public class JungleCLI implements Runnable {
 		takeUpdate();
 		// Ask for registration
 		String input;
+		Console console = System.console();
 		do {
 			print("Register new account? Y/N");
 			input = iStream.next();
@@ -67,7 +70,8 @@ public class JungleCLI implements Runnable {
 				print("Email:");
 				email = iStream.next();
 				print("Password:");
-				password = iStream.next();
+				//password = iStream.next();
+				password = new String(console.readPassword("Password:"));
 				print("Nickname:");
 				nickname = iStream.next();
 				client.register(email, nickname, password);
@@ -79,15 +83,14 @@ public class JungleCLI implements Runnable {
 			}
 		}
 		// Ask for login
-		Console console = System.console();
 		print("Please log in to play jungle");
 		while(!Thread.interrupted()) {
 			String email;
 			String password;
 			print("Email:");
 			email = iStream.next();
-		//	print("Password:");
-		//	password = iStream.next();
+			//print("Password:");
+			//password = iStream.next();
 			password = new String(console.readPassword("Password:"));
 			System.out.println(password);
 			client.login(email, password);
@@ -118,11 +121,11 @@ public class JungleCLI implements Runnable {
 			else if(message.split(":")[0].equals("Invite accepted")) {
 				print("Your invite to user " + message.split(":")[1] + " was accepted");
 			}
-			else	
+			else
 				print(message);
 		}
 	}
-	
+
 	// Start a new thread that listens for user input
 	public void listenForUserInput(Scanner input) {
 		userInputThread = new Thread(new Runnable() {
@@ -142,6 +145,29 @@ public class JungleCLI implements Runnable {
 							else if(message.equals("invite")) {
 								client.invite(client.getRequestedUser());
 								print("Invite sent");
+							}
+							else if(message.split(" ")[0].equals("create")) {
+								print("Creating the tournament");
+								client.tournamentRequest((message.split(" ")[1]), TournamentMessageType.CREATE, Integer.parseInt(message.split(" ")[2]));
+							}
+							else if(message.split(" ")[0].equals("join")) {
+								print("Joining the tournament");
+								client.tournamentRequest((message.split(" ")[1]), TournamentMessageType.JOIN, 0);
+							}
+							else if(message.split(" ")[0].equals("leave")) {
+								print("Leaving the tournament");
+								client.tournamentRequest((message.split(" ")[1]), TournamentMessageType.LEAVE, 0);
+							}
+							else if(message.split(" ")[0].equals("start")) {
+								print("Starting the tournament");
+								client.tournamentRequest((message.split(" ")[1]), TournamentMessageType.START, 0);
+							}
+							else if(message.split(" ")[0].equals("end")) {
+								print("Ending the tournament");
+								client.tournamentRequest((message.split(" ")[1]), TournamentMessageType.END, 0);
+							}
+							else if(message.split(" ")[0].equals("active")) {
+								client.tournamentRequest("", TournamentMessageType.REPORT, 0);
 							}
 							else if(message.split(" ")[0].equals("Y")) {
 								pushUpdate("Accept");
