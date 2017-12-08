@@ -8,15 +8,17 @@ public class TournamentMessage {
 	String winner;
 	String loser;
 	String result;
+	int maxPlayer;
 	TournamentMessageType type;
 
 	public TournamentMessage() {}
 
 	// CREATE, START, END of the tournament
-	public TournamentMessage(String tournamentID, TournamentMessageType type, String tournamentOwner) {
+	public TournamentMessage(String tournamentID, TournamentMessageType type, String tournamentOwner, int maxPlayer) {
 		this.tournamentID = tournamentID;
 		this.type = type;
 		this.tournamentOwner = tournamentOwner;
+		this.maxPlayer = maxPlayer;
 	}
 
 	// JOIN, LEAVE, and RESULT? couldn't come up with overloading the constructor
@@ -67,5 +69,12 @@ public class TournamentMessage {
 
 	public TournamentMessageType getType() {
 		return type;
+	}
+
+	public String getResult() {
+		return result;
+	}
+	public int getMaxPlayer() {
+		return maxPlayer;
 	}
 }

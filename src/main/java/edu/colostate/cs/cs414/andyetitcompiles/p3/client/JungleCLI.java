@@ -6,6 +6,8 @@ import java.util.concurrent.BlockingQueue;
 import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 
+import edu.colostate.cs.cs414.andyetitcompiles.p3.protocol.TournamentMessageType;
+
 public class JungleCLI implements Runnable {
 	private BlockingQueue<String> inQueue;
 	private BlockingQueue<String> outQueue;
@@ -24,7 +26,7 @@ public class JungleCLI implements Runnable {
 		// Create a the gamesWindow
 		createAndShowUI();
 	}
-	
+
 	private void createAndShowUI() {
 		gamesWindow = new JFrame();
 		tabs = new JTabbedPane(JTabbedPane.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
@@ -34,12 +36,12 @@ public class JungleCLI implements Runnable {
 		gamesWindow.pack();
 		gamesWindow.setVisible(true);
 	}
-	
+
 	public void addGame(ClientGameController game) {
 		tabs.addTab(game.getName(), game);
 		gamesWindow.pack();
 	}
-	
+
 	public void removeGame(ClientGameController game) {
 		tabs.remove(game);
 		gamesWindow.pack();
@@ -114,11 +116,11 @@ public class JungleCLI implements Runnable {
 			else if(message.split(":")[0].equals("Invite accepted")) {
 				print("Your invite to user " + message.split(":")[1] + " was accepted");
 			}
-			else	
+			else
 				print(message);
 		}
 	}
-	
+
 	// Start a new thread that listens for user input
 	public void listenForUserInput(Scanner input) {
 		userInputThread = new Thread(new Runnable() {
@@ -138,6 +140,26 @@ public class JungleCLI implements Runnable {
 							else if(message.equals("invite")) {
 								client.invite(client.getRequestedUser());
 								print("Invite sent");
+							}
+							if(message.split(" ")[0].equals("create")) {
+								print("Creating the tournament");
+								client.tournamentRequest((message.split(" ")[1]), TournamentMessageType.CREATE, Integer.parseInt(message.split(" ")[1]));
+							}
+							if(message.split(" ")[0].equals("join")) {
+								print("Creating the tournament");
+								client.tournamentRequest((message.split(" ")[1]), TournamentMessageType.JOIN, 0);
+							}
+							if(message.split(" ")[0].equals("LEAVE")) {
+								print("Creating the tournament");
+								client.tournamentRequest((message.split(" ")[1]), TournamentMessageType.LEAVE, 0);
+							}
+							if(message.split(" ")[0].equals("START")) {
+								print("Creating the tournament");
+								client.tournamentRequest((message.split(" ")[1]), TournamentMessageType.START, 0);
+							}
+							if(message.split(" ")[0].equals("END")) {
+								print("Creating the tournament");
+								client.tournamentRequest((message.split(" ")[1]), TournamentMessageType.END, 0);
 							}
 							else if(message.split(" ")[0].equals("Y")) {
 								pushUpdate("Accept");
