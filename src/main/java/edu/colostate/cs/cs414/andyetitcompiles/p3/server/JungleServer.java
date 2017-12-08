@@ -221,16 +221,21 @@ public class JungleServer {
 					}
 					else if(tournamentMsg.getType() == TournamentMessageType.LEAVE) {
 						if(tournaments.containsKey(tournamentMsg.getTournamentID())){
-							tournaments.get(tournamentMsg.getTournamentID()).removePlayer(jClient);
-							tmntResponse = new TournamentMessage(tournamentMsg.getTournamentID(), TournamentMessageType.RESULT, "You've removed from the tournament "+tournamentMsg.getTournamentID());
-							c.sendTCP(tmntResponse);
+							int returnVal = tournaments.get(tournamentMsg.getTournamentID()).removePlayer(jClient);
+							if(returnVal==0) {
+								tmntResponse = new TournamentMessage(tournamentMsg.getTournamentID(), TournamentMessageType.RESULT, "You cannot leave the tournament "+tournamentMsg.getTournamentID());
+								c.sendTCP(tmntResponse);
+							}else {
+								tmntResponse = new TournamentMessage(tournamentMsg.getTournamentID(), TournamentMessageType.RESULT, "You've removed from the tournament "+tournamentMsg.getTournamentID());
+								c.sendTCP(tmntResponse);
+							}
 						}else{
 							tmntResponse = new TournamentMessage(tournamentMsg.getTournamentID(), TournamentMessageType.RESULT, "The tournament ID does not exists");
 							c.sendTCP(tmntResponse);
 						}
 					}
 					else if(tournamentMsg.getType() == TournamentMessageType.START) {
-						if(tournaments.containsKey(tournamentMsg.getTournamentID())){
+						if(tournaments.containsKey(tournamentMsg.getTournamentID()) && tournaments.get(tournamentMsg.getTournamentID()).getTournamentOwner().equals(tournamentMsg.getTournamentOwner())){
 							int returnVal = tournaments.get(tournamentMsg.getTournamentID()).start();
 							if(returnVal==0){
 								tmntResponse = new TournamentMessage(tournamentMsg.getTournamentID(), TournamentMessageType.RESULT, "You cannot start the tournament "+tournamentMsg.getTournamentID());
@@ -238,8 +243,10 @@ public class JungleServer {
 							}else {
 								tmntResponse = new TournamentMessage(tournamentMsg.getTournamentID(), TournamentMessageType.RESULT, "You've started the tournament "+tournamentMsg.getTournamentID());
 								c.sendTCP(tmntResponse);
-								System.out.println(tournaments.get(tournamentMsg.getTournamentID()).getRoundNum());
-								System.out.println(tournaments.get(tournamentMsg.getTournamentID()).getTournamentHistory());
+								for(JungleClientConnection conn : tournaments.get(tournamentMsg.getTournamentID()).getPlayerConnections()) {
+									tmntResponse = new TournamentMessage(tournamentMsg.getTournamentID(), TournamentMessageType.RESULT, tournaments.get(tournamentMsg.getTournamentID()).getTournamentHistory());
+									conn.sendTCP(tmntResponse);
+								}
 								createTournamentGames(tournamentMsg.getTournamentID());
 							}
 
@@ -249,10 +256,16 @@ public class JungleServer {
 						}
 					}
 					else if(tournamentMsg.getType() == TournamentMessageType.END) {
-						if(tournaments.containsKey(tournamentMsg.getTournamentID())){
-							tournaments.remove(tournamentMsg.getTournamentID());
+						if(tournaments.containsKey(tournamentMsg.getTournamentID()) && tournaments.get(tournamentMsg.getTournamentID()).getTournamentOwner().equals(tournamentMsg.getTournamentOwner())){
 							tmntResponse = new TournamentMessage(tournamentMsg.getTournamentID(), TournamentMessageType.RESULT, "You've ended the tournament "+tournamentMsg.getTournamentID());
 							c.sendTCP(tmntResponse);
+							ArrayList<JungleClientConnection> clients = tournaments.get(tournamentMsg.getTournamentID()).getPlayerConnections();
+							for(JungleClientConnection conn : clients) {
+								tmntResponse = new TournamentMessage(tournamentMsg.getTournamentID(), TournamentMessageType.RESULT, "Tournament has been terminated by the owner, and all the unfinished games will remain playable");
+								conn.sendTCP(tmntResponse);
+							}
+							tournaments.remove(tournamentMsg.getTournamentID());
+
 						}else{
 							tmntResponse = new TournamentMessage(tournamentMsg.getTournamentID(), TournamentMessageType.RESULT, "The tournament ID does not exists");
 							c.sendTCP(tmntResponse);
@@ -295,21 +308,21 @@ public class JungleServer {
 		database.updateGame(controller.gameID, controller.getBoardRepresentation(), controller.currentTurn());
 	}
 
-	private void createGame(JungleClientConnection player1, JungleClientConnection player2){
-		ServerGameController newGame = new ServerGameController(gameCounter, player1, player2, this, true);
+	private void createGame(JungleClientConnection player1, JungleClientConnection player2, String tournamentID){
+		ServerGameController newGame = new ServerGameController(gameCounter, player1, player2, this, tournamentID);
 		games.put(gameCounter, newGame);
 		database.addGame(gameCounter, player1.getUser().getId(), player2.getUser().getId(), new Timestamp(System.currentTimeMillis()), 1, null);
 		// Send the game info to the clients
-		GameInstance inviterMessage = new GameInstance(gameCounter, player1.getUser(), Color.WHITE, null);
-		GameInstance inviteeMessage = new GameInstance(gameCounter, player2.getUser(), Color.BLACK, null);
+		GameInstance inviterMessage = new GameInstance(gameCounter, player2.getUser(), Color.WHITE, null);
+		GameInstance inviteeMessage = new GameInstance(gameCounter, player1.getUser(), Color.BLACK, null);
 		player1.sendTCP(inviterMessage);
 		player2.sendTCP(inviteeMessage);
 		gameCounter++;
 		newGame.startGame();
 	}
 
-	private void createTournamentGames(String TournamentID) {
-		ArrayList<String> matches = tournaments.get(TournamentID).getCurrentPlacement();
+	private void createTournamentGames(String tournamentID) {
+		ArrayList<String> matches = tournaments.get(tournamentID).getCurrentPlacement();
 		for(String s : matches) {
 			JungleClientConnection player1 = null;
 			JungleClientConnection player2 = null;
@@ -321,7 +334,7 @@ public class JungleServer {
 						player2 = (JungleClientConnection)conn;
 				}
 				if(player1 != null && player2 != null) {
-					createGame(player1, player2);
+					createGame(player1, player2, tournamentID);
 				}
 			}
 		}
@@ -367,6 +380,27 @@ public class JungleServer {
 	}
 
 	public void gameOver(int gameID, User winner, User loser, boolean abandoned, Timestamp start, Timestamp end) {
+		if(games.get(gameID).isTournamentGame()) {
+			Tournament tmnt = tournaments.get(games.get(gameID).getTournamentID());
+			int prevRound = tmnt.getRoundNum();
+			tmnt.reportWinner(winner);
+			int currentRound = tmnt.getRoundNum();
+			if(!tmnt.getWinner().isEmpty()){
+				for(JungleClientConnection c : tmnt.getPlayerConnections()) {
+					TournamentMessage tmntResponse = new TournamentMessage(tmnt.getTournamentID(), TournamentMessageType.RESULT, "Tournament has finished!\nTournament("+tmnt.getTournamentID()+") Result:\n"+tmnt.getTournamentHistory());
+					c.sendTCP(tmntResponse);
+				}
+				tournaments.remove(tmnt);
+			}else {
+				if(prevRound!=currentRound){
+					for(JungleClientConnection c : tmnt.getPlayerConnections()) {
+						TournamentMessage tmntResponse = new TournamentMessage(tmnt.getTournamentID(), TournamentMessageType.RESULT, tmnt.getTournamentHistory());
+						c.sendTCP(tmntResponse);
+					}
+					createTournamentGames(tmnt.getTournamentID());
+				}
+			}
+		}
 		database.addGameRecord(gameID, new GameRecord(winner.getId(), loser.getNickname(), start, end, true, abandoned),
 				new GameRecord(loser.getId(), winner.getNickname(), start, end, false, abandoned));
 		games.remove(gameID);

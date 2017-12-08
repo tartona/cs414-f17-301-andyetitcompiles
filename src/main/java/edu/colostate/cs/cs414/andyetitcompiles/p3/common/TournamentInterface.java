@@ -40,7 +40,7 @@ public interface TournamentInterface {
 	 * @param nicknamer of winner of the match
 	 * @return 1 if the winner has successfully reported
 	 */
-	public int reportWinner(JungleClientConnection player);
+	public int reportWinner(User player);
 
 	/**
 	 * @param player's nickname

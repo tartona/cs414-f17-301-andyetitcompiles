@@ -22,7 +22,7 @@ public class ServerGameController {
 	JungleServer server;
 	Timestamp start;
 	Timestamp end;
-	boolean tournamentGame = false;
+	String tournamentID;
 
 	// All code in this class assumes that player1 is white and player2 is black, also player/white always goes first (so the person who invited the other player is player1)
 	public ServerGameController(int gameID, JungleClientConnection player1, JungleClientConnection player2, JungleServer server) {
@@ -35,7 +35,7 @@ public class ServerGameController {
 		this.server = server;
 		start = new Timestamp(System.currentTimeMillis());
 	}
-	public ServerGameController(int gameID, JungleClientConnection player1, JungleClientConnection player2, JungleServer server, boolean isTournament) {
+	public ServerGameController(int gameID, JungleClientConnection player1, JungleClientConnection player2, JungleServer server, String tournamentID) {
 		this.gameID = gameID;
 		this.player1 = player1;
 		this.player2 = player2;
@@ -43,7 +43,7 @@ public class ServerGameController {
 		this.player2User = player2.getUser();
 		this.game = new JungleGame(player1User, player2User);
 		this.server = server;
-		this.tournamentGame = isTournament;
+		this.tournamentID = tournamentID;
 		start = new Timestamp(System.currentTimeMillis());
 	}
 	public ServerGameController(int gameID, User player1, User player2, String board, JungleServer server) {
@@ -185,6 +185,14 @@ public class ServerGameController {
 	}
 
 	public boolean isTournamentGame() {
-		return tournamentGame;
+		if(!tournamentID.isEmpty()){
+			return true;
+		}else{
+			return false;
+		}
+	}
+
+	public String getTournamentID() {
+		return tournamentID;
 	}
 }

@@ -45,29 +45,33 @@ public class Tournament implements TournamentInterface{
 		return tournamentID;
 	}
 
+	public String getTournamentOwner() {
+		return tournamentOwner;
+	}
+
 	public String getTournamentHistory() {
 		String tmpstr = tournamentHistory.substring(0, tournamentHistory.length()-2).replace("/-", "\n");
 		return tmpstr;
 	}
 
-	public int reportWinner(JungleClientConnection player) {
+	public int reportWinner(User player) {
 		if(!winner.isEmpty()){
 			return 0;
 		}
 		boolean found = false;
 		for(String tmp : currentPlacement){
-			if(tmp.contains(",")&&tmp.contains(player.getUser().getNickname())){
+			if(tmp.contains(",")&&tmp.contains(player.getNickname())){
 				found = true;
 				String[] tmp2 = tmp.split(",");
-				if(tmp2[0].equals(player.getUser().getNickname())){
+				if(tmp2[0].equals(player.getNickname())){
 					playerStatus.replace(tmp2[1], 0);
-				}else if(tmp2[1].equals(player.getUser().getNickname())){
+				}else if(tmp2[1].equals(player.getNickname())){
 					playerStatus.replace(tmp2[0], 0);
 				}
 			}
 		}
 		if(currentPlacement.size()==1){
-			winner = player.getUser().getNickname();
+			winner = player.getNickname();
 		}
 		if(checkEndOfRound()){
 			round++;
@@ -123,11 +127,18 @@ public class Tournament implements TournamentInterface{
 			}
 		}
 
-		tournamentHistory+="Round"+round+":";
-		for(String pair : currentPlacement){
-			tournamentHistory+=pair+"/";
+		String tmpHistory;
+		if(!winner.isEmpty()) {
+			tmpHistory = "Winner - ";
+		}else{
+			tmpHistory = "Round"+round+":";
 		}
-		tournamentHistory+="-";
+		for(String pair : currentPlacement){
+			tmpHistory+=pair+"/";
+		}
+		tmpHistory+="-";
+		tmpHistory+=tournamentHistory;
+		tournamentHistory = tmpHistory;
 	}
 
 	private boolean checkEndOfRound() {
@@ -150,5 +161,9 @@ public class Tournament implements TournamentInterface{
 		}else {
 			return 0;
 		}
+	}
+
+	public ArrayList<JungleClientConnection> getPlayerConnections() {
+		return playerConnections;
 	}
 }
