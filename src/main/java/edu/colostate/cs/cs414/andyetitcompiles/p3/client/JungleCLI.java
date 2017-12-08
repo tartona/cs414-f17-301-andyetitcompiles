@@ -1,5 +1,6 @@
 package edu.colostate.cs.cs414.andyetitcompiles.p3.client;
 
+import java.io.Console;
 import java.util.Scanner;
 import java.util.concurrent.BlockingQueue;
 
@@ -80,14 +81,17 @@ public class JungleCLI implements Runnable {
 			}
 		}
 		// Ask for login
+		Console console = System.console();
 		print("Please log in to play jungle");
 		while(!Thread.interrupted()) {
 			String email;
 			String password;
 			print("Email:");
 			email = iStream.next();
-			print("Password:");
-			password = iStream.next();
+		//	print("Password:");
+		//	password = iStream.next();
+			password = new String(console.readPassword("Password:"));
+			System.out.println(password);
 			client.login(email, password);
 			String[] tmp = takeUpdate().split(":");
 			String message = tmp[0];
