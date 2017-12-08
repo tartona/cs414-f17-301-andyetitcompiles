@@ -185,10 +185,10 @@ public class ServerGameController {
 	}
 
 	public boolean isTournamentGame() {
-		if(!tournamentID.isEmpty()){
-			return true;
-		}else{
+		if(tournamentID == null){
 			return false;
+		}else{
+			return true;
 		}
 	}
 
