@@ -84,7 +84,7 @@ public class JungleGame implements GameInterface{
 			return 0;	
 		if(attacker instanceof Elephant && victim instanceof Rat)
 			return 0;
-		if((attacker.getPower() > victim.getPower()) || (attacker instanceof Rat && victim instanceof Elephant)){
+		if(attacker.getPower() > victim.getPower() || attacker instanceof Rat && victim instanceof Elephant){
 			if(victim.getPower() == 0){
 				victim.restorePower();
 			}
