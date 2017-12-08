@@ -13,6 +13,14 @@ public class TournamentMessage {
 
 	public TournamentMessage() {}
 
+
+	// RESULT of the tournament
+	public TournamentMessage(String tournamentID, TournamentMessageType type, String result) {
+		this.tournamentID = tournamentID;
+		this.type = type;
+		this.result = result;
+	}
+
 	// CREATE, START, END of the tournament
 	public TournamentMessage(String tournamentID, TournamentMessageType type, String tournamentOwner, int maxPlayer) {
 		this.tournamentID = tournamentID;
@@ -22,15 +30,11 @@ public class TournamentMessage {
 	}
 
 	// JOIN, LEAVE, and RESULT? couldn't come up with overloading the constructor
-	public TournamentMessage(String tournamentID, TournamentMessageType type, String tournamentOwner, String playerOrResult) {
+	public TournamentMessage(String tournamentID, TournamentMessageType type, String tournamentOwner, String player) {
 		this.tournamentID = tournamentID;
 		this.type = type;
 		this.tournamentOwner = tournamentOwner;
-		if(type == TournamentMessageType.RESULT){
-			this.result = playerOrResult;
-		}else{
-			this.player = playerOrResult;
-		}
+		this.player = player;
 	}
 
 	// REPORT WINNER

@@ -141,24 +141,24 @@ public class JungleCLI implements Runnable {
 								client.invite(client.getRequestedUser());
 								print("Invite sent");
 							}
-							if(message.split(" ")[0].equals("create")) {
+							else if(message.split(" ")[0].equals("create")) {
 								print("Creating the tournament");
-								client.tournamentRequest((message.split(" ")[1]), TournamentMessageType.CREATE, Integer.parseInt(message.split(" ")[1]));
+								client.tournamentRequest((message.split(" ")[1]), TournamentMessageType.CREATE, Integer.parseInt(message.split(" ")[2]));
 							}
-							if(message.split(" ")[0].equals("join")) {
-								print("Creating the tournament");
+							else if(message.split(" ")[0].equals("join")) {
+								print("Joining the tournament");
 								client.tournamentRequest((message.split(" ")[1]), TournamentMessageType.JOIN, 0);
 							}
-							if(message.split(" ")[0].equals("LEAVE")) {
-								print("Creating the tournament");
+							else if(message.split(" ")[0].equals("leave")) {
+								print("Leaving the tournament");
 								client.tournamentRequest((message.split(" ")[1]), TournamentMessageType.LEAVE, 0);
 							}
-							if(message.split(" ")[0].equals("START")) {
-								print("Creating the tournament");
+							else if(message.split(" ")[0].equals("start")) {
+								print("Starting the tournament");
 								client.tournamentRequest((message.split(" ")[1]), TournamentMessageType.START, 0);
 							}
-							if(message.split(" ")[0].equals("END")) {
-								print("Creating the tournament");
+							else if(message.split(" ")[0].equals("end")) {
+								print("Ending the tournament");
 								client.tournamentRequest((message.split(" ")[1]), TournamentMessageType.END, 0);
 							}
 							else if(message.split(" ")[0].equals("Y")) {

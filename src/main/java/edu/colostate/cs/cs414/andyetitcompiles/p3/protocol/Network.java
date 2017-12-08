@@ -13,7 +13,7 @@ import com.esotericsoftware.kryonet.EndPoint;
 import edu.colostate.cs.cs414.andyetitcompiles.p3.common.*;
 
 public class Network {
-	
+
 	static public final int port = 22222;
 	static public final String host = "localhost";
 
@@ -43,6 +43,8 @@ public class Network {
 		kryo.register(Color.class);
 		kryo.register(Timestamp.class);
 		kryo.register(GameInstance[].class);
+		kryo.register(TournamentMessage.class);
+		kryo.register(TournamentMessageType.class);
 		// Add any classes that we want to send as we develop the project
 	}
 }

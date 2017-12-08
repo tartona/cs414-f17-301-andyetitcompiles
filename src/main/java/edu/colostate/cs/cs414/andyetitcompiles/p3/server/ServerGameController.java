@@ -22,7 +22,8 @@ public class ServerGameController {
 	JungleServer server;
 	Timestamp start;
 	Timestamp end;
-	
+	boolean tournamentGame = false;
+
 	// All code in this class assumes that player1 is white and player2 is black, also player/white always goes first (so the person who invited the other player is player1)
 	public ServerGameController(int gameID, JungleClientConnection player1, JungleClientConnection player2, JungleServer server) {
 		this.gameID = gameID;
@@ -34,6 +35,17 @@ public class ServerGameController {
 		this.server = server;
 		start = new Timestamp(System.currentTimeMillis());
 	}
+	public ServerGameController(int gameID, JungleClientConnection player1, JungleClientConnection player2, JungleServer server, boolean isTournament) {
+		this.gameID = gameID;
+		this.player1 = player1;
+		this.player2 = player2;
+		this.player1User = player1.getUser();
+		this.player2User = player2.getUser();
+		this.game = new JungleGame(player1User, player2User);
+		this.server = server;
+		this.tournamentGame = isTournament;
+		start = new Timestamp(System.currentTimeMillis());
+	}
 	public ServerGameController(int gameID, User player1, User player2, String board, JungleServer server) {
 		this.gameID = gameID;
 		this.player1User = player1;
@@ -42,7 +54,7 @@ public class ServerGameController {
 		this.server = server;
 		start = new Timestamp(System.currentTimeMillis());
 	}
-	
+
 	// Sends the turn notifications to the users. Maybe in the future this could be used to check if
 	// both users are ready to play
 	public void startGame() {
@@ -50,18 +62,18 @@ public class ServerGameController {
 		this.turn = Color.WHITE;
 		sendTurnUpdate(turn);
 	}
-	
+
 	public void resumeGame(Color turn) {
 		this.turn = turn;
 		sendTurnUpdate(turn);
 	}
-	
+
 	public void rejoinGame() {
 		sendTurnUpdate(turn);
 	}
-	
+
 	public void handleMessage(GameMessage message) {
-		// Received message should have a matching gameID. 
+		// Received message should have a matching gameID.
 		// This exception should never be thrown if the server is working properly
 		System.out.println("Server game " + message.getGameID() + " received GameMessage of type " + message.getType());
 		if(message.getGameID() != gameID)
@@ -97,23 +109,23 @@ public class ServerGameController {
 		}
 		server.updateGameInDB(this);
 	}
-	
+
 	private void handleQuitGame(GameMessage message) {
 		if(message.getQuiter().equals(player1User))
 			gameOver(player2User, true);
 		else
 			gameOver(player1User, true);
 	}
-	
+
 	// Sends turn notifications to the players
 	private void sendTurnUpdate(Color turn) {
 		GameMessage p1Turn = new GameMessage(gameID, GameMessageType.SET_TURN, turn == Color.WHITE);
 		GameMessage p2Turn = new GameMessage(gameID, GameMessageType.SET_TURN, turn == Color.BLACK);
 		sendTCP(player1, p1Turn);
 		sendTCP(player2, p2Turn);
-		
+
 	}
-	
+
 	// Sends a move to the specified color
 	private void sendMove(Color color, GameMessage move) {
 		if(color == Color.WHITE)
@@ -134,14 +146,14 @@ public class ServerGameController {
 		else
 			server.gameOver(gameID, player2User, player1User, abandoned, start, end);
 	}
-	
+
 	public int currentTurn() {
 		if(turn == Color.WHITE)
 			return 1;
 		else
 			return 2;
 	}
-	
+
 	public String getBoardRepresentation() {
 		return game.getBoard().getBoardRepresentation();
 	}
@@ -151,14 +163,14 @@ public class ServerGameController {
 		else
 			return player1User;
 	}
-	
+
 	public Color getColor(User user) {
 		if(user.equals(player1User))
 			return Color.WHITE;
 		else
 			return Color.BLACK;
 	}
-	
+
 	public void setPlayer1(JungleClientConnection conn) {
 		player1 = conn;
 	}
@@ -166,9 +178,13 @@ public class ServerGameController {
 	public void setPlayer2(JungleClientConnection conn) {
 		player2 = conn;
 	}
-	
+
 	private void sendTCP(JungleClientConnection conn, GameMessage message) {
 		if(conn != null)
 			conn.sendTCP(message);
+	}
+
+	public boolean isTournamentGame() {
+		return tournamentGame;
 	}
 }

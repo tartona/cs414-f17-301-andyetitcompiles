@@ -117,7 +117,7 @@ public class Tournament implements TournamentInterface{
 						tmp+=playerConnections.get(i).getUser().getNickname();
 						currentPlacement.add(tmp);
 					}else{
-						tmp+=playerConnections.get(i)+",";
+						tmp+=playerConnections.get(i).getUser().getNickname()+",";
 					}
 				}
 			}
