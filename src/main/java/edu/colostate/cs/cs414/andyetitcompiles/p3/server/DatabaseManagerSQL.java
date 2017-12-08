@@ -389,7 +389,7 @@ public class DatabaseManagerSQL {
 	 * @return boolean for success
 	 */
 	public boolean addGame(int gameId, int user1, int user2, Timestamp startTime, int playerTurn, String gameConfig) {
-		if(gameConfig.length()!=63) {
+		if(gameConfig != null && gameConfig.length()!=63) {
 			return false;
 		}
 		
