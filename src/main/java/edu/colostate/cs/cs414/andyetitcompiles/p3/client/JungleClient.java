@@ -332,6 +332,10 @@ public class JungleClient {
 				TournamentMessage tournamentRequest = new TournamentMessage(tournamentID, TournamentMessageType.END, clientUser.getNickname(), 0);
 				kryoClient.sendTCP(tournamentRequest);
 			}
+			else if(type == TournamentMessageType.REPORT) {
+				TournamentMessage tournamentRequest = new TournamentMessage(tournamentID, TournamentMessageType.REPORT, clientUser.getNickname(), 0);
+				kryoClient.sendTCP(tournamentRequest);
+			}
 		}
 	}
 

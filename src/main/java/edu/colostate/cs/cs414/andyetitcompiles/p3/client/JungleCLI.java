@@ -70,6 +70,7 @@ public class JungleCLI implements Runnable {
 				print("Email:");
 				email = iStream.next();
 				print("Password:");
+				//password = iStream.next();
 				password = new String(console.readPassword("Password:"));
 				print("Nickname:");
 				nickname = iStream.next();
@@ -88,8 +89,8 @@ public class JungleCLI implements Runnable {
 			String password;
 			print("Email:");
 			email = iStream.next();
-		//	print("Password:");
-		//	password = iStream.next();
+			//print("Password:");
+			//password = iStream.next();
 			password = new String(console.readPassword("Password:"));
 			System.out.println(password);
 			client.login(email, password);
@@ -164,6 +165,9 @@ public class JungleCLI implements Runnable {
 							else if(message.split(" ")[0].equals("end")) {
 								print("Ending the tournament");
 								client.tournamentRequest((message.split(" ")[1]), TournamentMessageType.END, 0);
+							}
+							else if(message.split(" ")[0].equals("active")) {
+								client.tournamentRequest("", TournamentMessageType.REPORT, 0);
 							}
 							else if(message.split(" ")[0].equals("Y")) {
 								pushUpdate("Accept");

@@ -211,9 +211,27 @@ public class JungleServer {
 					}
 					else if(tournamentMsg.getType() == TournamentMessageType.JOIN) {
 						if(tournaments.containsKey(tournamentMsg.getTournamentID())){
-							tournaments.get(tournamentMsg.getTournamentID()).addPlayer(jClient);
-							tmntResponse = new TournamentMessage(tournamentMsg.getTournamentID(), TournamentMessageType.RESULT, "You've enrolled in the tournament "+tournamentMsg.getTournamentID());
-							c.sendTCP(tmntResponse);
+							int returnVal = tournaments.get(tournamentMsg.getTournamentID()).addPlayer(jClient);
+							if(returnVal==0) {
+								tmntResponse = new TournamentMessage(tournamentMsg.getTournamentID(), TournamentMessageType.RESULT, "You cannot join the tournament "+tournamentMsg.getTournamentID());
+								c.sendTCP(tmntResponse);
+							}else {
+								tmntResponse = new TournamentMessage(tournamentMsg.getTournamentID(), TournamentMessageType.RESULT, "You've enrolled in the tournament "+tournamentMsg.getTournamentID());
+								c.sendTCP(tmntResponse);
+								for(JungleClientConnection conn : tournaments.get(tournamentMsg.getTournamentID()).getPlayerConnections()) {
+									if(!conn.getUser().getNickname().equals(tournaments.get(tournamentMsg.getTournamentID()).getTournamentOwner())){
+										tmntResponse = new TournamentMessage(tournamentMsg.getTournamentID(), TournamentMessageType.RESULT, "New player joined to the tournament "+tournamentMsg.getTournamentID()+"("+tournaments.get(tournamentMsg.getTournamentID()).getNumPlayers()+"/"+tournaments.get(tournamentMsg.getTournamentID()).getMaxPlayer()+")");
+										conn.sendTCP(tmntResponse);
+									}
+								}
+								for(Connection conn : server.getConnections()) {
+									if(((JungleClientConnection) conn).getUser() != null && ((JungleClientConnection)conn).getUser().getNickname().equals(tournaments.get(tournamentMsg.getTournamentID()).getTournamentOwner())){
+										tmntResponse = new TournamentMessage(tournamentMsg.getTournamentID(), TournamentMessageType.RESULT, "New player joined to your tournament "+tournamentMsg.getTournamentID()+"("+tournaments.get(tournamentMsg.getTournamentID()).getNumPlayers()+"/"+tournaments.get(tournamentMsg.getTournamentID()).getMaxPlayer()+")");
+										conn.sendTCP(tmntResponse);
+									}
+								}
+							}
+
 						}else{
 							tmntResponse = new TournamentMessage(tournamentMsg.getTournamentID(), TournamentMessageType.RESULT, "The tournament ID does not exists");
 							c.sendTCP(tmntResponse);
@@ -228,6 +246,12 @@ public class JungleServer {
 							}else {
 								tmntResponse = new TournamentMessage(tournamentMsg.getTournamentID(), TournamentMessageType.RESULT, "You've removed from the tournament "+tournamentMsg.getTournamentID());
 								c.sendTCP(tmntResponse);
+								for(Connection conn : server.getConnections()) {
+									if(((JungleClientConnection) conn).getUser() != null && ((JungleClientConnection)conn).getUser().getNickname().equals(tournaments.get(tournamentMsg.getTournamentID()).getTournamentOwner())){
+										tmntResponse = new TournamentMessage(tournamentMsg.getTournamentID(), TournamentMessageType.RESULT, "Someone left from your tournament "+tournamentMsg.getTournamentID()+"("+tournaments.get(tournamentMsg.getTournamentID()).getNumPlayers()+"/"+tournaments.get(tournamentMsg.getTournamentID()).getMaxPlayer()+")");
+										conn.sendTCP(tmntResponse);
+									}
+								}
 							}
 						}else{
 							tmntResponse = new TournamentMessage(tournamentMsg.getTournamentID(), TournamentMessageType.RESULT, "The tournament ID does not exists");
@@ -270,6 +294,19 @@ public class JungleServer {
 							tmntResponse = new TournamentMessage(tournamentMsg.getTournamentID(), TournamentMessageType.RESULT, "The tournament ID does not exists");
 							c.sendTCP(tmntResponse);
 						}
+					}
+					else if(tournamentMsg.getType() == TournamentMessageType.REPORT) {
+						String tmpstr = "";
+						for(String s : tournaments.keySet()) {
+							if(tournaments.get(s).getRoundNum()==0){
+								tmpstr+=s+" by "+tournaments.get(s).getTournamentOwner()+"\n";
+							}
+						}
+						if(!tmpstr.isEmpty()){
+							tmpstr = tmpstr.substring(0, tmpstr.length()-1);
+						}
+						tmntResponse = new TournamentMessage(tournamentMsg.getTournamentID(), TournamentMessageType.RESULT, "List of active tournaments:\n"+tmpstr);
+						c.sendTCP(tmntResponse);
 					}
 				}
 				// Game communication received, pass it off to the correct game controller
@@ -382,22 +419,24 @@ public class JungleServer {
 	public void gameOver(int gameID, User winner, User loser, boolean abandoned, Timestamp start, Timestamp end) {
 		if(games.get(gameID).isTournamentGame()) {
 			Tournament tmnt = tournaments.get(games.get(gameID).getTournamentID());
-			int prevRound = tmnt.getRoundNum();
-			tmnt.reportWinner(winner);
-			int currentRound = tmnt.getRoundNum();
-			if(!tmnt.getWinner().isEmpty()){
-				for(JungleClientConnection c : tmnt.getPlayerConnections()) {
-					TournamentMessage tmntResponse = new TournamentMessage(tmnt.getTournamentID(), TournamentMessageType.RESULT, "Tournament has finished!\nTournament("+tmnt.getTournamentID()+") Result:\n"+tmnt.getTournamentHistory());
-					c.sendTCP(tmntResponse);
-				}
-				tournaments.remove(tmnt);
-			}else {
-				if(prevRound!=currentRound){
+			if(tmnt!=null){
+				int prevRound = tmnt.getRoundNum();
+				tmnt.reportWinner(winner);
+				int currentRound = tmnt.getRoundNum();
+				if(!tmnt.getWinner().isEmpty()){
 					for(JungleClientConnection c : tmnt.getPlayerConnections()) {
-						TournamentMessage tmntResponse = new TournamentMessage(tmnt.getTournamentID(), TournamentMessageType.RESULT, "New round of Tournament("+tmnt.getTournamentID()+") has begun\n"+tmnt.getTournamentHistory().split("\n")[0]);
+						TournamentMessage tmntResponse = new TournamentMessage(tmnt.getTournamentID(), TournamentMessageType.RESULT, "Tournament has finished!\nTournament("+tmnt.getTournamentID()+") Result:\n"+tmnt.getTournamentHistory());
 						c.sendTCP(tmntResponse);
 					}
-					createTournamentGames(tmnt.getTournamentID());
+					tournaments.remove(tmnt);
+				}else {
+					if(prevRound!=currentRound){
+						for(JungleClientConnection c : tmnt.getPlayerConnections()) {
+							TournamentMessage tmntResponse = new TournamentMessage(tmnt.getTournamentID(), TournamentMessageType.RESULT, "New round of Tournament("+tmnt.getTournamentID()+") has begun\n"+tmnt.getTournamentHistory().split("\n")[0]);
+							c.sendTCP(tmntResponse);
+						}
+						createTournamentGames(tmnt.getTournamentID());
+					}
 				}
 			}
 		}

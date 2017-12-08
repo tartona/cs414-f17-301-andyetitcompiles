@@ -85,12 +85,9 @@ public class Tournament implements TournamentInterface{
 	}
 
 	public int addPlayer(JungleClientConnection player) {
-		if(playerConnections.size()<maxPlayer && round==0) {
+		if(playerConnections.size()<=maxPlayer && round==0) {
 			playerConnections.add(player);
 			playerStatus.put(player.getUser().getNickname(), 1);
-			if(playerConnections.size()==maxPlayer) {
-				this.start();
-			}
 			return 1;
 		}else{
 			return 0;
@@ -165,5 +162,13 @@ public class Tournament implements TournamentInterface{
 
 	public ArrayList<JungleClientConnection> getPlayerConnections() {
 		return playerConnections;
+	}
+
+	public int getMaxPlayer() {
+		return maxPlayer;
+	}
+
+	public int getNumPlayers() {
+		return playerConnections.size();
 	}
 }
